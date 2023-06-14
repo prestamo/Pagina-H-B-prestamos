@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+    />
+    <title>B&H</title>
+    <link rel="icon" href="b&H.ico" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <form name="contact" method="POST" data-netlify="true">
+      <p>
+        <label>Nombre: <input type="text" name="name" /></label>
+      </p>
+      <p>
+        <label>Apellido: <input type="text" name="apellido" /></label>
+      </p>
+      <p>
+        <label>Correo: <input type="email" name="email" /></label>
+      </p>
+      <p>
+        <label
+          >Sexo:
+          <select name="sexo[]" multiple>
+            <option value="masculino">masculino</option>
+            <option value="femenino">femenino</option>
+          </select></label
+        >
+      </p>
+      <p>
+        <label>Message: <textarea name="message"></textarea></label>
+      </p>
+      <p>
+        <button type="submit">Send</button>
+      </p>
+    </form>
+  </body>
+</html>
