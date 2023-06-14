@@ -430,13 +430,16 @@ header .fa-bars {
 .contact .content a {
     font-size: 1rem;
     color: #eee;
-    padding: 3rem 25rem;   
+  /*  padding: 3rem 25rem;  */
+    align-items: center;
+    justify-content: center; 
 }
 
 .contact .content button {
     height: 5rem;
     width: 20rem;
     border-radius: 1rem;
+  
     background: #258ace;
     color: #fff;
     font-size: 2rem;
@@ -466,32 +469,34 @@ text-align: left;
 font-size: 2.5em;
 }
 /*row de solicitud*/
- .row {
-    background: #c7d1e4; 
+ .row  {
+   background: #b5bac4; 
+  
  }
+ 
  /*titulo de solicitud*/
 .solicitud {
     font-size: 4rem;
-    background: #c7d1e4; 
+    background: #b5bac4; 
     text-align: center;
     padding: 6rem 1rem 0 0;
     letter-spacing: .2rem;
     font-weight: 600;
     color: #0042f7;
 }
-
+/* estilo de seleccion*/
 .select {
 display: flex;
 flex-direction: column;
 justify-content: left;
 user-select: auto;
 font-size: 1.8em;
-background: #c7d1e4;
+background: #96a5be;
 width: 3.5cm;
 height: 1.0cm;
 border-radius: 10%;
-box-shadow: 0 .5rem 1rem rgba(12, 127, 235, 0.507);
-color: #0f659e;
+box-shadow: 0 .5rem 1rem rgba(107, 168, 224, 0.788);
+color: #0239b1;
 }
 
 .contact .row .form-container {
@@ -521,7 +526,7 @@ color: #0f659e;
     padding: 1rem;
     resize: none;
 }
-
+/* estilo del boton enviar*/
 .contact .row .form-container input[type="submit"] {
     height: 5rem;
     width: 17rem;
@@ -534,7 +539,7 @@ color: #0f659e;
 .contact .row .form-container input[type="submit"]:hover {
     background: none;
     color: #f0e0d8;
-    border: .2rem solid #b5c5df;
+    border: .2rem solid #2a68cc;
 }
 
 
@@ -552,12 +557,35 @@ color: #0f659e;
     line-height: 4.2rem;
     text-align: center;
     border-radius: 50%;
-    color: #3ae4e4;
+    color: #2a95c7;
     border: .2rem solid #b1e43a;
     font-size: 2rem;
     margin: 0 .1rem;
     transition: .2s linear;
+    background: #c7d1e4; 
 
+}
+/* Horario en pie de pagina*/
+.footer .titulo {
+    font-size: 2.5rem;
+    text-align: center;
+  /*  padding: 6rem 1rem 0 0;*/
+    font-weight: 600;
+    color: #0042f7;
+}
+.footer .subtitulo {
+    font-size: 2rem;
+    text-align: center;
+   /* padding: 6rem 1rem 0 0;*/
+    font-weight: 600;
+    color: #000000; 
+}
+.footer .subtitulo-horario {
+    font-size: 1.5rem;
+    text-align: center;
+   /* padding: 6rem 1rem 0 0;*/
+    font-weight: 600;
+    color: #000000; 
 }
 
 .footer .icons a:hover {
