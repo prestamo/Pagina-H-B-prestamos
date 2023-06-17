@@ -24,9 +24,8 @@
         <ul>
           <li><a href="index.html" class="active">Inicio</a></li>
           <li><a href="index.html">Nosotros</a></li>
-          <li><a href="index.html">Tipos de prestamos</a></li>
+          <li><a href="tipos-prestamo.html">Tipos de prestamos</a></li>
           <li><a href="index.html">Redes sociales</a></li>
-          <li><a href="index.html">Solicitar</a></li>
         </ul>
       </nav>
       <div class="fas fa-bars"></div>
@@ -42,33 +41,41 @@
           <form name="contact" method="POST" data-netlify="true">
             <p>
               <label class="texto">
-                Nombre: <input type="text" name="nombre"
+                Nombre: <input type="text" name="nombre" placeholder="Nombre"
               /></label>
             </p>
             <p>
               <label class="texto"
-                >Apellido: <input type="text" name="apellido"
+                >Apellido:
+                <input type="text" name="apellido" placeholder="Apellido"
               /></label>
             </p>
             <p>
               <label class="texto"
-                >Correo: <input type="email" name="email"
+                >Apodo: <input type="text" name="apodo" placeholder="Apodo"
               /></label>
             </p>
             <p>
               <label class="texto"
-                >Fecha de nacimiento: <input type="date" name="fecha"
+                >Correo: <input type="email" name="email" placeholder="Correo"
               /></label>
             </p>
             <p>
               <label class="texto"
-                >Numero de cedula: <input type="number" name="cedula"
+                >Fecha de nacimiento:
+                <input type="date" name="fecha" placeholder="Fecha"
+              /></label>
+            </p>
+            <p>
+              <label class="texto"
+                >Cedula:
+                <input type="cedula" name="cedula" placeholder="Cedula"
               /></label>
             </p>
             <p>
               <label class="texto"
                 >Sexo:
-                <select class="select" name="sexo[]" multiple>
+                <select class="select" name="sexo">
                   <option value="masculino">Masculino</option>
                   <option value="femenino">Femenino</option>
                 </select></label
@@ -77,21 +84,207 @@
             <p>
               <label class="texto"
                 >Estado Civil:
-                <select class="select" name="Estado[]" multiple>
+                <select class="select" name="Estado">
                   <option value="Casado">Casado</option>
                   <option value="Soltero">Soltero</option>
+                  <option value="viudo">Viudo</option>
+                  <option value="Divorciado">Divorciado</option>
                 </select></label
               >
             </p>
-
             <p>
-              <button type="submit">Enviar</button>
+              <label class="texto"
+                >Nacionalidad:
+                <input
+                  type="text"
+                  name="nacionalidad"
+                  placeholder="Nacionalidad"
+              /></label>
             </p>
+            <p>
+              <label class="texto"
+                >Ciudad: <input type="text" name="ciudad" placeholder="Ciudad"
+              /></label>
+            </p>
+            <p>
+              <label class="texto"
+                >Sector: <input type="text" name="sector" placeholder="Sector"
+              /></label>
+            </p>
+            <p>
+              <label class="texto"
+                >Nombre o Numero de calle y casa:
+                <input
+                  type="calle"
+                  name="calle"
+                  placeholder="Nombre o Numero de calle y casa"
+              /></label>
+            </p>
+            <p>
+              <label class="texto"
+                >Numero de cel:
+                <input type="text" name="cedula" placeholder="Numero de cel"
+              /></label>
+            </p>
+            <p>
+              <label class="texto"
+                >Numero whatsapp:
+                <input type="text" name="cedula" placeholder="whatsapp"
+              /></label>
+            <p>  <h1 class="solicitud">Datos laborales</h1>  </p>
+              <label class="texto"
+                >Lugar de trabajo:
+                <input
+                  type="text"
+                  name="trabajo"
+                  placeholder="Lugar de trabajo"
+              /></label>
+            </p>
+            <p>
+            <label class="texto"
+            >Ocupacion:
+            <input
+              type="text"
+              name="trabajo"
+              placeholder="Ocupacion"
+             /></label>
+          </p>
+          <p>
+            <label class="texto"
+             >Tiempo laborando:
+             <input
+               type="datetime"
+                name="trabajo"
+               placeholder="Tiempo laborando"
+            /></label>
+         </p>
+    <p>
+    <label class="texto"
+    >Sueldo:
+    <input
+      type="text"
+      name="trabajo"
+      placeholder="Sueldo"
+  /></label>
+</p>
+<p>
+  <label class="texto"
+  >Sueldo:
+  <input
+    type="text"
+    name="trabajo"
+    placeholder="Sueldo"
+/></label>
+</p>
+<p>  <h1 class="solicitud">Datos Del/la Conyugue</h1>  </p>
+<p>
+  <label class="texto"
+  >Nombre conyugue:
+  <input
+    type="text"
+    name="conyugue"
+    placeholder="Nombre"
+/></label>
+</p>
+<p>
+  <label class="texto"
+  >Apellido conyugue:
+  <input
+    type="text"
+    name="conyugue"
+    placeholder="Apellido"
+/></label>
+</p>
+<p>  <h1 class="solicitud">Datos Del prestamo</h1>  </p>
 
+<fieldset>
+  
+  <p>
+    <label class="texto"
+    >Nonto a solicitar:
+    <input
+      type="n"
+      name="conyugue"
+      placeholder="Escriba un monto"
+  /></label>
+  </p>
+  <p>
+    <label class="texto"
+    >Tiempo:
+    <input
+      type="text"
+      name="conyugue"
+      placeholder="Escriba en que tiempo"
+  /></label>
+  </p>
+
+</fieldset>
+<br>
+<p class="texto-solicitud">Los suscritos declaran que sus datos son correctos y autorizan expresa y formalmente a B&H prestamos en general a acceder a su información crediticia a través de los Burós de información crediticia, a los fines de evaluar su capacidad de pago e historial crediticio de conformidad con la Ley No. 172/03.</p>
+<div class="conteiner-1"> 
+<div class="form-group"> 
+<input type="radio" name="size" id="small" required>
+<label class="texto-solicitud" for="small" > Acepta terminos </label>
+</div>
+</div>
+
+<br>
             <input type="submit" value="Enviar" />
           </form>
         </div>
       </div>
     </section>
+    <section class="footer">
+      <p class="titulo">Horarios</p>
+      <p class="subtitulo">De Lunes - Viernes:</p>
+      <p class="subtitulo-horario">8:00 A.M. - 12:00 P.M.</p>
+      <p class="subtitulo-horario">2:00 P.M. - 6:00 P.M.</p>
+      <p class="subtitulo">Los Sábados:</p>
+      <p class="subtitulo-horario">8:30 A.M. - 12:30 P.M.</p>
+      <div class="icons">
+        <a
+          href="https://www.facebook.com/people/BH-Pr%C3%A9stamos-en-General/100093270816838/?mibextid=ZbWKwL"
+          class="fab fa-facebook-f"
+        ></a>
+        <a
+          href="https://instagram.com/byh_prestamos?igshid=ZDc4ODBmNjlmNQ=="
+          class="fab fa-instagram"
+        ></a>
+        <a
+          href="https://wa.me/message/PKNRHNRDI7BDM1"
+          class="fab fa-whatsapp-square"
+        ></a>
+      </div>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script>
+      $(document).ready(function () {
+        $(".fa-bars").click(function () {
+          $(this).toggleClass("fa-times");
+          $(".navbar").toggleClass("nav-toggle");
+        });
+
+        $(window).on("scroll load", function () {
+          $(".fa-bars").removeClass("fa-times");
+          $(".navbar").removeClass("nav-toggle");
+
+          $("section").each(function () {
+            var id = $(this).attr("id");
+            var height = $(this).height();
+            var offset = $(this).offset().top - 200;
+            var top = $(window).scrollTop();
+
+            if (top >= offset && top < offset + height) {
+              $(".navbar ul li a").removeClass("active");
+              $(".navbar")
+                .find('[href="#' + id + '"]')
+                .addClass("active");
+            }
+          });
+        });
+      });
+    </script>
   </body>
 </html>

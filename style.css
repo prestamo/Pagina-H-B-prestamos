@@ -446,7 +446,6 @@ header .fa-bars {
   align-items: center;
   justify-content: center;
   padding: 5rem 0;
-  text-align: center;
 }
 /* texto de solicitud*/
 .form-container .texto {
@@ -476,12 +475,12 @@ header .fa-bars {
 .select {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: left;
   user-select: auto;
   font-size: 0.8em;
   background: #96a5be;
   width: 3.5cm;
-  height: 2cm;
+  height: 1cm;
   border-radius: 10%;
   box-shadow: 0 0.5rem 1rem rgba(107, 168, 224, 0.788);
   color: #0239b1;
@@ -491,7 +490,7 @@ header .fa-bars {
   width: 40%;
   padding-right: 6rem;
 }
-
+/* style de los texbox*/
 .contact .row .form-container input,
 textarea {
   height: 4rem;
@@ -504,7 +503,7 @@ textarea {
   font-size: 1.7rem;
   transition: 0.2s linear;
 }
-
+/* foco de los texbox*/
 .contact .row .form-container input:focus,
 textarea:focus {
   border: 0.4rem solid #11bae4;
@@ -516,6 +515,23 @@ textarea:focus {
   padding: 1rem;
   resize: none;
 }
+
+.conteiner-1 {
+  display: flex;
+  gap: column;
+  border: 1px solid cornflowerblue;
+  padding: 3px 10px;
+  border-radius: 10px;
+  size: 10px;
+}
+.texto-solicitud {
+  text-transform: capitalize;
+  color: #000000;
+  text-align: left;
+
+  font-size: 1.5em;
+}
+
 /* estilo del boton enviar*/
 .contact .row .form-container input[type="submit"] {
   height: 5rem;
@@ -600,6 +616,14 @@ textarea:focus {
     border-radius: 1rem;
     opacity: 0;
     transition: 0.2s linear;
+  }
+  .tipo {
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    z-index: 0;
+    overflow: hidden;
+    position: relative;
   }
 
   header .navbar ul {
