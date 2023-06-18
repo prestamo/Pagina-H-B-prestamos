@@ -16,6 +16,7 @@
   </head>
 
   <body>
+    </select>
     <header>
       <div class="logo">
         <img src="logob&H.ico" alt="logo de la compañia" />
@@ -73,18 +74,21 @@
               /></label>
             </p>
             <p>
-              <label class="texto"
-                >Sexo:
-                <select class="select" name="sexo">
-                  <option value="masculino">Masculino</option>
+              <label class="texto" 
+                >Tipo de sexo:
+                <select class="select" name="sexo" > 
+                  <option>Elegir </option>
                   <option value="femenino">Femenino</option>
+                  <option value="masculino">Masculino</option>
                 </select></label
               >
             </p>
+            <br>
             <p>
               <label class="texto"
                 >Estado Civil:
-                <select class="select" name="Estado">
+                <select class="select" name="Estado" >
+                  <option >Elegir </option>
                   <option value="Casado">Casado</option>
                   <option value="Soltero">Soltero</option>
                   <option value="viudo">Viudo</option>
@@ -92,6 +96,7 @@
                 </select></label
               >
             </p>
+            <br>
             <p>
               <label class="texto"
                 >Nacionalidad:
@@ -123,20 +128,20 @@
             <p>
               <label class="texto"
                 >Numero de cel:
-                <input type="text" name="cedula" placeholder="Numero de cel"
+                <input type="text" name="numerotel" placeholder="Numero de cel"
               /></label>
             </p>
             <p>
               <label class="texto"
                 >Numero WhatsApp :
-                <input type="text" name="cedula" placeholder="WhatsApp"
+                <input type="text" name="numerocel" placeholder="WhatsApp"
               /></label>
             <p>  <h1 class="solicitud">Datos laborales</h1>  </p>
               <label class="texto"
                 >Lugar de trabajo:
                 <input
                   type="text"
-                  name="trabajo"
+                  name="lugar"
                   placeholder="Lugar de trabajo"
               /></label>
             </p>
@@ -145,7 +150,7 @@
             >Ocupacion:
             <input
               type="text"
-              name="trabajo"
+              name="ocupacion"
               placeholder="Ocupacion"
              /></label>
           </p>
@@ -154,7 +159,7 @@
              >Tiempo laborando:
              <input
                type="datetime"
-                name="trabajo"
+                name="tiempo"
                placeholder="Tiempo laborando"
             /></label>
          </p>
@@ -163,10 +168,10 @@
     >Sueldo:
     <input
       type="text"
-      name="trabajo"
+      name="sueldo"
       placeholder="Sueldo"
   /></label>
-</p>
+</p> 
 
 <p>  <h1 class="solicitud">Datos Del/la Conyugue</h1>  </p>
 <p>
@@ -174,7 +179,7 @@
   >Nombre conyugue:
   <input
     type="text"
-    name="conyugue"
+    name="nombreconyugue"
     placeholder="Nombre"
 /></label>
 </p>
@@ -183,8 +188,35 @@
   >Apellido conyugue:
   <input
     type="text"
-    name="conyugue"
+    name="apellidoconyugue"
     placeholder="Apellido"
+/></label>
+</p>
+<p>
+  <label class="texto"
+  >Numero WhatsApp:
+  <input
+    type="text"
+    name="numeroconyugue"
+    placeholder="Apellido"
+/></label>
+</p>
+<p>
+  <label class="texto"
+  >Lugar de trabajo conyugue:
+  <input
+    type="text"
+    name="lugarconyugue"
+    placeholder="lugar de trabajo"
+/></label>
+</p>
+<p>
+  <label class="texto"
+  >Sueldo del conyugue:
+  <input
+    type="text"
+    name="Sueldoconyugue"
+    placeholder="sueldo del trabajo"
 /></label>
 </p>
 <p>  <h1 class="solicitud">Datos Del prestamo</h1>  </p>
@@ -193,9 +225,9 @@
   
   <p>
     <label class="texto"
-    >Nonto a solicitar:
+    >Monto a solicitar:
     <input
-      type="n"
+      type="text"
       name="conyugue"
       placeholder="Escriba un monto"
   /></label>
@@ -209,8 +241,21 @@
       placeholder="Escriba en que tiempo"
   /></label>
   </p>
+   <p>
+              <label class="texto"
+                >Tipo de prestamo a solicitar:
+                <select class="select" name="tipo">
+                  <option >Elegir</option>
+                  <option value="Personal">Personal</option>
+                  <option value="Vehiculo">Vehiculo</option>
+                  <option value="Hipotecario">Hipotecario</option>
+                 <br>
+                </select></label
+              >
+            </p>
 
 </fieldset>
+<br>
 <br>
 <p class="texto-solicitud">Los suscritos declaran que sus datos son correctos y autorizan expresa y formalmente a B&H prestamos en general a acceder a su información crediticia a través de los Burós de información crediticia, a los fines de evaluar su capacidad de pago e historial crediticio de conformidad con la Ley No. 172/03.</p>
 <div class="conteiner-1"> 

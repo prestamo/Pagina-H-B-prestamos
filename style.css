@@ -478,11 +478,11 @@ header .fa-bars {
   justify-content: left;
   user-select: auto;
   font-size: 0.8em;
-  background: #96a5be;
+  background: #fffefef3;
   width: 3.5cm;
   height: 1cm;
   border-radius: 10%;
-  box-shadow: 0 0.5rem 1rem rgba(107, 168, 224, 0.788);
+  box-shadow: 0 0.5rem 1rem rgba(73, 134, 214, 0.788);
   color: #0239b1;
 }
 
