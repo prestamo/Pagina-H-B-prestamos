@@ -182,12 +182,28 @@ header .fa-bars {
   text-align: center;
   margin: 10px 0;
 }
-
+/* contenedor*/
 .product .box-container {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
   text-align: center;
+}
+.product .box-container2 {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+ 
+}
+.product .box-container2 .box2 {
+  height: 65rem;
+  width: 105rem;
+  background: #0c8dc98c;
+  text-align: center;
+  border-radius: 5rem;
+  box-shadow: 0 0.3rem 5rem rgba(0, 0, 0, 0.5);
+  margin: 4rem;
+  cursor: pointer;
 }
 /*boton de mision vision y valores */
 .product .box-container .box {
