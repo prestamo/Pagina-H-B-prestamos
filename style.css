@@ -108,7 +108,8 @@ header .navbar ul li a:hover {
   color: #44a2e0f6;
 }
 .logo {
-  height: 75px;
+  height: 40px;
+  width: 50px; 
 }
 
 header .fa-bars {
@@ -120,31 +121,55 @@ header .fa-bars {
 }
 /* logo de presentacion e imagen*/
 .home {
-  min-height: 55vh;
-  background: linear-gradient(rgba(8, 203, 233, 0.103), rgb(243, 244, 250)),
-    url(logo.jpeg) no-repeat;
-  background-size: cover;
-  background-position: center;
+  /*min-height: 55vh;*/
+  background: linear-gradient(rgba(8, 203, 233, 0.103), rgb(243, 244, 250)), 
+  /*url(logo.jpeg) no-repeat;*/
+  /*background-size: cover;*/
+  /*background-position: center;
   background-attachment: fixed;
   z-index: 0;
+ /* overflow: hidden;*/
+  /*position: relative;*/
+}
+/* formato de la imagen del carousel */
+.carousel-container {
+  margin: 20px; /* Ajusta el espacio alrededor del carrusel */
+}
+
+.carousel {
+  width: 100%;
   overflow: hidden;
   position: relative;
 }
+.carousel-img {
+  width: 100%;
+  height: auto;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 5.5s ease, transform 10.5s ease; /* Transiciones suaves de opacidad y transformación */
+}
 
-.home .content {
-  display: flex;
+
+.carousel-inner .carousel-item.active .carousel-img {
+  opacity: 1;
+  transform: scale(0.9); /* Escala normal */
+}
+
+
+
+/*.home .content {
+ /* display: flex;
   align-items: right;
   justify-content: right;
   flex-flow: column;
   padding-top: 40rem;
-}
+}*/
 .home h1 {
   text-align: right;
 }
 
 .home .content h1 {
   font-size: 5em;
-
   color: #fff;
   text-shadow: 0 0 5px #d7e0e0, 0 0 15px #065c61, 0 0 25px #09585c,
     0 0 80px #000000;
@@ -152,6 +177,59 @@ header .fa-bars {
   text-transform: uppercase;
   transition: 2s;
 }
+#map {
+  border-radius: 40px;
+  outline: 10px solid rgba(31, 86, 236, 0.644);
+  outline-style: double;
+  margin: 5em auto;
+  width: 550px;
+  height: 500px;
+  background-size: cover;
+}
+
+#map iframe {
+  border-radius: 40px;
+  width: 100%;
+  height: 100%;
+}
+@media screen and (max-width: 768px) {
+   .home .content h1 {
+      font-size: 3em; /* Reducir el tamaño de la fuente para pantallas pequeñas */
+  } 
+  h1 {
+    font-size: 3em; /* Reducir el tamaño de la fuente para pantallas pequeñas */
+   } 
+   .product {
+    text-align: center;
+    margin: 5px 0;
+  }
+  .heading {
+    font-size: 3rem;
+    padding: 5rem 1rem 0 0;
+    letter-spacing: 0.2rem;
+    font-weight: 600;
+  }
+  .image{
+    font-size: 3rem;
+    padding: 5rem 1rem 0 0;
+    letter-spacing: 0.2rem;
+    font-weight: 600;
+  }
+  .product img {
+    /* Cambiar el tamaño de la imagen para adaptarse mejor a pantallas pequeñas */
+    max-width: 100%;
+    height: auto;
+}
+#map {
+  width: 100%; /* Ajustar el ancho al 100% para ocupar todo el ancho disponible */
+  height: auto; /* Permitir que la altura se ajuste automáticamente según el contenido */
+  margin: 4em auto; /* Ajustar el margen para centrar el mapa en dispositivos móviles */
+  
+}
+
+ 
+ }
+
 
 .home .content p {
   font-size: 1rem;
@@ -205,6 +283,24 @@ header .fa-bars {
   margin: 4rem;
   cursor: pointer;
 }
+/* condicion para ajustar el contenido de la imagen */
+@media screen and (max-width: 768px) {
+
+  .product .box-container2 .box2 {
+   
+    height: 30rem;
+    width: 55rem;
+    background: #0c8dc98c;
+    text-align: center;
+    border-radius: 5rem;
+    box-shadow: 0 0.3rem 5rem rgba(0, 0, 0, 0.5);
+    margin: 4rem;
+    
+  }
+}
+
+
+
 /*boton de mision vision y valores */
 .product .box-container .box {
   height: 37rem;
@@ -672,7 +768,7 @@ textarea:focus {
   }
 
   .about .row .image img {
-    height: 30vh;
+    height: 35vh;
     width: 90vw;
   }
 
@@ -689,7 +785,7 @@ textarea:focus {
   }
 
   .contact .row .form-container {
-    width: 90%;
+    width: 80%;
     padding: 0;
   }
 }
