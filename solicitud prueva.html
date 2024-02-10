@@ -32,6 +32,7 @@
       </nav>
       <div class="fas fa-bars"></div>
     </header>
+    <button onclick="topFunction()" id="myBtn" title="Volver arriba"> Subir <i class="fas fa-arrow-up"></i></button>
     <section class="contact" id="contact">
       <h1 class="solicitud">
         <br />
@@ -282,6 +283,29 @@
     </section>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+      // Obtener el botón
+       var mybutton = document.getElementById("myBtn");
+   
+       // Mostrar u ocultar el botón cuando se desplaza hacia abajo 20px desde la parte superior de la página
+       window.onscroll = function() {scrollFunction()};
+   
+       function scrollFunction() {
+       if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+       mybutton.style.display = "block";
+         } else {
+          mybutton.style.display = "none";
+         }
+      }
+   
+        // Cuando se hace clic en el botón, volver al principio de la página
+       function topFunction() {
+        document.body.scrollTop = 0; // Para Safari
+        document.documentElement.scrollTop = 0; // Para Chrome, Firefox, IE y Opera
+       }
+   
+     </script>
+
 
     <script>
       $(document).ready(function () {
