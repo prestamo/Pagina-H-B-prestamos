@@ -48,8 +48,8 @@ body {
   letter-spacing: 0.6rem;
   font-weight: 400;
   box-shadow: 0 30px 0 20px #379ce060;
-}
-
+}                                     
+                                                                                      
 /* estilo de prestamos */
 .product .title {
   font-size: 4rem;
@@ -121,20 +121,22 @@ header .fa-bars {
 }
 /* logo de presentacion e imagen*/
 .home {
-  /*min-height: 55vh;*/
-  background: linear-gradient(rgba(8, 203, 233, 0.103), rgb(243, 244, 250)), 
-  /*url(logo.jpeg) no-repeat;*/
-  /*background-size: cover;*/
-  /*background-position: center;
-  background-attachment: fixed;
+ /* min-height: 55vh;
+ /* background-size: cover;
+  background-position: center;
+ /* background-attachment: fixed;
   z-index: 0;
- /* overflow: hidden;*/
-  /*position: relative;*/
+ overflow: hidden;*/
+  position: relative;
 }
 /* formato de la imagen del carousel */
-.carousel-container {
-  margin: 20px; /* Ajusta el espacio alrededor del carrusel */
+
+.carousel-item img {
+  margin-top: 55px; /* Ajusta la cantidad de desplazamiento vertical */
 }
+
+
+
 
 .carousel {
   width: 100%;
@@ -145,14 +147,14 @@ header .fa-bars {
   width: 100%;
   height: auto;
   opacity: 0;
-  transform: scale(0.8);
-  transition: opacity 5.5s ease, transform 10.5s ease; /* Transiciones suaves de opacidad y transformación */
+  transform: scale(0.9);
+  transition: opacity 4.5s ease, transform 15.5s ease; /* Transiciones suaves de opacidad y transformación */
 }
 
 
 .carousel-inner .carousel-item.active .carousel-img {
   opacity: 1;
-  transform: scale(0.9); /* Escala normal */
+  transform: scale(1); /* Escala normal */
 }
 
 
@@ -362,8 +364,22 @@ header .fa-bars {
 .product button:hover {
   background: none;
   border: 0.2rem solid #4ca6e2;
-}
+  }
+  @media screen and (max-width: 768px) {
 
+    .product button {
+      height: 4rem;
+      width: 15rem;
+      border-radius: 1rem;
+      background: #258acea2;
+      color: #fff;
+      font-size: 2rem;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.3);
+      margin-top: 60px;
+    }
+  }
 .about {
   background: #d0d4d8;
 }
@@ -769,7 +785,7 @@ textarea:focus {
 
   .about .row .image img {
     height: 35vh;
-    width: 90vw;
+    width: 50vw;
   }
 
   .about .row .content {
