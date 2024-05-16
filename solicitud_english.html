@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>B&H Loans</title>
+    <link rel="icon" href="b&H.ico" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="styles.css" />
+</head>
+ 
+<body>
+    <header>
+      <div class="menu-btn" id="menuBtn">
+        <div class="btn-line"></div> 
+        <div class="btn-line"></div>
+        <div class="btn-line"></div>
+    </div>
+    <nav class="menu">
+      <div class="logo"> 
+          <img src="logob&H.ico" alt="company logo">
+      </div>
+      <ul>
+          <li><a href="Principal.html" class="">Home</a></li>
+          <li><a href="nosotros.html" >About Us</a></li>
+          <li><a href="tipos_prestamos.html" >Loan Types</a></li>
+          <li><a href="#review" >Social Media</a></li>
+          <li><a href="solicitud_english.html" class="active">Apply</a></li>
+          <li>
+            <select id="language-select">
+                <option value="en">English</option>
+                <option value="es">Spanish</option>
+            
+            </select>
+        </li>
+      </ul>
+  </nav>
+    </header>
+    <button onclick="topFunction()" id="myBtn" title="Go to top">Go Up <i class="fas fa-arrow-up"></i></button>
+    <section class="contact" id="contact">
+      <h1 class="solicitud">
+        <br />
+        Applicant's Information
+      </h1>
+      <div class="row">
+        <div class="form-container">
+          <form name="contact" method="POST" data-netlify="true">
+            <p>
+              <label class="texto">
+                Full Name:<input type="text" name="Nombre" placeholder="Full Name" /></label>
+            </p>
+            <p>
+              <label class="texto">Nickname: <input type="text" name="Apodo" placeholder="Nickname" /></label>
+            </p>
+            <p>
+              <label class="texto">Email: <input type="Email" name="email" placeholder="Email" /></label>
+            </p>
+            <p>
+              <label class="texto">Date of Birth: <input type="date" name="Fecha" placeholder="Date of Birth" /></label>
+            </p>
+            <p>
+              <label class="texto">ID Number: <input type="number" name="cedula" placeholder="ID Number" /></label>
+            </p>
+            <p>
+              <label class="texto">Gender:
+                <select class="select" name="sexo" > 
+                  <option>Select </option>
+                  <option value="Femenino">Female</option>
+                  <option value="Masculino">Male</option>
+                </select>
+              </label>
+            </p>
+            <br>
+            <p>
+              <label class="texto">Marital Status:
+                <select class="select" name="Estado" >
+                  <option>Select </option>
+                  <option value="Casado">Married</option>
+                  <option value="Soltero">Single</option>
+                  <option value="viudo">Widowed</option>
+                  <option value="Divorciado">Divorced</option>
+                </select>
+              </label>
+            </p>
+            <br>
+            <p>
+              <label class="texto">Nationality: <input type="text" name="nacionalidad" placeholder="Nationality" /></label>
+            </p>
+            <p>
+              <label class="texto">City: <input type="text" name="Ciudad" placeholder="City" /></label>
+            </p>
+            <p>
+              <label class="texto">Sector: <input type="text" name="Sector" placeholder="Sector" /></label>
+            </p>
+            <p>
+              <label class="texto">Street Name or Number and House: <input type="text" name="Calle" placeholder="Street Name or Number and house" /></label>
+            </p>
+            <p>
+              <label class="texto">Cellphone Number: <input type="number" name="Numero tel" placeholder="Cellphone Number" /></label>
+            </p>
+            <p>
+              <label class="texto">WhatsApp Number: <input type="text" name="Numero cel" placeholder="WhatsApp Number" /></label>
+            </p>
+            <p>  <h1 class="solicitud">Work Information</h1>  </p>
+              <label class="texto">Workplace: <input type="text" name="Lugar de trabajo" placeholder="Workplace" /></label>
+            </p>
+            <p>
+              <label class="texto">Occupation: <input type="text" name="Ocupacion" placeholder="Occupation" /></label>
+            </p>
+            <p>
+              <label class="texto">Time Employed: <input type="number" name="Tiempo laborando" placeholder="Time Employed" /></label>
+            </p>
+            <p>
+              <label class="texto">Salary: <input type="text" name="Sueldo" placeholder="Salary" /></label>
+            </p>
+            <p>  <h1 class="solicitud">Spouse's Information</h1>  </p>
+            <p>
+              <label class="texto">Spouse's Full Name: <input type="text" name="Nombre conyugue" placeholder="Spouse's Full Name" /></label>
+            </p>
+            <p>
+              <label class="texto">WhatsApp Number: <input type="number" name="Numero conyugue" placeholder="WhatsApp Number" /></label>
+            </p>
+            <p>
+              <label class="texto">Spouse's Workplace: <input type="text" name="Lugar de trabajo conyugue" placeholder="Spouse's Workplace" /></label>
+            </p>
+            <p>
+              <label class="texto">Spouse's Salary: <input type="number" name="Sueldo conyugue" placeholder="Spouse's Salary" /></label>
+            </p>
+            <p>  <h1 class="solicitud">Loan Information</h1>  </p>
+            <fieldset>
+              <p>
+                <label class="texto">Loan Amount: <input type="number" name="Monto a solicitar" placeholder="Enter an amount" /></label>
+              </p>
+              <p>
+                <label class="texto">Term: <input type="number" name="Tiempo del Prestamo" placeholder="Enter term" /></label>
+              </p>
+              <p>
+                <label class="texto">Type of loan to apply for:
+                  <select class="select" name="tipo">
+                    <option>Select</option>
+                    <option value="Personal">Personal</option>
+                    <option value="Vehicle">Vehicle</option>
+                    <option value="Mortgage">Mortgage</option>
+                  </select>
+                </label>
+              </p>
+            </fieldset>
+            <br>
+            <br>
+            <p class="texto-solicitud">We, the undersigned, declare that our data is correct and expressly authorize B&H Loans in general to access our credit information through credit information bureaus, for the purpose of evaluating our payment capacity and credit history in accordance with Law No. 172/03.</p>
+            <div class="conteiner-1"> 
+              <div class="form-group"> 
+                <input type="radio" name="size" id="small" required onchange="enableButton()">
+                <label class="texto-solicitud" for="small">Agree to terms and conditions</label>
+              </div>
+            </div>
+            <br>
+            <div class="form-container">
+              <input type="submit" value="Submit Data" id="submitButton" disabled />
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+    <section class="footer">
+      <p class="titulo">Opening Hours</p>
+      <p class="subtitulo">Monday - Friday:</p>
+      <p class="subtitulo-horario">8:00 A.M. - 12:00 P.M.</p>
+      <p class="subtitulo-horario">2:00 P.M. - 6:00 P.M.</p>
+      <p class="subtitulo">Saturdays:</p>
+      <p class="subtitulo-horario">8:30 A.M. - 12:30 P.M.</p>
+      <div class="icons">
+        <a href="https://www.facebook.com/people/BH-Loans-in-General/100093270816838/?mibextid=ZbWKwL" class="fab fa-facebook-f"></a>
+        <a href="https://instagram.com/byh_loans?igshid=ZDc4ODBmNjlmNQ==" class="fab fa-instagram"></a>
+        <a href="https://wa.me/message/PKNRHNRDI7BDM1" class="fab fa-whatsapp-square"></a>
+      </div>
+    </section>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

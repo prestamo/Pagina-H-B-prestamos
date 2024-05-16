@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> H&B PRESTAMO</title>
+    <link rel="icon" href="b&H.ico">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+</head>
+<body>
+    <header>
+      
+        <div class="menu-btn" id="menuBtn">
+            <div class="btn-line"></div> 
+            <div class="btn-line"></div>
+            <div class="btn-line"></div>
+        </div>
+
+        <nav class="menu">
+            <div class="logo"> 
+                <img src="logob&H.ico" alt="logo de la compañia">
+               </div>
+          
+            <ul>
+                <li><a href="Principal.html" >Inicio</a></li>
+                <li><a href="nosotros.html" >Nosotros</a></li>
+                <li><a href="tipos_prestamos.html" class="active" >Tipos de préstamos</a></li>
+                <li><a href="#review" >Redes sociales</a></li>
+                <li><a href="solicitud_english.html" >Solicitar</a></li>
+            </ul>
+        </nav>
+    </header>
+    <section class="about" id="about">
+
+        <h1 class="heading">Somos la mejor opción porque sabemos lo que necesitas</h1>
+        
+        <div class="row">
+            <img src="imgp.png" alt="">
+            <img src="imgp1.png" alt="">
+            <img src="imgp2.png" alt="">
+     </div>
+    </section>
+
+    <section class="course" id="course">
+
+        <h1 class="heading">Tipos de prestamos</h1>
+        <h3 class="title">Tenemos los mejores servicios del mercado</h3>
+
+        <div class="box-container">
+
+            <div class="box">
+                <i class="fas fa-user-friends"></i>
+                <h3>Personal</h3>
+                <p>Prestamos con garante</p>
+            </div>
+            <div class="box">
+                <i class="fas fa-car"></i>
+                <h3>De Vehiculo</h3>
+                <p>Con la matricula de Vehiculo</p>
+            </div>
+            <div class="box">
+                <i class="fas fa-home"></i>
+                <i class=" fas fa-road"></i>
+                <h3>Hipotecario</h3>
+                <p>Con el titulo de la casa o terreno</p>
+            </div>
+         
+        </div>
+
+    </section>
+
+  
+  
+
+      <button onclick="topFunction()" id="myBtn" title="Volver arriba"> Subir <i class="fas fa-arrow-up"></i></button>
+
+    
+      
+          <section class="contact" id="contact">
+            <section class="pie" id="pie">
+
+            
+          <h1 class="heading">Estamos Ubicados</h1>
+          <a href="https://www.google.com/maps/place/B%26H+PR%C3%89STAMOS+EN+GENERAL/@19.2208145,-70.5345771,21z/data=!4m6!3m5!1s0x8eb02dce8316882f:0xdc3da9ac11c55a2c!8m2!3d19.2208929!4d-70.5345872!16s%2Fg%2F11l38ygt3v?entry=ttu" target="_blank">
+           
+          <div id="map" style="width: 100%; height: 400px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); margin-bottom: 20px;"></div>
+          
+          <script> 
+          var map = L.map('map').setView([19.2208145, -70.5345771], 15);
+           L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+           }).addTo(map);
+           L.marker([19.2208145, -70.5345771]).addTo(map)
+             .bindPopup('B&amp;H PRÉSTAMOS EN GENERAL')
+             .openPopup();
+             </script>
+       </section> 
+              <a></a>     
+               
+       
+
+          <section class="footer">
+            <h1 class="heading">Solicita tu crédito ahora</h1>
+            <div class="product">
+                <p></p>
+                <a href="solicitud_español.html"><button>Solicitar</button></a>
+            </div>
+            <p class="titulo">Horarios</p>
+            <p class="subtitulo">De Lunes - Viernes:</p>
+            <p class="subtitulo-horario">8:00 A.M. - 12:00 P.M.</p>
+            <p class="subtitulo-horario">2:00 P.M. - 6:00 P.M.</p>
+            <p class="subtitulo">Los Sábados:</p>
+            <p class="subtitulo-horario">8:30 A.M. - 12:30 P.M.</p>
+            <div class="icons">
+              <a href="https://www.facebook.com/people/BH-Pr%C3%A9stamos-en-General/100093270816838/?mibextid=ZbWKwL" class="fab fa-facebook-f"></a>
+              <a href="https://instagram.com/byh_prestamos?igshid=ZDc4ODBmNjlmNQ==" class="fab fa-instagram"></a>
+              <a href="https://wa.me/message/PKNRHNRDI7BDM1" class="fab fa-whatsapp-square"></a>
+          </div>
+          </section>
+      
+      
+      
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      
+    
+
+    <script src="script.js"></script>
+</body>
+</html>                                                      

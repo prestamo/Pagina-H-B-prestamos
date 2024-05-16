@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>B&H prestamos</title>
+    <link rel="icon" href="b&H.ico" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+ 
+  <body>
+    <header>
+    
+      <div class="menu-btn" id="menuBtn">
+        <div class="btn-line"></div> 
+        <div class="btn-line"></div>
+        <div class="btn-line"></div>
+    </div>
+    <nav class="menu">
+      <div class="logo"> 
+          <img src="logob&H.ico" alt="logo de la compañia">
+         </div>
+      <ul>
+          <li><a href="Principal.html" class="">Inicio</a></li>
+          <li><a href="nosotros.html" >Nosotros</a></li>
+          <li><a href="tipos_prestamos.html" >Tipos de préstamos</a></li>
+          <li><a href="#review" >Redes sociales</a></li>
+          <li><a href="solicitud_español.html" class="active">Solicitar</a></li>
+         
+          <li>
+            <select id="language-select">
+                <option value="es">Español</option>
+                <option value="en">English</option>
+            </select>
+        </li>
+      </ul>
+  </nav>
+     
+    </header>
+    <button onclick="topFunction()" id="myBtn" title="Volver arriba"> Subir <i class="fas fa-arrow-up"></i></button>
+    <section class="contact" id="contact">
+      <h1 class="solicitud">
+        <br />
+        Datos del solicitante
+      </h1>
+
+      <div class="row">
+        <div class="form-container">
+          <form name="contact" method="POST" data-netlify="true">
+            <p>
+              <label class="texto">
+                Nombre y Apellido:<input type="text" name="Nombre" placeholder="Nombre y Apellido"
+              /></label>
+            </p>
+            <p>
+              <label class="texto"
+                >Apodo: <input type="text" name="Apodo" placeholder="Apodo"
+              /></label>
+            </p>
+            <p>
+              <label class="texto"
+                >Correo: <input type="Email" name="email" placeholder="Correo"
+              /></label>
+            </p>
+            <p>
+              <label class="texto"
+                >Fecha de nacimiento:
+                <input type="date" name="Fecha" placeholder="Fecha"
+              /></label>
+            </p>
+            <p>
+              <label class="texto"
+                >Cedula: <input type="number" name="cedula" placeholder="Cedula"
+              /></label>
+            </p>
+            <p>
+              <label class="texto" 
+                >Tipo de sexo:
+                <select class="select" name="sexo" > 
+                  <option>Elegir </option>
+                  <option value="Femenino">Femenino</option>
+                  <option value="Masculino">Masculino</option>
+                </select></label
+              >
+            </p>
+            <br>
+            <p>
+              <label class="texto"
+                >Estado Civil:
+                <select class="select" name="Estado" >
+                  <option >Elegir </option>
+                  <option value="Casado">Casado</option>
+                  <option value="Soltero">Soltero</option>
+                  <option value="viudo">Viudo</option>
+                  <option value="Divorciado">Divorciado</option>
+                </select></label
+              >
+            </p>
+            <br>
+            <p>
+              <label class="texto"
+                >Nacionalidad:
+                <input
+                  type="text"
+                  name="nacionalidad"
+                  placeholder="Nacionalidad"
+              /></label>
+            </p>
+            <p>
+              <label class="texto"
+                >Ciudad: <input type="text" name="Ciudad" placeholder="Ciudad"
+              /></label>
+            </p>
+            <p>
+              <label class="texto"
+                >Sector: <input type="text" name="Sector" placeholder="Sector"
+              /></label>
+            </p>
+            <p>
+              <label class="texto"
+                >Nombre o Numero de calle y Casa:
+                <input
+                  type="text"
+                  name="Calle"
+                  placeholder="Nombre o Numero de calle y casa"
+              /></label>
+            </p>
+            <p>
+              <label class="texto"
+                >Numero de cel:
+                <input type="number" name="Numero tel" placeholder="Numero de cel"
+              /></label>
+            </p>
+            <p>
+              <label class="texto"
+                >Numero WhatsApp :
+                <input type="text" name="Numero cel" placeholder="WhatsApp"
+              /></label>
+            <p>  <h1 class="solicitud">Datos laborales</h1>  </p>
+              <label class="texto"
+                >Lugar de trabajo:
+                <input
+                  type="text"
+                  name="Lugar de trabajo"
+                  placeholder="Lugar de trabajo"
+              /></label>
+            </p>
+            <p>
+            <label class="texto"
+            >Ocupacion:
+            <input
+              type="text"
+              name="Ocupacion"
+              placeholder="Ocupacion"
+             /></label>
+          </p>
+          <p>
+            <label class="texto"
+             >Tiempo laborando:
+             <input
+               type="number"
+                name="Tiempo laborando"
+               placeholder="Tiempo laborando"
+            /></label>
+         </p>
+    <p>
+    <label class="texto"
+    >Sueldo:
+    <input
+      type="text"
+      name="Sueldo"
+      placeholder="Sueldo"
+  /></label>
+</p> 
+
+<p>  <h1 class="solicitud">Datos Del/la Conyugue</h1>  </p>
+<p>
+  <label class="texto"
+  >Nombre y Apellido conyugue:
+  <input
+    type="text"
+    name="Nombre conyugue"
+    placeholder="Nombre y Apellido conyugue"
+/></label>
+</p>
+
+<p>
+  <label class="texto"
+  >Numero WhatsApp:
+  <input
+    type="number"
+    name="Numero conyugue"
+    placeholder="Apellido"
+/></label>
+</p>
+<p>
+  <label class="texto"
+  >Lugar de trabajo conyugue:
+  <input
+    type="text"
+    name="Lugar de trabajo conyugue"
+    placeholder="lugar de trabajo conyugue"
+/></label>
+</p>
+<p>
+  <label class="texto"
+  >Sueldo del conyugue:
+  <input
+    type="number"
+    name="Sueldo conyugue"
+    placeholder="sueldo del trabajo"
+/></label>
+</p>
+<p>  <h1 class="solicitud">Datos Del prestamo</h1>  </p>
+
+<fieldset>
+  
+  <p>
+    <label class="texto"
+    >Monto a solicitar:
+    <input
+      type="number"
+      name="Monto a solicitar"
+      placeholder="Escriba un monto"
+  /></label>
+  </p>
+  <p>
+    <label class="texto"
+    >Tiempo:
+    <input
+      type="number"
+      name="Tiempo del Prestamo"
+      placeholder="Escriba en que tiempo"
+  /></label>
+  </p>
+   <p>
+              <label class="texto"
+                >Tipo de prestamo a solicitar:
+                <select class="select" name="tipo">
+                  <option >Elegir</option>
+                  <option value="Personal">Personal</option>
+                  <option value="Vehiculo">Vehiculo</option>
+                  <option value="Hipotecario">Hipotecario</option>
+                 <br>
+                </select></label
+              >
+            </p>
+
+</fieldset>
+<br>
+<br>
+
+<p class="texto-solicitud">Los suscritos declaran que sus datos son correctos y autorizan expresa y formalmente a B&H prestamos en general a acceder a su información crediticia a través de los Burós de información crediticia, a los fines de evaluar su capacidad de pago e historial crediticio de conformidad con la Ley No. 172/03.</p>
+<div class="conteiner-1"> 
+<div class="form-group"> 
+<input type="radio" name="size" id="small" required onchange="habilitarBoton()">
+    <label class="texto-solicitud" for="small">Acepta los términos y condiciones</label>
+</div>
+</div>
+
+<br>
+
+<div class="form-container">
+  <input type="submit" value="Enviar datos" id="botonEnviar" disabled />
+</div>
+           
+          </form>
+        </div>
+      </div>
+    </section>
+    <section class="footer">
+      <p class="titulo">Horarios</p>
+      <p class="subtitulo">De Lunes - Viernes:</p>
+      <p class="subtitulo-horario">8:00 A.M. - 12:00 P.M.</p>
+      <p class="subtitulo-horario">2:00 P.M. - 6:00 P.M.</p>
+      <p class="subtitulo">Los Sábados:</p>
+      <p class="subtitulo-horario">8:30 A.M. - 12:30 P.M.</p>
+      <div class="icons">
+        <a href="https://www.facebook.com/people/BH-Pr%C3%A9stamos-en-General/100093270816838/?mibextid=ZbWKwL" class="fab fa-facebook-f"></a>
+        <a href="https://instagram.com/byh_prestamos?igshid=ZDc4ODBmNjlmNQ==" class="fab fa-instagram"></a>
+        <a href="https://wa.me/message/PKNRHNRDI7BDM1" class="fab fa-whatsapp-square"></a>
+    </div>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+   
+
+    <script src="script.js"></script>
+   
+  </body>
+</html>
