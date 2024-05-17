@@ -115,11 +115,27 @@ function validarFormulario() {
     var lang = this.value;
     console.log("Valor seleccionado:", lang);
     var url;
+   
     if (lang === 'en') {
-        url = 'solicitud_english.html'; // Página en inglés
-    } else if (lang === 'es') {
-        url = 'solicitud_español.html'; // Página en español
-    }
+      url = 'index_english.html'; // Página en english
+  } else if (lang === 'es') {
+      url = 'index.html'; // Página en español
+  }
+  if (lang === 'en1') {
+    url = 'solicitud_english.html'; // Página en english
+} else if (lang === 'es1') {
+    url = 'solicitud_español.html'; // Página en español
+}
+if (lang === 'en2') {
+  url = 'tipos_prestamos_english.html'; // Página en english
+} else if (lang === 'es2') {
+  url = 'tipos_prestamos.html'; // Página en español
+}
+if (lang === 'en3') {
+  url = 'nosotros_english.html'; // Página en english
+} else if (lang === 'es3') {
+  url = 'nosotros.html'; // Página en español
+}
     console.log("Redireccionando a:", url);
     window.location.href = url;
 });
