@@ -3,274 +3,235 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> H&B PRESTAMO</title>
-    <link rel="icon" href="b&H.ico">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>B&H PRÉSTAMOS | Soluciones Financieras Premium</title>
+    <link rel="icon" href="assets/img/logob&H.ico">
+    <link rel="stylesheet" href="src/css/input.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
-    <header>
-      
-        <div class="menu-btn" id="menuBtn">
-            <div class="btn-line"></div> 
-            <div class="btn-line"></div>
-            <div class="btn-line"></div>
-        </div>
-
-        <nav class="menu">
-            <div class="logo"> 
-                <img src="logob&H.ico" alt="logo de la compañia">
-               </div>
-          
-            <ul>
-                <li><a href="#home" class="active">Inicio</a></li>
-                <li><a href="nosotros.html" >Nosotros</a></li>
-                <li><a href="tipos_prestamos.html" >Tipos de préstamos</a></li>
-                <li><a href="#review" >Redes sociales</a></li>
-                <li><a href="solicitud_español.html" >Solicitar</a></li>
+<body class="bg-slate-50 font-['Inter',sans-serif] text-slate-900 overflow-x-hidden">
+    <!-- Header / Nav -->
+    <header class="fixed top-0 w-full z-50 transition-all duration-300 bg-slate-900/80 backdrop-blur-md border-b border-white/10">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-20">
+            <div class="flex items-center gap-3">
+                <img src="assets/img/logob&H.jpeg" alt="Logo B&H" class="h-12 w-auto rounded-lg border-2 border-brand shadow-lg animate-pulse shrink-0">
+                <span class="text-white font-bold text-xl tracking-tight hidden sm:block">B&H <span class="text-brand">PRÉSTAMOS</span></span>
+            </div>
+            
+            <!-- Desktop Menu -->
+            <ul class="hidden md:flex items-center space-x-8 text-sm font-semibold text-white/90">
+                <li><a href="#home" class="hover:text-brand transition-colors">Inicio</a></li>
+                <li><a href="nosotros.html" class="hover:text-brand transition-colors">Nosotros</a></li>
+                <li><a href="tipos_prestamos.html" class="hover:text-brand transition-colors">Servicios</a></li>
+                <li><a href="solicitud_español.html" class="bg-accent text-prime px-5 py-2.5 rounded-full hover:bg-yellow-600 transition-all shadow-lg hover:scale-105 active:scale-95 font-black uppercase text-xs tracking-widest">Solicitar Ahora</a></li>
                 <li>
-                    <select id="language-select">
-                        <option value="es">Español</option>
-                        <option value="en">English</option>
+                    <select id="language-select" class="bg-transparent border border-white/20 rounded px-2 py-1 text-xs focus:ring-accent focus:border-accent">
+                        <option value="es" class="text-slate-900">ES</option>
+                        <option value="en" class="text-slate-900">EN</option>
                     </select>
                 </li>
             </ul>
+
+            <!-- Mobile Menu Toggle -->
+            <button id="menuBtn" class="md:hidden relative z-50 w-10 h-10 flex flex-col justify-center items-center gap-1.5 focus:outline-none group">
+                <span class="w-6 h-0.5 bg-white rounded-full transition-all duration-300 group-[.open]:rotate-45 group-[.open]:translate-y-2"></span>
+                <span class="w-6 h-0.5 bg-white rounded-full transition-all duration-300 group-[.open]:opacity-0"></span>
+                <span class="w-6 h-0.5 bg-white rounded-full transition-all duration-300 group-[.open]:-rotate-45 group-[.open]:-translate-y-2"></span>
+            </button>
         </nav>
     </header>
 
-    <main>
-        <div class="carousel">
-            
-            <div class="carousel-slide" style="background-image: url('img\ 1.png');" id="slide1"> 
-                <button  onclick="redirigir()" class="slide-button">Solicita tu préstamo ahora</button>
-            </div>
-            <div class="carousel-slide" style="background-image: url('img\ 3.png');" id="slide2">
-                <button onclick="redirigir()" class="slide-button">Solicita tu préstamo ahora</button>
-            </div>
-            <div class="carousel-slide" style="background-image: url('img\ 4.png');" id="slide3">
-                <button onclick="redirigir()" class="slide-button">Solicita tu préstamo ahora</button>
-            </div>
-            <div class="carousel-slide" style="background-image: url('img\ 5.png');" id="slide4">
-                <button onclick="redirigir()" class="slide-button" >Solicita tu préstamo ahora</button>
-            </div>
-        </div>
-    </main>
-    <section class="home" id="home">
-       
-        <div class="content">
-           
-            <h1 class="title">«B&H prestamo <BR>en general</h1 >
-                
-        </div>
-    </section>
-    <section class="product" id="product">
-    
-        <h1 class="heading">NUESTROS SERVICIOS
-  
-         </h1 >
-                  <h1 class="title">Préstamos
-                  </h1 >
-                  <p class="subtitle">Somos una Institución comprometida 
-                  con el crecimiento de nuestros clientes y colaboradores, brindando un servicio ágil y personalizado. <br><br>
-                  </p> 
-                  <p class="subtitle">            
-                </p>
-      </section>
-  
+    <!-- Mobile Navigation Overlay -->
+    <div id="mobileMenu" class="fixed inset-0 bg-slate-900/95 backdrop-blur-2xl z-40 flex flex-col items-center justify-center translate-x-full transition-transform duration-500 md:hidden group">
+        <ul class="flex flex-col items-center space-y-8 text-2xl font-black text-white uppercase tracking-[0.2em]">
+            <li class="opacity-0 translate-y-4 transition-all duration-500 delay-100 group-[.open]:opacity-100 group-[.open]:translate-y-0"><a href="#home" class="mobile-link hover:text-brand">Inicio</a></li>
+            <li class="opacity-0 translate-y-4 transition-all duration-500 delay-200 group-[.open]:opacity-100 group-[.open]:translate-y-0"><a href="nosotros.html" class="mobile-link hover:text-brand">Nosotros</a></li>
+            <li class="opacity-0 translate-y-4 transition-all duration-500 delay-300 group-[.open]:opacity-100 group-[.open]:translate-y-0"><a href="tipos_prestamos.html" class="mobile-link hover:text-brand">Servicios</a></li>
+            <li class="opacity-0 translate-y-4 transition-all duration-500 delay-400 group-[.open]:opacity-100 group-[.open]:translate-y-0 pt-4"><a href="solicitud_español.html" class="mobile-link bg-accent text-prime px-8 py-4 rounded-2xl text-lg shadow-2xl">Solicitar ahora</a></li>
+        </ul>
+    </div>
 
-      <button onclick="topFunction()" id="myBtn" title="Volver arriba"> Subir <i class="fas fa-arrow-up"></i></button>
+    <main id="home" class="pt-20">
+        <!-- Hero Section con Carrusel Mejorado -->
+        <section class="relative h-[85vh] overflow-hidden bg-slate-900">
+            <div class="carousel h-full w-full relative">
+                <div class="carousel-slide h-full bg-cover bg-center transition-opacity duration-1000 opacity-100 absolute inset-0" style="background-image: linear-gradient(to bottom, rgba(10,37,64,0.4), rgba(10,37,64,0.8)), url('assets/img/imgp.png');">
+                    <div class="flex flex-col items-center justify-center h-full text-center px-4">
+                        <h1 class="text-4xl md:text-7xl font-bold text-white mb-6 drop-shadow-2xl animate-fade-in-up">B&H Préstamos <span class="text-brand italic block sm:inline">en General</span></h1>
+                        <p class="text-lg md:text-2xl text-white/80 max-w-2xl mb-10 leading-relaxed">Tu futuro financiero comienza hoy. <span class="text-accent font-bold">Créditos rápidos</span>, seguros y diseñados a tu medida.</p>
+                        <a href="solicitud_español.html" class="bg-accent text-prime px-10 py-4 rounded-xl font-black text-lg hover:bg-yellow-600 transition-all shadow-[0_0_30px_rgba(193,162,42,0.4)] hover:-translate-y-1 uppercase tracking-tighter">COMENZAR SOLICITUD</a>
+                    </div>
+                </div>
+                <!-- Los demás slides se manejarán por JS para inyectarlos o rotarlos -->
+            </div>
+        </section>
 
-      <section class="product" id="product">
-       
-      
-         
-        <h1 class="heading">Tabla de prestamos  
-        <br> <br>
-      
-        
-        <h1>
-          <img src="Tabla JPEG.jpeg" alt="Tabla de préstamos">
-        </h1>
-             
-                      
-      <br> <br>
-             <div class="box-container2">
-              <div class="box2">
-      
-                  <img src="Presentacion.jpeg" alt="Presentación">
-              </div>
-             
-              </div>
-            
-      </section>
-      
-                 
-          <h1 class="heading">Financiamientos disponibles 
-      <br> <br>
-      
-      
-      <div class="box-container2">
-          <div class="box2">
-      <img src="financiamiento.jpeg" alt="">
-      </div>
-             
-      </div>
-      
-      
-    <section class="product" id="product">
-      
-                  <a href="descubre_mas.html"><button>Descubre mas</button></a>
-               </section>
-      
-          <section class="about" id="about">
-      
-                  <div class="content">  
-                    
-                      <h1 class="ubicacion">Numero de contacto <br>(809) 789-5676 </h1>
-                      
-                  </div>
-              </div>
-      
-          </section>
-      
-          <section class="about" id="about">
-      
-              <h1 class="heading">Somos la mejor opción porque sabemos lo que necesitas</h1>
-              
-              <div class="row">
-                  <img src="lomejor.jpeg" alt="">
-           </div>
-          </section>
-      
-          <section class="course" id="course">
-      
-              <h1 class="heading">Tipos de prestamos</h1>
-              <h3 class="title">Tenemos los mejores servicios del mercado</h3>
-      
-              <div class="box-container">
-      
-                  <div class="box">
-                      <i class="fas fa-user-friends"></i>
-                      <h3>Personal</h3>
-                      <p>Prestamos con garante</p>
-                  </div>
-                  <div class="box">
-                      <i class="fas fa-car"></i>
-                      <h3>De Vehiculo</h3>
-                      <p>Con la matricula de Vehiculo</p>
-                  </div>
-                  <div class="box">
-                      <i class="fas fa-home"></i>
-                      <i class=" fas fa-road"></i>
-                      <h3>Hipotecario</h3>
-                      <p>Con el titulo de la casa o terreno</p>
-                  </div>
-               
-              </div>
-      
-          </section>
-      
-          <section class="review" id="review">
-      
-              <h1 class="heading">Síguenos a través de las redes sociales</h1>
-              
-      
-              <div class="box-container">
-                  <div class="box">
-              
-                      <div class="icons">
-                          <section class="footer">
-      
-                              <div class="icons">
-                                  <a href="https://www.facebook.com/people/BH-Pr%C3%A9stamos-en-General/100093270816838/?mibextid=ZbWKwL" class="fab fa-facebook-f"></a>
-                              </div>
-                      
-                          </section>
-                      </div>
-                      <h3>Facebook</h3>
-                      
-                      
-                  </div>
-                  <div class="box">
-                      <section class="footer">
-      
-                          <div class="icons">
-                             
-                              <a href="https://instagram.com/byh_prestamos?igshid=ZDc4ODBmNjlmNQ==" class="fab fa-instagram"></a>
-                             
-                          </div>
-                  
-                      </section>
-                    
-                      <h3>Instagram</h3>
+        <!-- Servicios / Info Section -->
+        <section class="py-24 max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-brand font-bold tracking-widest uppercase text-sm mb-4">Lo que ofrecemos</h2>
+                <h3 class="text-3xl md:text-5xl font-extrabold text-prime mb-6">NUESTROS SERVICIOS</h3>
+                <div class="w-20 h-1.5 bg-brand mx-auto rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Tarjeta Personal -->
+                <div class="group bg-white p-10 rounded-3xl shadow-xl hover:shadow-2xl transition-all hover:-translate-y-2 border border-slate-100">
+                    <div class="w-16 h-16 bg-brand/10 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-brand transition-colors">
+                        <i class="fas fa-user-friends text-brand text-3xl group-hover:text-white"></i>
+                    </div>
+                    <h4 class="text-2xl font-bold mb-4 text-prime">Préstamo Personal</h4>
+                    <p class="text-slate-600 mb-6">Soluciones rápidas con la garantía de un colaborador de confianza.</p>
+                    <a href="tipos_prestamos.html" class="text-brand font-bold hover:underline flex items-center gap-2">Saber más <i class="fas fa-arrow-right text-xs"></i></a>
+                </div>
+
+                <!-- Tarjeta Vehículo -->
+                <div class="group bg-white p-10 rounded-3xl shadow-xl hover:shadow-2xl transition-all hover:-translate-y-2 border border-brand/5">
+                    <div class="w-16 h-16 bg-brand/10 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-brand transition-colors">
+                        <i class="fas fa-car text-brand text-3xl group-hover:text-white"></i>
+                    </div>
+                    <h4 class="text-2xl font-bold mb-4 text-prime">Vehicular</h4>
+                    <p class="text-slate-600 mb-6">Usa la matrícula de tu vehículo como garantía y obtén liquidez inmediata.</p>
+                    <a href="tipos_prestamos.html" class="text-brand font-bold hover:underline flex items-center gap-2">Saber más <i class="fas fa-arrow-right text-xs"></i></a>
+                </div>
+
+                <!-- Tarjeta Hipotecaria -->
+                <div class="group bg-white p-10 rounded-3xl shadow-xl hover:shadow-2xl transition-all hover:-translate-y-2 border border-brand/5">
+                    <div class="w-16 h-16 bg-brand/10 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-brand transition-colors">
+                        <i class="fas fa-home text-brand text-3xl group-hover:text-white"></i>
+                    </div>
+                    <h4 class="text-2xl font-bold mb-4 text-prime">Hipotecario</h4>
+                    <p class="text-slate-600 mb-6">Financiamiento sólido respaldado por tu título de propiedad o terreno.</p>
+                    <a href="tipos_prestamos.html" class="text-brand font-bold hover:underline flex items-center gap-2">Saber más <i class="fas fa-arrow-right text-xs"></i></a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Tabla / Presentación -->
+        <section class="bg-prime py-24 text-white">
+            <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h3 class="text-3xl md:text-5xl font-extrabold mb-8 italic">Transparencia <span class="text-brand">Total</span></h3>
+                    <p class="text-xl text-slate-300 mb-10">Creemos en relaciones a largo plazo. Sin letras pequeñas, sin cargos ocultos. Solo soluciones reales.</p>
+                    <div class="flex flex-wrap gap-6">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-check-circle text-brand text-2xl"></i>
+                            <span class="font-semibold text-white">Tasas Competitivas</span>
                         </div>
-                          <div class="box">
-                          <section class="footer">
-      
-                            <div class="icons">
-                             
-                               <a href="https://wa.me/message/PKNRHNRDI7BDM1" class="fab fa-whatsapp-square"></a>
-                               </div>
-                  
-                           </section>
-                           <h3>WhatsApp</h3>
-                            </div>
-                           </div>
-      
-                         </section>
-      
-                         <section class="contact" id="contact">
-                         <section class="pie" id="pie">
-
-                            <h1>Ubicación de B&amp;H PRÉSTAMOS EN GENERAL</h1>
-                       <h1 class="heading">Estamos Ubicados</h1>
-                       <a href="https://www.google.com/maps/place/B%26H+PR%C3%89STAMOS+EN+GENERAL/@19.2208145,-70.5345771,21z/data=!4m6!3m5!1s0x8eb02dce8316882f:0xdc3da9ac11c55a2c!8m2!3d19.2208929!4d-70.5345872!16s%2Fg%2F11l38ygt3v?entry=ttu" target="_blank">
-                        
-                       <div id="map" style="width: 100%; height: 400px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); margin-bottom: 20px;"></div>
-                       
-                       <script> 
-                       var map = L.map('map').setView([19.2208145, -70.5345771], 15);
-                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                        }).addTo(map);
-                        L.marker([19.2208145, -70.5345771]).addTo(map)
-                          .bindPopup('B&amp;H PRÉSTAMOS EN GENERAL')
-                          .openPopup();
-                          </script>
-                    </section> 
-                           <a></a>     
-                  </div>
-              </div>
-          </section> 
-          </section> 
-       
-          <section class="footer">
-            <h1 class="heading">Solicita tu crédito ahora</h1>
-            <div class="product">
-                <p></p>
-                <a href="solicitud_español.html"><button>Solicitar</button></a>
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-check-circle text-brand text-2xl"></i>
+                            <span class="font-semibold text-white">Aprobación en 24h</span>
+                        </div>
+                    </div>
+                    <h2 class="text-4xl font-bold mb-8">Transparencia en cada cuota</h2>
+                    <p class="text-white/70 mb-10 text-lg leading-relaxed">En B&H Préstamos creemos en la claridad. Nuestra tabla de amortización te permite conocer exactamente lo que pagarás, sin sorpresas ni letras pequeñas.</p>
+                    <img src="assets/img/Tabla JPEG.jpeg" alt="Tabla de préstamos" class="rounded-2xl shadow-2xl border-4 border-white/10 hover:scale-[1.02] transition-transform">
+                </div>
+                <div class="relative group">
+                    <img src="assets/img/Presentacion.jpeg" alt="Presentación" class="rounded-3xl shadow-2xl skew-y-2 group-hover:rotate-0 transition-all duration-500">
+                    <div class="absolute -bottom-6 -left-6 bg-accent p-8 rounded-2xl text-slate-900 font-bold text-xl shadow-xl hidden sm:block">
+                        ¡Somos tu mejor opción!
+                    </div>
+                </div>
             </div>
-            <p class="titulo">Horarios</p>
-            <p class="subtitulo">De Lunes - Viernes:</p>
-            <p class="subtitulo-horario">8:00 A.M. - 12:00 P.M.</p>
-            <p class="subtitulo-horario">2:00 P.M. - 6:00 P.M.</p>
-            <p class="subtitulo">Los Sábados:</p>
-            <p class="subtitulo-horario">8:30 A.M. - 12:30 P.M.</p>
-            <div class="icons">
-              <a href="https://www.facebook.com/people/BH-Pr%C3%A9stamos-en-General/100093270816838/?mibextid=ZbWKwL" class="fab fa-facebook-f"></a>
-              <a href="https://instagram.com/byh_prestamos?igshid=ZDc4ODBmNjlmNQ==" class="fab fa-instagram"></a>
-              <a href="https://wa.me/message/PKNRHNRDI7BDM1" class="fab fa-whatsapp-square"></a>
-          </div>
-          </section>
-      
-      
-      
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-      
-    
+        </section>
 
-    <script src="script.js"></script>
+        <!-- Ubicación -->
+        <section class="py-24 max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h3 class="text-3xl font-bold mb-4">¿DÓNDE ENCONTRARNOS?</h3>
+                <p class="text-slate-500 italic">Visítanos en nuestra oficina principal</p>
+            </div>
+            <div id="map" class="h-[450px] w-full rounded-[2.5rem] shadow-2xl border-8 border-white overflow-hidden"></div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-white pt-20 pb-10">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
+            <div>
+                <h4 class="text-2xl font-bold text-white mb-6">B&H <span class="text-brand">PRÉSTAMOS</span></h4>
+                <p class="text-slate-400 text-sm leading-relaxed mb-8">Líderes en soluciones financieras personalizadas. Tu aliado estratégico para el crecimiento personal y empresarial.</p>
+                <div class="flex gap-4">
+                    <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-brand transition-all group">
+                        <i class="fab fa-facebook-f text-white group-hover:scale-110"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-brand transition-all group">
+                        <i class="fab fa-instagram text-white group-hover:scale-110"></i>
+                    </a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-brand transition-all group">
+                        <i class="fab fa-whatsapp text-white group-hover:scale-110"></i>
+                    </a>
+                </div>
+            </div>
+            <div>
+                <h5 class="font-bold text-lg mb-6">Horarios de Atención</h5>
+                <ul class="text-slate-400 space-y-3">
+                    <li class="flex justify-between"><span>Lunes - Viernes:</span> <span class="text-white">8:00 A.M. - 6:00 P.M.</span></li>
+                    <li class="flex justify-between border-b border-white/5 pb-2 italic text-xs"><span>Pausa mediodía:</span> <span>12:00 P.M. - 2:00 P.M.</span></li>
+                    <li class="flex justify-between"><span>Sábados:</span> <span class="text-white">8:30 A.M. - 12:30 P.M.</span></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-bold text-lg mb-6">Contacto Directo</h5>
+                <p class="text-slate-400 mb-4">(809) 789-5676</p>
+                <a href="solicitud_español.html" class="inline-block bg-white/10 px-6 py-3 rounded-lg hover:bg-white/20 transition-all font-semibold">Solicitar Crédito Online</a>
+            </div>
+        </div>
+        <div class="border-t border-white/5 pt-8 text-center text-slate-500 text-sm px-4">
+            &copy; 2026 B&H Préstamos en General. Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <!-- Chatbot Component -->
+    <div id="bh-bot" class="fixed bottom-6 right-6 z-[100]">
+        <button id="bot-toggle" class="w-16 h-16 bg-accent rounded-full shadow-2xl flex items-center justify-center text-slate-900 text-2xl hover:scale-110 active:scale-90 transition-all cursor-pointer relative">
+            <i class="fas fa-comment-dots"></i>
+            <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 border-2 border-white rounded-full"></span>
+        </button>
+        <div id="bot-window" class="hidden absolute bottom-20 right-0 w-80 sm:w-96 bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] overflow-hidden border border-slate-100 flex flex-col max-h-[500px]">
+            <div class="bg-prime p-6 text-white flex items-center gap-4">
+                <div class="w-12 h-12 bg-accent rounded-xl flex items-center justify-center text-prime text-xl font-bold">B</div>
+                <div>
+                    <h5 class="font-bold">Asistente B&H</h5>
+                    <p class="text-[10px] text-accent flex items-center gap-1"><span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> Línea activa ahora</p>
+                </div>
+            </div>
+            <div id="chat-messages" class="flex-1 p-6 overflow-y-auto space-y-4 text-sm scroll-smooth min-h-[300px] bg-slate-50">
+                <div class="flex gap-2">
+                    <div class="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm border border-slate-100 text-slate-700">
+                        ¡Hola! 👋 Soy tu asistente B&H. ¿En qué tipo de préstamo estás interesado hoy?
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 bg-white border-t border-slate-100 flex gap-2">
+                <input type="text" id="bot-input" placeholder="Escribe tu mensaje..." class="flex-1 bg-slate-100 border-none rounded-xl px-4 text-sm focus:ring-accent">
+                <button id="send-btn" class="bg-accent w-10 h-10 rounded-xl flex items-center justify-center text-slate-900 hover:bg-yellow-500 transition-colors">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Subir arriba button -->
+    <button id="topBtn" class="fixed bottom-24 right-8 w-12 h-12 bg-white/10 backdrop-blur-md rounded-full shadow-lg items-center justify-center text-white hidden md:flex opacity-0 hover:bg-white/20 transition-all border border-white/10">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <script type="module" src="src/js/main.js"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Inline setup for Leaflet as it needs access to DOM IDs immediately
+        document.addEventListener('DOMContentLoaded', () => {
+            const map = L.map('map').setView([19.2208145, -70.5345771], 15);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap'
+            }).addTo(map);
+            L.marker([19.2208145, -70.5345771]).addTo(map)
+                .bindPopup('B&H PRÉSTAMOS EN GENERAL')
+                .openPopup();
+        });
+    </script>
 </body>
 </html>

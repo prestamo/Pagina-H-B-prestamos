@@ -1,296 +1,180 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <title>B&H prestamos</title>
-    <link rel="icon" href="b&H.ico" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
-
-    <link rel="stylesheet" href="styles.css" />
-  </head>
- 
-  <body>
-    <header>
-    
-      <div class="menu-btn" id="menuBtn">
-        <div class="btn-line"></div> 
-        <div class="btn-line"></div>
-        <div class="btn-line"></div>
-    </div>
-    <nav class="menu">
-      <div class="logo"> 
-          <img src="logob&H.ico" alt="logo de la compañia">
-         </div>
-      <ul>
-          <li><a href="index.html" class="">Inicio</a></li>
-          <li><a href="nosotros.html" >Nosotros</a></li>
-          <li><a href="tipos_prestamos.html" >Tipos de préstamos</a></li>
-          <li><a href="#review" >Redes sociales</a></li>
-          <li><a href="solicitud_español.html" class="active">Solicitar</a></li>
-         
-          <li>
-            <select id="language-select">
-                <option value="es1">Español</option>
-                <option value="en1">English</option>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitud de Préstamo | B&H</title>
+    <link rel="icon" href="assets/img/logob&H.ico">
+    <link rel="stylesheet" href="src/css/input.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-slate-50 font-['Inter',sans-serif] text-prime">
+    <!-- Header Simétrico -->
+    <header class="fixed top-0 w-full z-50 bg-prime shadow-xl h-16 flex items-center">
+        <nav class="max-w-7xl mx-auto px-4 w-full flex justify-between items-center text-white">
+            <a href="index.html" class="flex items-center gap-2 group">
+                <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-bold">Volver</span>
+            </a>
+            <div class="flex items-center gap-2">
+                <img src="assets/img/logob&H.jpeg" alt="Logo" class="h-8 rounded">
+                <span class="hidden sm:inline font-semibold uppercase tracking-widest text-xs">B&H <span class="text-brand">PRÉSTAMOS</span></span>
+            </div>
+            <select id="language-select" class="bg-white/10 border-none rounded px-2 py-1 text-xs focus:ring-1 focus:ring-brand">
+                <option value="es1">ES</option>
+                <option value="en1">EN</option>
             </select>
-        </li>
-      </ul>
-  </nav>
-     
+
+            <!-- Mobile Menu Toggle -->
+            <button id="menuBtn" class="md:hidden relative z-50 w-10 h-10 flex flex-col justify-center items-center gap-1.5 focus:outline-none group ml-4">
+                <span class="w-6 h-0.5 bg-white rounded-full transition-all duration-300 group-[.open]:rotate-45 group-[.open]:translate-y-2"></span>
+                <span class="w-6 h-0.5 bg-white rounded-full transition-all duration-300 group-[.open]:opacity-0"></span>
+                <span class="w-6 h-0.5 bg-white rounded-full transition-all duration-300 group-[.open]:-rotate-45 group-[.open]:-translate-y-2"></span>
+            </button>
+        </nav>
     </header>
-    <button onclick="topFunction()" id="myBtn" title="Volver arriba"> Subir <i class="fas fa-arrow-up"></i></button>
-    <section class="contact" id="contact">
-      <h1 class="solicitud">
-        <br />
-        Datos del solicitante
-      </h1>
 
-      <div class="row">
-        <div class="form-container">
-          <form name="contact" method="POST" data-netlify="true">
-            <p>
-              <label class="texto">
-                Nombre y Apellido:<input type="text" name="Nombre" placeholder="Nombre y Apellido"
-              /></label>
-            </p>
-            <p>
-              <label class="texto"
-                >Apodo: <input type="text" name="Apodo" placeholder="Apodo"
-              /></label>
-            </p>
-            <p>
-              <label class="texto"
-                >Correo: <input type="Email" name="email" placeholder="Correo"
-              /></label>
-            </p>
-            <p>
-              <label class="texto"
-                >Fecha de nacimiento:
-                <input type="date" name="Fecha" placeholder="Fecha"
-              /></label>
-            </p>
-            <p>
-              <label class="texto"
-                >Cedula: <input type="number" name="cedula" placeholder="Cedula"
-              /></label>
-            </p>
-            <p>
-              <label class="texto" 
-                >Tipo de sexo:
-                <select class="select" name="sexo" > 
-                  <option>Elegir </option>
-                  <option value="Femenino">Femenino</option>
-                  <option value="Masculino">Masculino</option>
-                </select></label
-              >
-            </p>
-            <br>
-            <p>
-              <label class="texto"
-                >Estado Civil:
-                <select class="select" name="Estado" >
-                  <option >Elegir </option>
-                  <option value="Casado">Casado</option>
-                  <option value="Soltero">Soltero</option>
-                  <option value="viudo">Viudo</option>
-                  <option value="Divorciado">Divorciado</option>
-                </select></label
-              >
-            </p>
-            <br>
-            <p>
-              <label class="texto"
-                >Nacionalidad:
-                <input
-                  type="text"
-                  name="nacionalidad"
-                  placeholder="Nacionalidad"
-              /></label>
-            </p>
-            <p>
-              <label class="texto"
-                >Ciudad: <input type="text" name="Ciudad" placeholder="Ciudad"
-              /></label>
-            </p>
-            <p>
-              <label class="texto"
-                >Sector: <input type="text" name="Sector" placeholder="Sector"
-              /></label>
-            </p>
-            <p>
-              <label class="texto"
-                >Nombre o Numero de calle y Casa:
-                <input
-                  type="text"
-                  name="Calle"
-                  placeholder="Nombre o Numero de calle y casa"
-              /></label>
-            </p>
-            <p>
-              <label class="texto"
-                >Numero de cel:
-                <input type="number" name="Numero tel" placeholder="Numero de cel"
-              /></label>
-            </p>
-            <p>
-              <label class="texto"
-                >Numero WhatsApp :
-                <input type="text" name="Numero cel" placeholder="WhatsApp"
-              /></label>
-            <p>  <h1 class="solicitud">Datos laborales</h1>  </p>
-              <label class="texto"
-                >Lugar de trabajo:
-                <input
-                  type="text"
-                  name="Lugar de trabajo"
-                  placeholder="Lugar de trabajo"
-              /></label>
-            </p>
-            <p>
-            <label class="texto"
-            >Ocupacion:
-            <input
-              type="text"
-              name="Ocupacion"
-              placeholder="Ocupacion"
-             /></label>
-          </p>
-          <p>
-            <label class="texto"
-             >Tiempo laborando:
-             <input
-               type="number"
-                name="Tiempo laborando"
-               placeholder="Tiempo laborando"
-            /></label>
-         </p>
-    <p>
-    <label class="texto"
-    >Sueldo:
-    <input
-      type="text"
-      name="Sueldo"
-      placeholder="Sueldo"
-  /></label>
-</p> 
-
-<p>  <h1 class="solicitud">Datos Del/la Conyugue</h1>  </p>
-<p>
-  <label class="texto"
-  >Nombre y Apellido conyugue:
-  <input
-    type="text"
-    name="Nombre conyugue"
-    placeholder="Nombre y Apellido conyugue"
-/></label>
-</p>
-
-<p>
-  <label class="texto"
-  >Numero WhatsApp:
-  <input
-    type="number"
-    name="Numero conyugue"
-    placeholder="Apellido"
-/></label>
-</p>
-<p>
-  <label class="texto"
-  >Lugar de trabajo conyugue:
-  <input
-    type="text"
-    name="Lugar de trabajo conyugue"
-    placeholder="lugar de trabajo conyugue"
-/></label>
-</p>
-<p>
-  <label class="texto"
-  >Sueldo del conyugue:
-  <input
-    type="number"
-    name="Sueldo conyugue"
-    placeholder="sueldo del trabajo"
-/></label>
-</p>
-<p>  <h1 class="solicitud">Datos Del prestamo</h1>  </p>
-
-<fieldset>
-  
-  <p>
-    <label class="texto"
-    >Monto a solicitar:
-    <input
-      type="number"
-      name="Monto a solicitar"
-      placeholder="Escriba un monto"
-  /></label>
-  </p>
-  <p>
-    <label class="texto"
-    >Tiempo:
-    <input
-      type="number"
-      name="Tiempo del Prestamo"
-      placeholder="Escriba en que tiempo"
-  /></label>
-  </p>
-   <p>
-              <label class="texto"
-                >Tipo de prestamo a solicitar:
-                <select class="select" name="tipo">
-                  <option >Elegir</option>
-                  <option value="Personal">Personal</option>
-                  <option value="Vehiculo">Vehiculo</option>
-                  <option value="Hipotecario">Hipotecario</option>
-                 <br>
-                </select></label
-              >
-            </p>
-
-</fieldset>
-<br>
-<br>
-
-<p class="texto-solicitud">Los suscritos declaran que sus datos son correctos y autorizan expresa y formalmente a B&H prestamos en general a acceder a su información crediticia a través de los Burós de información crediticia, a los fines de evaluar su capacidad de pago e historial crediticio de conformidad con la Ley No. 172/03.</p>
-<div class="conteiner-1"> 
-<div class="form-group"> 
-<input type="radio" name="size" id="small" required onchange="habilitarBoton()">
-    <label class="texto-solicitud" for="small">Acepta los términos y condiciones</label>
-</div>
-</div>
-
-<br>
-
-<div class="form-container">
-  <input type="submit" value="Enviar datos" id="botonEnviar" disabled />
-</div>
-           
-          </form>
-        </div>
-      </div>
-    </section>
-    <section class="footer">
-      <p class="titulo">Horarios</p>
-      <p class="subtitulo">De Lunes - Viernes:</p>
-      <p class="subtitulo-horario">8:00 A.M. - 12:00 P.M.</p>
-      <p class="subtitulo-horario">2:00 P.M. - 6:00 P.M.</p>
-      <p class="subtitulo">Los Sábados:</p>
-      <p class="subtitulo-horario">8:30 A.M. - 12:30 P.M.</p>
-      <div class="icons">
-        <a href="https://www.facebook.com/people/BH-Pr%C3%A9stamos-en-General/100093270816838/?mibextid=ZbWKwL" class="fab fa-facebook-f"></a>
-        <a href="https://instagram.com/byh_prestamos?igshid=ZDc4ODBmNjlmNQ==" class="fab fa-instagram"></a>
-        <a href="https://wa.me/message/PKNRHNRDI7BDM1" class="fab fa-whatsapp-square"></a>
+    <!-- Mobile Navigation Overlay -->
+    <div id="mobileMenu" class="fixed inset-0 bg-slate-900/95 backdrop-blur-2xl z-40 flex flex-col items-center justify-center translate-x-full transition-transform duration-500 md:hidden group">
+        <ul class="flex flex-col items-center space-y-8 text-2xl font-black text-white uppercase tracking-[0.2em]">
+            <li class="opacity-0 translate-y-4 transition-all duration-500 delay-100 group-[.open]:opacity-100 group-[.open]:translate-y-0"><a href="index.html" class="mobile-link hover:text-brand">Inicio</a></li>
+            <li class="opacity-0 translate-y-4 transition-all duration-500 delay-200 group-[.open]:opacity-100 group-[.open]:translate-y-0"><a href="nosotros.html" class="mobile-link hover:text-brand">Nosotros</a></li>
+            <li class="opacity-0 translate-y-4 transition-all duration-500 delay-300 group-[.open]:opacity-100 group-[.open]:translate-y-0"><a href="tipos_prestamos.html" class="mobile-link hover:text-brand">Servicios</a></li>
+        </ul>
     </div>
-    </section>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-   
+    <main class="pt-24 pb-20 px-4 max-w-4xl mx-auto">
+        <div class="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-100">
+            <!-- Encabezado Formulario -->
+            <div class="bg-prime p-10 text-white text-center">
+                <h1 class="text-3xl font-bold mb-2 tracking-tight">Solicitud de <span class="text-brand">Crédito</span></h1>
+                <p class="text-white/60 text-sm">Completa todos los campos para una evaluación rápida.</p>
+            </div>
 
-    <script src="script.js"></script>
-   
-  </body>
+            <form class="p-8 sm:p-12 space-y-12" method="POST" data-netlify="true" name="solicitud">
+                <!-- Sección 1: Datos Personales -->
+                <section>
+                    <div class="flex items-center gap-3 mb-8">
+                        <span class="w-10 h-10 bg-brand rounded-full flex items-center justify-center text-white font-bold">1</span>
+                        <h2 class="text-xl font-bold text-prime uppercase tracking-tighter">Datos del Solicitante</h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold uppercase text-slate-500 tracking-wider">Nombre Completo</label>
+                            <input type="text" name="Nombre" placeholder="Como aparece en tu cédula" class="w-full bg-slate-50 border-slate-200 rounded-xl px-4 py-3 focus:ring-brand focus:border-brand transition-all outline-none" required>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="text-xs font-bold uppercase text-slate-500 tracking-wider">Cédula</label>
+                                <input type="number" name="cedula" placeholder="000-0000000-0" class="w-full bg-slate-50 border-slate-200 rounded-xl px-4 py-3 focus:ring-brand transition-all outline-none">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-xs font-bold uppercase text-slate-500 tracking-wider">Celular</label>
+                                <input type="number" name="Numero tel" placeholder="809-xxx-xxxx" class="w-full bg-slate-50 border-slate-200 rounded-xl px-4 py-3 focus:ring-brand outline-none">
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold uppercase text-slate-500 tracking-wider">Correo Electrónico</label>
+                            <input type="email" name="email" placeholder="ejemplo@correo.com" class="w-full bg-slate-50 border-slate-200 rounded-xl px-4 py-3 focus:ring-brand outline-none">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="text-xs font-bold uppercase text-slate-500 tracking-wider">Sexo</label>
+                                <select name="sexo" class="w-full bg-slate-50 border-slate-200 rounded-xl px-4 py-3 focus:ring-brand outline-none">
+                                    <option>Elegir</option>
+                                    <option value="F">Femenino</option>
+                                    <option value="M">Masculino</option>
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-xs font-bold uppercase text-slate-500 tracking-wider">Estado Civil</label>
+                                <select name="Estado" class="w-full bg-slate-50 border-slate-200 rounded-xl px-4 py-3 focus:ring-brand outline-none">
+                                    <option>Elegir</option>
+                                    <option>Soltero/a</option>
+                                    <option>Casado/a</option>
+                                    <option>Unión Libre</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <hr class="border-slate-100">
+
+                <!-- Sección 2: Datos Laborales -->
+                <section>
+                    <div class="flex items-center gap-3 mb-8">
+                        <span class="w-10 h-10 bg-brand rounded-full flex items-center justify-center text-white font-bold">2</span>
+                        <h2 class="text-xl font-bold text-prime uppercase tracking-tighter">Información Laboral</h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold uppercase text-slate-500 tracking-wider">Lugar de Trabajo</label>
+                            <input type="text" name="Lugar de trabajo" placeholder="Nombre de la empresa" class="w-full bg-slate-50 border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-brand">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="text-xs font-bold uppercase text-slate-500 tracking-wider">Ocupación</label>
+                                <input type="text" name="Ocupacion" class="w-full bg-slate-50 border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-brand">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-xs font-bold uppercase text-slate-500 tracking-wider">Ingresos Mensuales</label>
+                                <input type="text" name="Sueldo" placeholder="RD$" class="w-full bg-slate-50 border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-brand">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Sección 3: Datos del Préstamo -->
+                <section class="bg-slate-50 p-8 rounded-[2rem] border border-brand/10">
+                    <div class="flex items-center gap-3 mb-8">
+                        <span class="w-10 h-10 bg-prime text-white rounded-full flex items-center justify-center font-bold shadow-lg">3</span>
+                        <h2 class="text-xl font-bold text-prime uppercase tracking-tighter">Detalles de la Solicitud</h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold uppercase text-slate-500 tracking-wider text-center block">Tipo de Crédito</label>
+                            <select name="tipo" class="w-full bg-white border-slate-200 rounded-xl px-4 py-3 focus:ring-brand outline-none">
+                                <option>Elegir</option>
+                                <option value="Personal">Personal</option>
+                                <option value="Vehiculo">Vehicular</option>
+                                <option value="Hipotecario">Hipotecario</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold uppercase text-slate-500 tracking-wider text-center block">Monto Solicitado</label>
+                            <input type="number" name="Monto a solicitar" placeholder="RD$" class="w-full bg-white border-slate-200 rounded-xl px-4 py-3 focus:ring-brand outline-none">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold uppercase text-slate-500 tracking-wider text-center block">Plazo (Meses)</label>
+                            <input type="number" name="Tiempo del Prestamo" placeholder="Ej: 12" class="w-full bg-white border-slate-200 rounded-xl px-4 py-3 focus:ring-brand outline-none">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Términos -->
+                <div class="p-6 bg-brand/5 rounded-2xl border border-brand/10 space-y-4">
+                    <p class="text-[10px] text-prime leading-tight opacity-70">
+                        Los suscritos declaran que sus datos son correctos y autorizan expresa y formalmente a B&H Préstamos en General a acceder a su información crediticia a través de los Burós de información crediticia, acorde a la Ley No. 172/03.
+                    </p>
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input type="radio" name="terms" id="small" class="w-5 h-5 text-brand focus:ring-brand border-slate-300 rounded" required>
+                        <span class="text-sm font-semibold text-brand border-b border-brand/30">Acepto los términos y condiciones</span>
+                    </label>
+                </div>
+
+                <button type="submit" id="botonEnviar" disabled class="w-full py-5 rounded-2xl bg-slate-300 text-slate-500 font-black text-lg shadow-xl translate-y-0 active:translate-y-1 transition-all cursor-not-allowed uppercase tracking-[0.2em]">
+                    ENVIAR SOLICITUD AHORA
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <footer class="text-center pb-10 text-slate-400 text-xs">
+        &copy; 2026 B&H Préstamos. Tu privacidad es nuestra prioridad.
+    </footer>
+
+    <script type="module" src="src/js/main.js"></script>
+</body>
 </html>

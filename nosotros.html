@@ -3,169 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> H&B PRESTAMO</title>
-    <link rel="icon" href="b&H.ico">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
+    <title>Sobre Nosotros | B&H PRÉSTAMOS</title>
+    <link rel="icon" href="assets/img/logob&H.ico">
+    <link rel="stylesheet" href="src/css/input.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
-    <header>
-      
-        <div class="menu-btn" id="menuBtn">
-            <div class="btn-line"></div> 
-            <div class="btn-line"></div>
-            <div class="btn-line"></div>
-        </div>
+<body class="bg-slate-50 font-['Inter',sans-serif] text-slate-900 overflow-x-hidden">
+    <!-- Header Simétrico -->
+    <header class="fixed top-0 w-full z-50 transition-all duration-300 bg-prime shadow-xl h-16 flex items-center">
+        <nav class="max-w-7xl mx-auto px-4 w-full flex justify-between items-center text-white relative">
+            <a href="index.html" class="flex items-center gap-2 group text-sm font-bold">
+                <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform"></i>
+                <span>Volver</span>
+            </a>
+            
+            <div class="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
+                <img src="assets/img/logob&H.jpeg" alt="Logo" class="h-9 rounded-lg border border-brand/30">
+                <span class="hidden sm:inline font-black tracking-widest text-xs uppercase">B&H <span class="text-brand">NOSOTROS</span></span>
+            </div>
 
-        <nav class="menu">
-            <div class="logo"> 
-                <img src="logob&H.ico" alt="logo de la compañia">
-               </div>
-          
-            <ul>
-                <li><a href="index.html" class=>Inicio</a></li>
-                <li><a href="nosotros.html" class="active">Nosotros</a></li>
-                <li><a href="tipos_prestamos.html" >Tipos de préstamos</a></li>
-                <li><a href="#review" >Redes sociales</a></li>
-                <li><a href="solicitud_español.html" >Solicitar</a></li>
-                <li>
-                    <select id="language-select">
-                        <option value="es3">Español</option>
-                        <option value="en3">English</option>
-                    </select>
-                </li>
-            </ul>
+            <select id="language-select" class="bg-white/10 border-none rounded px-2 py-1 text-xs font-bold focus:ring-1 focus:ring-brand">
+                <option value="es3">ES</option>
+                <option value="en3">EN</option>
+            </select>
+
+            <!-- Mobile Menu Toggle -->
+            <button id="menuBtn" class="md:hidden relative z-50 w-10 h-10 flex flex-col justify-center items-center gap-1.5 focus:outline-none group ml-4">
+                <span class="w-6 h-0.5 bg-white rounded-full transition-all duration-300 group-[.open]:rotate-45 group-[.open]:translate-y-2"></span>
+                <span class="w-6 h-0.5 bg-white rounded-full transition-all duration-300 group-[.open]:opacity-0"></span>
+                <span class="w-6 h-0.5 bg-white rounded-full transition-all duration-300 group-[.open]:-rotate-45 group-[.open]:-translate-y-2"></span>
+            </button>
         </nav>
     </header>
 
-    <main>
-        <div class="carousel">
-            <div class="carousel-slide" style="background-image: url('img\ 1.png');" id="slide1"> 
-                <button class="slide-button">Solicita tu préstamo ahora</button>
-            </div>
-            <div class="carousel-slide" style="background-image: url('img\ 3.png');" id="slide2">
-                <button class="slide-button">Solicita tu préstamo ahora</button>
-            </div>
-            <div class="carousel-slide" style="background-image: url('img\ 4.png');" id="slide3">
-                <button class="slide-button">Solicita tu préstamo ahora</button>
-            </div>
-            <div class="carousel-slide" style="background-image: url('img\ 5.png');" id="slide4">
-                <button class="slide-button">Solicita tu préstamo ahora</button>
-            </div>
-        </div>
-    </main>
-    <section class="home" id="home">
-       
-        <div class="content">
-           
-            <h1 class="title">«B&H prestamo <BR>en general</h1 >
-                
-        </div>
-    </section>
-   
-      
-      </section>
-      
-      
-          <section class="product" id="product">
-          
-              <h1 class="heading">Sobre Nosotros</h1 >
-                  
-                  <div class="box-container">
-                  
-                      <div class="box">
-                          
-                          <h3>Mision</h3>
-                          <p>Brindar apoyo y seguridad financiera a nuestros clientes a través de facilidades de préstamos,  enfocándonos en la atención y el buen servicio directo para garantizar la satisfacción a nuestros clientes.</p>
-                      </div>
-          
-                      <div class="box">
-                         
-                          <h3>Vision</h3>
-                          <p>Ser un negocio rentable, seguro y confiable, con las mejores tasas para nuestros clientes y brindarle un servicio de excelente calidad.</p>
-                      </div>
-          
-                      <div class="box">
-                         
-                          <h3>Valores</h3>
-                          <p>Honestidad <br> 
-                              Responsabilidad <br>
-                              Respeto <br>
-                              Confianza <br> 
-                              Trabajo en equipo</p>
-                      </div>
-          
-                  </div>
-       
-                  <a href="descubremas.html"><button>Descubre mas</button></a>
-               </section>
-      
-          <section class="about" id="about">
-      
-             
-                  
-                  <div class="content">
-                     
-                    
-                      <h1 class="ubicacion">Numero de contacto <br>(809) 789-5676 </h1>
-                      
-                     
-                  </div>
-              </div>
-      
-          </section>
-          <section class="contact" id="contact">
-            <section class="pie" id="pie">
+    <!-- Mobile Navigation Overlay -->
+    <div id="mobileMenu" class="fixed inset-0 bg-slate-900/95 backdrop-blur-2xl z-40 flex flex-col items-center justify-center translate-x-full transition-transform duration-500 md:hidden group">
+        <ul class="flex flex-col items-center space-y-8 text-2xl font-black text-white uppercase tracking-[0.2em]">
+            <li class="opacity-0 translate-y-4 transition-all duration-500 delay-100 group-[.open]:opacity-100 group-[.open]:translate-y-0"><a href="index.html" class="mobile-link hover:text-brand">Inicio</a></li>
+            <li class="opacity-0 translate-y-4 transition-all duration-500 delay-200 group-[.open]:opacity-100 group-[.open]:translate-y-0"><a href="nosotros.html" class="mobile-link hover:text-brand underline decoration-brand">Nosotros</a></li>
+            <li class="opacity-0 translate-y-4 transition-all duration-500 delay-300 group-[.open]:opacity-100 group-[.open]:translate-y-0"><a href="tipos_prestamos.html" class="mobile-link hover:text-brand">Servicios</a></li>
+            <li class="opacity-0 translate-y-4 transition-all duration-500 delay-400 group-[.open]:opacity-100 group-[.open]:translate-y-0 pt-4"><a href="solicitud_español.html" class="mobile-link bg-accent text-prime px-8 py-4 rounded-2xl text-lg shadow-2xl">Solicitar ahora</a></li>
+        </ul>
+    </div>
 
-            
-          <h1 class="heading">Estamos Ubicados</h1>
-          <a href="https://www.google.com/maps/place/B%26H+PR%C3%89STAMOS+EN+GENERAL/@19.2208145,-70.5345771,21z/data=!4m6!3m5!1s0x8eb02dce8316882f:0xdc3da9ac11c55a2c!8m2!3d19.2208929!4d-70.5345872!16s%2Fg%2F11l38ygt3v?entry=ttu" target="_blank">
-           
-          <div id="map" style="width: 100%; height: 400px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); margin-bottom: 20px;"></div>
-          
-          <script> 
-          var map = L.map('map').setView([19.2208145, -70.5345771], 15);
-           L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-           }).addTo(map);
-           L.marker([19.2208145, -70.5345771]).addTo(map)
-             .bindPopup('B&amp;H PRÉSTAMOS EN GENERAL')
-             .openPopup();
-             </script>
-       </section> 
-              <a></a>     
-               
-               
-          </section> 
-       
-          <section class="footer">
-                <h1 class="heading">Solicita tu crédito ahora</h1>
-                <div class="product">
-                    <p></p>
-                    <a href="solicitud_español.html"><button>Solicitar</button></a>
+    <main class="pt-20">
+        <!-- Hero Nosotros -->
+        <section class="relative h-[45vh] bg-prime flex items-center justify-center overflow-hidden">
+            <div class="absolute inset-0 opacity-30 bg-cover bg-center" style="background-image: url('assets/img/imgp2.png');"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent to-slate-50"></div>
+            <div class="relative z-10 text-center px-4 -mt-10">
+                <span class="text-brand font-black tracking-[0.3em] uppercase text-xs mb-4 block">Conoce nuestro equipo</span>
+                <h1 class="text-5xl md:text-7xl font-black text-prime mb-4 drop-shadow-sm uppercase">Nuestra <span class="text-brand underline decoration-8 underline-offset-8">Historia</span></h1>
+            </div>
+        </section>
+
+        <!-- Misión, Visión, Valores -->
+        <section class="py-12 max-w-7xl mx-auto px-4 -mt-24 relative z-20">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Mision -->
+                <div class="group bg-white p-10 rounded-[2.5rem] shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-slate-100 flex flex-col">
+                    <div class="w-16 h-16 bg-brand/10 text-brand rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:bg-brand group-hover:text-white transition-all">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h2 class="text-2xl font-black mb-6 text-prime uppercase tracking-tighter">Misión</h2>
+                    <p class="text-slate-600 leading-relaxed font-light italic flex-1">
+                        "Brindar apoyo y seguridad financiera a nuestros clientes a través de facilidades de préstamos, enfocándonos en la atención y el buen servicio directo para garantizar la satisfacción total."
+                    </p>
                 </div>
-            <p class="titulo">Horarios</p>
-            <p class="subtitulo">De Lunes - Viernes:</p>
-            <p class="subtitulo-horario">8:00 A.M. - 12:00 P.M.</p>
-            <p class="subtitulo-horario">2:00 P.M. - 6:00 P.M.</p>
-            <p class="subtitulo">Los Sábados:</p>
-            <p class="subtitulo-horario">8:30 A.M. - 12:30 P.M.</p>
-            <div class="icons">
-              <a href="https://www.facebook.com/people/BH-Pr%C3%A9stamos-en-General/100093270816838/?mibextid=ZbWKwL" class="fab fa-facebook-f"></a>
-              <a href="https://instagram.com/byh_prestamos?igshid=ZDc4ODBmNjlmNQ==" class="fab fa-instagram"></a>
-              <a href="https://wa.me/message/PKNRHNRDI7BDM1" class="fab fa-whatsapp-square"></a>
-          </div>
-          </section>
-      
-      
-      
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-      
-    
 
-    <script src="script.js"></script>
+                <!-- Vision -->
+                <div class="group bg-white p-10 rounded-[2.5rem] shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-slate-100 flex flex-col">
+                    <div class="w-16 h-16 bg-brand/10 text-brand rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:bg-brand group-hover:text-white transition-all">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h2 class="text-2xl font-black mb-6 text-prime uppercase tracking-tighter">Visión</h2>
+                    <p class="text-slate-600 leading-relaxed font-light italic flex-1">
+                        "Ser un negocio rentable, seguro y confiable, con las mejores tasas del mercado para nuestros clientes y brindarle un servicio de excelente calidad internacional."
+                    </p>
+                </div>
+
+                <!-- Valores -->
+                <div class="group bg-prime p-10 rounded-[2.5rem] shadow-2xl hover:-translate-y-2 transition-all duration-500 flex flex-col relative overflow-hidden">
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 bg-brand text-prime rounded-2xl flex items-center justify-center text-3xl mb-8">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h2 class="text-2xl font-black mb-6 text-white uppercase tracking-tighter">Valores</h2>
+                        <ul class="space-y-4">
+                            <li class="flex items-center gap-3 text-white/90 font-bold uppercase tracking-widest text-xs"><i class="fas fa-check text-brand"></i> Honestidad</li>
+                            <li class="flex items-center gap-3 text-white/90 font-bold uppercase tracking-widest text-xs"><i class="fas fa-check text-brand"></i> Responsabilidad</li>
+                            <li class="flex items-center gap-3 text-white/90 font-bold uppercase tracking-widest text-xs"><i class="fas fa-check text-brand"></i> Respeto</li>
+                            <li class="flex items-center gap-3 text-white/90 font-bold uppercase tracking-widest text-xs"><i class="fas fa-check text-brand"></i> Confianza</li>
+                            <li class="flex items-center gap-3 text-white/90 font-bold uppercase tracking-widest text-xs"><i class="fas fa-check text-brand"></i> Trabajo en equipo</li>
+                        </ul>
+                    </div>
+                    <!-- Decoración fondo -->
+                    <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-brand/10 rounded-full blur-3xl"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Frase Inspidaroa / CTA -->
+        <section class="bg-slate-100 py-20 px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <blockquote class="text-2xl md:text-3xl font-light italic text-slate-700 leading-snug mb-10">
+                    "Somos la mejor opción porque entendemos tus necesidades y trabajamos para que alcances tus metas."
+                </blockquote>
+                <a href="solicitud_español.html" class="inline-block bg-accent text-prime px-10 py-5 rounded-2xl font-black shadow-xl hover:scale-105 active:scale-95 transition-all uppercase tracking-widest text-lg">UNIRME A B&H</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Simple -->
+    <footer class="bg-prime text-white py-12 px-4 text-center">
+        <div class="mb-8 flex justify-center space-x-6 text-xl text-slate-400">
+            <a href="#" class="hover:text-brand"><i class="fab fa-facebook"></i></a>
+            <a href="#" class="hover:text-brand"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="hover:text-brand"><i class="fab fa-whatsapp"></i></a>
+        </div>
+        <p class="text-slate-500 text-xs tracking-widest uppercase mb-4">Línea de contacto: (809) 789-5676</p>
+        <p class="text-[10px] text-slate-600">&copy; 2026 B&H Préstamos en General. Construyendo confianza.</p>
+    </footer>
+
+    <script type="module" src="src/js/main.js"></script>
 </body>
 </html>

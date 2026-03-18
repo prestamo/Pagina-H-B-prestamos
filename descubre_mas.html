@@ -1,360 +1,108 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>B&H</title>
-    <link rel="icon" href="b&H.ico" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"/>
-
-    <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-
-
-    <style>
-      .logo img {
-          width: 140px; /* Ajusta el ancho según tus necesidades */
-      }
-  </style>
-  </head>
-  <body>
-    <header>
-      <div class="logo">
-        <img src="logob&H.ico" alt="logo de la compañia" />
-      </div>
-
-      <nav class="navbar">
-        <ul>
-          <li><a href="index.html" class="active">Inicio</a></li>
-          <li><a href="#about">Nosotros</a></li>
-         
-          <li><a href="#review">Redes sociales</a></li>
-          <li><a href="solicitud prueva.html">Solicitar</a></li>
-        </ul>
-      </nav>
-      <div class="fas fa-bars"></div>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descubre Más | B&H PRÉSTAMOS</title>
+    <link rel="icon" href="assets/img/logob&H.ico">
+    <link rel="stylesheet" href="src/css/input.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+</head>
+<body class="bg-slate-900 font-['Inter',sans-serif] text-slate-100 overflow-x-hidden">
+    <!-- Header -->
+    <header class="fixed top-0 w-full z-50 bg-black/40 backdrop-blur-md h-16 flex items-center border-b border-white/5">
+        <nav class="max-w-7xl mx-auto px-4 w-full flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-2 text-white group">
+                <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-all"></i>
+                <span class="font-bold">Volver al Inicio</span>
+            </a>
+            <div class="flex items-center gap-2">
+                <img src="assets/img/logob&H.jpeg" class="h-8 rounded">
+                <span class="font-black text-brand tracking-widest hidden sm:inline uppercase">Explora</span>
+            </div>
+        </nav>
     </header>
-    <div id="carouselE1" class="carousel slide" data-bs-ride="carousel">
-      <div class="carousel-indicators">
-          <button type="button" data-bs-target="#carouselE1"
-          data-bs-slide-to="0" class="active" aria-current="true"
-          aria-label="Slide 1"
-          ></button>
-          <button type="button" data-bs-target="#carouselE1"
-          data-bs-slide-to="1" aria-current="true"
-          aria-label="Slide 2"
-          ></button>
-          <button type="button" data-bs-target="#carouselE1"
-          data-bs-slide-to="2" aria-current="true"
-          aria-label="Slide 3"
-          ></button>
-          <button type="button" data-bs-target="#carouselE1"
-          data-bs-slide-to="3" aria-current="true"
-          aria-label="Slide 4"
-          ></button>
-          <button type="button" data-bs-target="#carouselE1"
-          data-bs-slide-to="4" aria-current="true"
-          aria-label="Slide 5"
-          ></button>
-          <button type="button" data-bs-target="#carouselE1"
-          data-bs-slide-to="5" aria-current="true"
-          aria-label="Slide 6"
-          ></button>
-      </div>
 
-
-  <div class="carousel-inner">
-
-     
-      <div class="carousel-item active">
-          <img src="imgp.png" alt="d-block w-100" class="carousel">
-          <div class="carousel-caption">
-              <div class="product">
-                  <a href="solicitud prueva.html"><button>Solicitalo</button></a>
-                </div>
-          </div>
-      </div>
-      <div class="carousel-item">
-          <img src="imgp1.png" alt="d-block w-100" class="carousel">
-          <div class="carousel-caption">
-              <div class="product">
-                  <a href="solicitud prueva.html"><button>Solicitalo</button></a>
-                </div>
-          </div>
-      </div>
-      <div class="carousel-item">
-          <img src="imgp2.png" alt="d-block w-100" class="carousel">
-          <div class="carousel-caption">
-              <div class="product">
-                  <a href="solicitud prueva.html"><button>Solicitalo</button></a>
-                </div>
-          </div>
-      </div>
-      <div class="carousel-item">
-          <img src="imgp3.png" alt="d-block w-100" class="carousel">
-          <div class="carousel-caption">
-              <div class="product">
-                  <a href="solicitud prueva.html"><button>Solicitalo</button></a>
-                </div>
-          </div>
-      </div>
-      
-          </div>
-      </div>
-  </div>
-
-  <button class="carousel-control-prev" type="button" data-bs-target="#carouselE1"
-  data-bs-slide="prev">
-  <span class="carousel-control-prev-icon" aria-hidden="true"> </span>
-      <span class="visually-hidden">previous</span>
-  
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#carouselE1"
-  data-bs-slide="next"
-  >
-   <span class="carousel-control-next-icon" aria-hidden="true"></span>
-  <span class="visually-hidden"> next</span>
-  </button>
-
-</div>
-
-<button onclick="topFunction()" id="myBtn" title="Volver arriba"> Subir <i class="fas fa-arrow-up"></i></button>
-    <section class="home" id="home">
-      <div class="content">
-        <h1 class="title">« Tipos de<br />Prestamos »</h1>
-      </div>
-    </section>
-    <section class="course" id="course">
-
-        <h1 class="heading">Tipos de prestamos</h1>
-        <h3 class="title">Tenemos los mejores servicios del mercado</h3>
-
-        <div class="box-container">
-
-            <div class="box">
-                <i class="fas fa-user-friends"></i>
-                <h3>Personal</h3>
-                <p>Prestamos con garante</p>
-            </div>+
-            <div class="box">
-                <i class="fas fa-car"></i>
-                <h3>De Vehiculo</h3>
-                <p>Con la matricula de tu Vehiculo</p>
+    <main class="pt-16">
+        <!-- Gallery / Carousel Section -->
+        <section class="py-20 max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h1 class="text-4xl md:text-6xl font-black text-white mb-4 uppercase italic">El Crédito que te <span class="text-brand">Impulsa</span></h1>
+                <p class="text-slate-400 font-light tracking-widest uppercase text-xs">Conoce nuestras instalaciones y equipo</p>
             </div>
-            <div class="box">
-                <i class="fas fa-home"></i>
-                <i class=" fas fa-road"></i>
-                <h3>Hipotecario</h3>
-                <p>Con el titulo de tu casa o terreno</p>
-            </div>
-         
-        </div>
 
-    </section>
-    <section class="tipo">
-        <h1 class="heading">Con B&H prestamos tienes el poder</h1>
-        <section class="course" id="course">
-            <div class="tipo">
-                <img src="prestamo.jpg" alt="logo de la compañia" />
-              </div>
-          
-             
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="group relative overflow-hidden rounded-3xl aspect-square shadow-2xl">
+                    <img src="assets/img/imgp.png" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" alt="Galeria">
+                    <div class="absolute inset-0 bg-gradient-to-t from-prime to-transparent opacity-60"></div>
+                </div>
+                <div class="group relative overflow-hidden rounded-3xl aspect-square shadow-2xl">
+                    <img src="assets/img/imgp1.png" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" alt="Galeria">
+                    <div class="absolute inset-0 bg-gradient-to-t from-prime to-transparent opacity-60"></div>
+                </div>
+                <div class="group relative overflow-hidden rounded-3xl aspect-square shadow-2xl">
+                    <img src="assets/img/imgp2.png" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" alt="Galeria">
+                    <div class="absolute inset-0 bg-gradient-to-t from-prime to-transparent opacity-60"></div>
+                </div>
+                <div class="group relative overflow-hidden rounded-3xl aspect-square shadow-2xl">
+                    <img src="assets/img/imgp3.png" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" alt="Galeria">
+                    <div class="absolute inset-0 bg-gradient-to-t from-prime to-transparent opacity-60"></div>
+                </div>
             </div>
-    
         </section>
-       
 
-    </section>
-    <section class="tipo">
-        <h1 class="heading">Prestamos para el hogar</h1>
-        <section class="course" id="course">
-            <div class="tipo">
-                <img src="prestamo2.jpg" alt="logo de la compañia" />
-              </div>
-          
-             
-            </div>
-    
-        </section>
-       
-
-    </section>
-    <section class="review" id="review">
-
-        <h1 class="heading">Siguenos a traves de nuestras Redes sociales</h1>
-        
-        <div class="tipo">
-            <img src="prestamos3.png" alt="logo de la compañia" />
-          </div>
-        <div class="box-container">
-            <div class="box">
-        
-                <div class="icons">
-                    <section class="footer">
-
-                        <div class="icons">
-                            <a href="https://www.facebook.com/people/BH-Pr%C3%A9stamos-en-General/100093270816838/?mibextid=ZbWKwL" class="fab fa-facebook-f"></a>
+        <!-- Informational Cards -->
+        <section class="py-24 bg-white text-slate-900 rounded-[5rem] -mb-20 relative z-10 shadow-[0_-50px_100px_rgba(0,0,0,0.2)]">
+            <div class="max-w-5xl mx-auto px-4">
+                <div class="space-y-32">
+                    <!-- Section 1 -->
+                    <div class="flex flex-col md:flex-row gap-16 items-center">
+                        <div class="flex-1">
+                            <span class="bg-brand/10 text-brand px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest mb-6 inline-block">Innovación</span>
+                            <h2 class="text-4xl font-black text-prime mb-6 uppercase">Tu Hogar, Tu <span class="text-brand">Legado</span></h2>
+                            <p class="text-slate-600 text-lg leading-relaxed font-light italic">
+                                "En B&H Préstamos, entendemos que tu hogar es más que una propiedad; es el futuro de tu familia. Por eso ofrecemos facilidades hipotecarias que se adaptan a tu realidad financiera."
+                            </p>
+                            <img src="assets/img/prestamo2.jpg" class="mt-8 rounded-3xl shadow-xl w-full border-4 border-slate-50" alt="Hogar">
                         </div>
-                
-                    </section>
-                </div>
-                <h3>Facebook</h3>
-                
-                
-            </div>
-            <div class="box">
-                <section class="footer">
-
-                    <div class="icons">
-                       
-                        <a href="https://instagram.com/byh_prestamos?igshid=ZDc4ODBmNjlmNQ==" class="fab fa-instagram"></a>
-                       
-                    </div>
-            
-                </section>
-              
-                <h3>Instagram</h3>
-                
-              
-                
-                  </div>
-                    <div class="box">
-                    <section class="footer">
-
-                      <div class="icons">
-                       
-                         <a href="https://wa.me/message/PKNRHNRDI7BDM1" class="fab fa-whatsapp-square"></a>
-                         </div>
-            
-                     </section>
-                     <h3>Whatsap</h3>
-               
-               
-                      </div>
-                     </div>
-
-                   </section>
-                   <section class="about" id="about">
-
-                    <h1 class="heading">Estamos Ubicados</h1>
-                   
-                  
-                           <div id="map">
-                                <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d235.46322516237!2d-70.53472943662115!3d19.220885328445856!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses-419!2sdo!4v1685734296853!5m2!1ses-419!2sdo" width="800" height="600" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                             </div>
-            
-                            
-                        
-                        <div class="content">
-                           
-                          
-                            <h1 class="ubicacion">Numero de contacto <br>(809) 789-5676 </h1>
-                            
-                           
+                        <div class="flex-1">
+                            <img src="assets/img/prestamo.jpg" class="rounded-[3rem] shadow-2xl w-full rotate-3 hover:rotate-0 transition-transform duration-700" alt="Poder">
                         </div>
                     </div>
-            
-                </section>
-          
-               
 
-
-                    <h1 class="heading">Solicite su credito ahora</h1>
-                    <div class="product">
-                        <p></p>
-                        <a href="solicitud prueva.html"><button>Solicitar</button></a>
+                    <!-- Section 2 -->
+                    <div class="text-center">
+                        <h2 class="text-4xl font-black text-prime mb-12 uppercase tracking-tighter">Síguenos en <span class="text-brand underline decoration-brand/30 underline-offset-8">Tiempo Real</span></h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <a href="#" class="p-10 bg-slate-50 rounded-[3rem] border border-slate-100 hover:bg-slate-900 hover:text-white transition-all">
+                                <i class="fab fa-facebook text-4xl mb-4 text-blue-600"></i>
+                                <h4 class="font-bold">Facebook</h4>
+                                <p class="text-xs opacity-60 mt-2 italic">Noticias y Actualizaciones</p>
+                            </a>
+                            <a href="#" class="p-10 bg-slate-50 rounded-[3rem] border border-slate-100 hover:bg-slate-900 hover:text-white transition-all">
+                                <i class="fab fa-instagram text-4xl mb-4 text-pink-600"></i>
+                                <h4 class="font-bold">Instagram</h4>
+                                <p class="text-xs opacity-60 mt-2 italic">Galería y Estilo de Vida</p>
+                            </a>
+                            <a href="#" class="p-10 bg-slate-50 rounded-[3rem] border border-slate-100 hover:bg-slate-900 hover:text-white transition-all">
+                                <i class="fab fa-whatsapp text-4xl mb-4 text-green-600"></i>
+                                <h4 class="font-bold">WhatsApp</h4>
+                                <p class="text-xs opacity-60 mt-2 italic">Atención Inmediata</p>
+                            </a>
+                        </div>
                     </div>
-
-                 
-                   
-                
+                </div>
             </div>
-        </div>
-    </section> 
-    </section> 
+        </section>
+    </main>
 
-      <section class="footer">
-       <p class= "titulo"> Horarios </p>
-       <p class= "subtitulo">De Lunes - Viernes:</p>
-       <p class= "subtitulo-horario">8:00 A.M. - 12:00 P.M. </p>
-       <p class= "subtitulo-horario">2:00 P.M. - 6:00 P.M. </p>
-       <p class= "subtitulo">Los Sábados:</p>
-       <p class= "subtitulo-horario">8:30 A.M. - 12:30 P.M. </p>
-        <div class="icons">
-            <a href="https://www.facebook.com/people/BH-Pr%C3%A9stamos-en-General/100093270816838/?mibextid=ZbWKwL" class="fab fa-facebook-f"></a>
-            <a href="https://instagram.com/byh_prestamos?igshid=ZDc4ODBmNjlmNQ==" class="fab fa-instagram"></a>
-            <a href="https://wa.me/message/PKNRHNRDI7BDM1" class="fab fa-whatsapp-square"></a>
-        </div>
+    <footer class="bg-black pt-40 pb-20 text-center text-slate-500">
+        <p class="text-xs tracking-[0.5em] uppercase mb-4">B&H <span class="text-brand">Préstamos</span> &bull; Tu Aliado Financiero</p>
+        <div class="w-16 h-1 bg-brand/30 mx-auto rounded-full mb-8"></div>
+        <a href="solicitud_español.html" class="inline-block bg-accent text-prime px-12 py-5 rounded-2xl font-black tracking-widest hover:scale-105 transition-all shadow-[0_0_40px_rgba(193,162,42,0.3)] uppercase text-lg">INICIAR MI CRÉDITO</a>
+    </footer>
 
-    </section>
-
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script>
-        // Obtener el botón
-         var mybutton = document.getElementById("myBtn");
-     
-         // Mostrar u ocultar el botón cuando se desplaza hacia abajo 20px desde la parte superior de la página
-         window.onscroll = function() {scrollFunction()};
-     
-         function scrollFunction() {
-         if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-         mybutton.style.display = "block";
-           } else {
-            mybutton.style.display = "none";
-           }
-        }
-     
-          // Cuando se hace clic en el botón, volver al principio de la página
-         function topFunction() {
-          document.body.scrollTop = 0; // Para Safari
-          document.documentElement.scrollTop = 0; // Para Chrome, Firefox, IE y Opera
-         }
-     
-       </script>
-
-    <script>
-
-        $(document).ready(function() {
-
-            $('.fa-bars').click(function() {
-
-                $(this).toggleClass('fa-times');
-                $('.navbar').toggleClass('nav-toggle');
-
-            });
-
-            $(window).on('scroll load', function() {
-
-                $('.fa-bars').removeClass('fa-times');
-                $('.navbar').removeClass('nav-toggle');
-
-                $('section').each(function() {
-
-                    var id = $(this).attr('id');
-                    var height = $(this).height();
-                    var offset = $(this).offset().top -200;
-                    var top = $(window).scrollTop();
-
-                    if(top >= offset && top < offset + height) {
-                        $('.navbar ul li a').removeClass('active');
-                        $('.navbar').find('[href="#'+id+'"]').addClass('active');
-                    }
-
-                });
-
-            });
-
-        });
-
-    </script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-
-
-
-
-  </body>
+    <script type="module" src="src/js/main.js"></script>
+</body>
 </html>

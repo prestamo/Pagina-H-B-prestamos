@@ -3,137 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> H&B PRESTAMO</title>
-    <link rel="icon" href="b&H.ico">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
+    <title>Nuestros Préstamos | B&H PRÉSTAMOS</title>
+    <link rel="icon" href="assets/img/logob&H.ico">
+    <link rel="stylesheet" href="src/css/input.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
-    <header>
-      
-        <div class="menu-btn" id="menuBtn">
-            <div class="btn-line"></div> 
-            <div class="btn-line"></div>
-            <div class="btn-line"></div>
-        </div>
+<body class="bg-white font-['Inter',sans-serif] text-slate-900 overflow-x-hidden">
+    <!-- Header Minimalista -->
+    <header class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 h-16 flex items-center">
+        <nav class="max-w-7xl mx-auto px-4 w-full flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-2 text-prime">
+                <i class="fas fa-chevron-left text-xs"></i>
+                <span class="font-bold tracking-tight">Regresar</span>
+            </a>
+            <div class="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
+                <img src="assets/img/logob&H.jpeg" alt="Logo" class="h-8 rounded">
+                <span class="font-black text-prime hidden sm:inline uppercase tracking-widest text-xs">B&H <span class="text-brand">SERVICES</span></span>
+            </div>
+            <select id="language-select" class="bg-slate-100 border-none rounded px-2 py-1 text-xs font-bold text-prime focus:ring-1 focus:ring-brand">
+                <option value="es2">ES</option>
+                <option value="en2">EN</option>
+            </select>
 
-        <nav class="menu">
-            <div class="logo"> 
-                <img src="logob&H.ico" alt="logo de la compañia">
-               </div>
-          
-            <ul>
-                <li><a href="index.html" >Inicio</a></li>
-                <li><a href="nosotros.html" >Nosotros</a></li>
-                <li><a href="tipos_prestamos.html" class="active" >Tipos de préstamos</a></li>
-                <li><a href="#review" >Redes sociales</a></li>
-                <li><a href="solicitud_español.html" >Solicitar</a></li>
-                <li>
-                    <select id="language-select">
-                        <option value="es2">Español</option>
-                        <option value="en2">English</option>
-                    </select>
-                </li>
-            </ul>
+            <!-- Mobile Menu Toggle -->
+            <button id="menuBtn" class="md:hidden relative z-50 w-10 h-10 flex flex-col justify-center items-center gap-1.5 focus:outline-none group ml-4">
+                <span class="w-6 h-0.5 bg-prime rounded-full transition-all duration-300 group-[.open]:rotate-45 group-[.open]:translate-y-2 group-[.open]:bg-white"></span>
+                <span class="w-6 h-0.5 bg-prime rounded-full transition-all duration-300 group-[.open]:opacity-0"></span>
+                <span class="w-6 h-0.5 bg-prime rounded-full transition-all duration-300 group-[.open]:-rotate-45 group-[.open]:-translate-y-2 group-[.open]:bg-white"></span>
+            </button>
         </nav>
     </header>
-    <section class="about" id="about">
 
-        <h1 class="heading">Somos la mejor opción porque sabemos lo que necesitas</h1>
-        
-        <div class="row">
-            <img src="imgp.png" alt="">
-            <img src="imgp1.png" alt="">
-            <img src="imgp2.png" alt="">
-     </div>
-    </section>
+    <!-- Mobile Navigation Overlay -->
+    <div id="mobileMenu" class="fixed inset-0 bg-slate-900/95 backdrop-blur-2xl z-40 flex flex-col items-center justify-center translate-x-full transition-transform duration-500 md:hidden group">
+        <ul class="flex flex-col items-center space-y-8 text-2xl font-black text-white uppercase tracking-[0.2em]">
+            <li class="opacity-0 translate-y-4 transition-all duration-500 delay-100 group-[.open]:opacity-100 group-[.open]:translate-y-0"><a href="index.html" class="mobile-link hover:text-brand">Inicio</a></li>
+            <li class="opacity-0 translate-y-4 transition-all duration-500 delay-200 group-[.open]:opacity-100 group-[.open]:translate-y-0"><a href="nosotros.html" class="mobile-link hover:text-brand">Nosotros</a></li>
+            <li class="opacity-0 translate-y-4 transition-all duration-500 delay-300 group-[.open]:opacity-100 group-[.open]:translate-y-0"><a href="tipos_prestamos.html" class="mobile-link hover:text-brand underline decoration-brand">Servicios</a></li>
+            <li class="opacity-0 translate-y-4 transition-all duration-500 delay-400 group-[.open]:opacity-100 group-[.open]:translate-y-0 pt-4"><a href="solicitud_español.html" class="mobile-link bg-accent text-prime px-8 py-4 rounded-2xl text-lg shadow-2xl">Solicitar ahora</a></li>
+        </ul>
+    </div>
 
-    <section class="course" id="course">
-
-        <h1 class="heading">Tipos de prestamos</h1>
-        <h3 class="title">Tenemos los mejores servicios del mercado</h3>
-
-        <div class="box-container">
-
-            <div class="box">
-                <i class="fas fa-user-friends"></i>
-                <h3>Personal</h3>
-                <p>Prestamos con garante</p>
+    <main class="pt-24 pb-20">
+        <!-- Hero Section -->
+        <section class="max-w-7xl mx-auto px-4 mb-20">
+            <div class="bg-prime rounded-[3rem] p-12 md:p-20 text-white text-center relative overflow-hidden shadow-2xl">
+                <div class="relative z-10">
+                    <span class="bg-brand/20 text-brand px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-6 inline-block">Nuestros Servicios</span>
+                    <h1 class="text-4xl md:text-6xl font-black mb-6 leading-tight uppercase">Soluciones a tu <span class="text-brand underline decoration-8 underline-offset-8">medida</span></h1>
+                    <p class="text-white/70 max-w-2xl mx-auto text-lg font-light">Elegirnos es asegurar tu tranquilidad. Contamos con las tasas más competitivas y un proceso de aprobación en tiempo récord.</p>
+                </div>
+                <!-- Decoración -->
+                <div class="absolute -top-20 -right-20 w-80 h-80 bg-accent/10 rounded-full blur-3xl"></div>
+                <div class="absolute -bottom-20 -left-20 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl"></div>
             </div>
-            <div class="box">
-                <i class="fas fa-car"></i>
-                <h3>De Vehiculo</h3>
-                <p>Con la matricula de Vehiculo</p>
+        </section>
+
+        <!-- Tipos de Préstamos Grid -->
+        <section class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Personal -->
+            <div class="group bg-slate-50 p-10 rounded-[2.5rem] border border-slate-100 hover:bg-white hover:shadow-2xl hover:-translate-y-2 transition-all duration-500">
+                <div class="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center text-3xl mb-8 group-hover:bg-brand group-hover:text-white transition-colors">
+                    <i class="fas fa-user-friends"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-4 text-prime">Préstamo Personal</h3>
+                <p class="text-slate-500 mb-8 leading-relaxed italic">"Ideal para imprevistos o proyectos personales rápidos."</p>
+                <ul class="space-y-3 mb-10 text-sm font-semibold text-slate-700">
+                    <li class="flex items-center gap-2"><i class="fas fa-check text-brand"></i> Con Garante Solidario</li>
+                    <li class="flex items-center gap-2"><i class="fas fa-check text-brand"></i> Aprobación en 24h</li>
+                    <li class="flex items-center gap-2"><i class="fas fa-check text-brand"></i> Cuotas Flexibles</li>
+                </ul>
+                <a href="solicitud_español.html" class="block text-center py-4 bg-prime text-white rounded-xl font-black uppercase tracking-widest hover:bg-brand transition-colors">Solicitar</a>
             </div>
-            <div class="box">
-                <i class="fas fa-home"></i>
-                <i class=" fas fa-road"></i>
-                <h3>Hipotecario</h3>
-                <p>Con el titulo de la casa o terreno</p>
+
+            <!-- Vehicular -->
+            <div class="group bg-slate-50 p-10 rounded-[2.5rem] border border-slate-100 hover:bg-white hover:shadow-2xl hover:-translate-y-2 transition-all duration-500">
+                <div class="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center text-3xl mb-8 group-hover:bg-brand group-hover:text-white transition-colors">
+                    <i class="fas fa-car"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-4 text-prime">Crédito Vehicular</h3>
+                <p class="text-slate-500 mb-8 leading-relaxed italic">"Financiamos tu vehículo nuevo o usado con la matrícula como garantía."</p>
+                <ul class="space-y-3 mb-10 text-sm font-semibold text-slate-700">
+                    <li class="flex items-center gap-2"><i class="fas fa-check text-brand"></i> Matrícula como Garantía</li>
+                    <li class="flex items-center gap-2"><i class="fas fa-check text-brand"></i> Hasta el 80% del valor</li>
+                    <li class="flex items-center gap-2"><i class="fas fa-check text-brand"></i> Sin Seguro Full Obligatorio</li>
+                </ul>
+                <a href="solicitud_español.html" class="block text-center py-4 bg-prime text-white rounded-xl font-black uppercase tracking-widest hover:bg-brand transition-colors">Solicitar</a>
             </div>
-         
+
+            <!-- Hipotecario -->
+            <div class="group bg-slate-50 p-10 rounded-[2.5rem] border border-slate-100 hover:bg-white hover:shadow-2xl hover:-translate-y-2 transition-all duration-500">
+                <div class="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center text-3xl mb-8 group-hover:bg-brand group-hover:text-white transition-colors">
+                    <i class="fas fa-home"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-4 text-prime">Hipotecario</h3>
+                <p class="text-slate-500 mb-8 leading-relaxed italic">"Tu casa o terreno es la llave para grandes inversiones."</p>
+                <ul class="space-y-3 mb-10 text-sm font-semibold text-slate-700">
+                    <li class="flex items-center gap-2"><i class="fas fa-check text-brand"></i> Título de Propiedad</li>
+                    <li class="flex items-center gap-2"><i class="fas fa-check text-brand"></i> Tasas Fijas Preferenciales</li>
+                    <li class="flex items-center gap-2"><i class="fas fa-check text-brand"></i> Desembolso Inmediato</li>
+                </ul>
+                <a href="solicitud_español.html" class="block text-center py-4 bg-prime text-white rounded-xl font-black uppercase tracking-widest hover:bg-brand transition-colors">Solicitar</a>
+            </div>
+        </section>
+
+        <!-- Galería Rápida -->
+        <section class="max-w-7xl mx-auto px-4 mt-24">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 h-[400px]">
+                <img src="assets/img/imgp.png" class="w-full h-full object-cover rounded-3xl shadow-lg" alt="Local">
+                <img src="assets/img/imgp1.png" class="w-full h-full object-cover rounded-3xl shadow-lg mt-8" alt="Persona">
+                <img src="assets/img/imgp2.png" class="w-full h-full object-cover rounded-3xl shadow-lg" alt="Oficina">
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Moderno -->
+    <footer class="bg-white border-t border-slate-100 py-16 px-4 text-center">
+        <h2 class="text-3xl font-black text-prime mb-10 tracking-tighter uppercase">¿Listo para empezar?<br><span class="text-brand underline decoration-4">¡Tú eliges el plan!</span></h2>
+        <div class="flex justify-center gap-6 mb-12">
+            <a href="#" class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-prime hover:text-white transition-all"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-prime hover:text-white transition-all"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-prime hover:text-white transition-all"><i class="fab fa-whatsapp"></i></a>
         </div>
+        <p class="text-xs font-bold text-slate-400 tracking-widest uppercase">B&H Préstamos &bull; Expertos en Crédito</p>
+    </footer>
 
-    </section>
+    <button id="topBtn" class="fixed bottom-10 right-10 w-14 h-14 bg-accent text-slate-900 rounded-full shadow-2xl items-center justify-center text-xl z-50 transition-all hover:scale-110 active:scale-90 hidden">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
-  
-  
-
-      <button onclick="topFunction()" id="myBtn" title="Volver arriba"> Subir <i class="fas fa-arrow-up"></i></button>
-
-    
-      
-          <section class="contact" id="contact">
-            <section class="pie" id="pie">
-
-            
-          <h1 class="heading">Estamos Ubicados</h1>
-          <a href="https://www.google.com/maps/place/B%26H+PR%C3%89STAMOS+EN+GENERAL/@19.2208145,-70.5345771,21z/data=!4m6!3m5!1s0x8eb02dce8316882f:0xdc3da9ac11c55a2c!8m2!3d19.2208929!4d-70.5345872!16s%2Fg%2F11l38ygt3v?entry=ttu" target="_blank">
-           
-          <div id="map" style="width: 100%; height: 400px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); margin-bottom: 20px;"></div>
-          
-          <script> 
-          var map = L.map('map').setView([19.2208145, -70.5345771], 15);
-           L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-           }).addTo(map);
-           L.marker([19.2208145, -70.5345771]).addTo(map)
-             .bindPopup('B&amp;H PRÉSTAMOS EN GENERAL')
-             .openPopup();
-             </script>
-       </section> 
-              <a></a>     
-               
-       
-
-          <section class="footer">
-            <h1 class="heading">Solicita tu crédito ahora</h1>
-            <div class="product">
-                <p></p>
-                <a href="solicitud_español.html"><button>Solicitar</button></a>
-            </div>
-            <p class="titulo">Horarios</p>
-            <p class="subtitulo">De Lunes - Viernes:</p>
-            <p class="subtitulo-horario">8:00 A.M. - 12:00 P.M.</p>
-            <p class="subtitulo-horario">2:00 P.M. - 6:00 P.M.</p>
-            <p class="subtitulo">Los Sábados:</p>
-            <p class="subtitulo-horario">8:30 A.M. - 12:30 P.M.</p>
-            <div class="icons">
-              <a href="https://www.facebook.com/people/BH-Pr%C3%A9stamos-en-General/100093270816838/?mibextid=ZbWKwL" class="fab fa-facebook-f"></a>
-              <a href="https://instagram.com/byh_prestamos?igshid=ZDc4ODBmNjlmNQ==" class="fab fa-instagram"></a>
-              <a href="https://wa.me/message/PKNRHNRDI7BDM1" class="fab fa-whatsapp-square"></a>
-          </div>
-          </section>
-      
-      
-      
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-      
-    
-
-    <script src="script.js"></script>
+    <script type="module" src="src/js/main.js"></script>
 </body>
-</html>                                                      
+</html>
+         

@@ -3,169 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> H&B LOAN</title>
-    <link rel="icon" href="b&H.ico">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
+    <title>About Us | B&H LOANS</title>
+    <link rel="icon" href="assets/img/logob&H.ico">
+    <link rel="stylesheet" href="src/css/input.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 </head>
-<body>
-    <header>
-      
-        <div class="menu-btn" id="menuBtn">
-            <div class="btn-line"></div> 
-            <div class="btn-line"></div>
-            <div class="btn-line"></div>
-        </div>
+<body class="bg-white font-['Inter',sans-serif] text-slate-900 overflow-x-hidden">
+    <!-- Header Minimalista -->
+    <header class="fixed top-0 w-full z-50 transition-all duration-300 bg-prime shadow-xl h-16 flex items-center">
+        <nav class="max-w-7xl mx-auto px-4 w-full flex justify-between items-center text-white relative">
+            <a href="index_english.html" class="flex items-center gap-2 group text-sm font-bold">
+                <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform"></i>
+                <span>Back</span>
+            </a>
+            
+            <div class="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
+                <img src="assets/img/logob&H.jpeg" alt="Logo" class="h-9 rounded-lg border border-brand/30">
+                <span class="hidden sm:inline font-black tracking-widest text-xs uppercase">B&H <span class="text-brand">ABOUT</span></span>
+            </div>
 
-        <nav class="menu">
-            <div class="logo"> 
-                <img src="logob&H.ico" alt="company logo">
-               </div>
-          
-            <ul>
-                <li><a href="index_english.html">Home</a></li>
-                <li><a href="nosotros_english.html" class="active">About Us</a></li>
-                <li><a href="tipos_prestamos_english.html">Loan Types</a></li>
-                <li><a href="#review">Social Media</a></li>
-                <li><a href="solicitud_english.html">Apply</a></li>
-                <li>
-                    <select id="language-select">
-                        <option value="en3">English</option>
-                        <option value="es3">Español</option>   
-                    </select>
-                </li>
-            </ul>
+            <select id="language-select" class="bg-white/10 border-none rounded px-2 py-1 text-xs font-bold focus:ring-1 focus:ring-brand">
+                <option value="en3">EN</option>
+                <option value="es3">ES</option>
+            </select>
+
+            <!-- Mobile Menu Toggle -->
+            <button id="menuBtn" class="md:hidden relative z-50 w-10 h-10 flex flex-col justify-center items-center gap-1.5 focus:outline-none group ml-4">
+                <span class="w-6 h-0.5 bg-white rounded-full transition-all duration-300 group-[.open]:rotate-45 group-[.open]:translate-y-2"></span>
+                <span class="w-6 h-0.5 bg-white rounded-full transition-all duration-300 group-[.open]:opacity-0"></span>
+                <span class="w-6 h-0.5 bg-white rounded-full transition-all duration-300 group-[.open]:-rotate-45 group-[.open]:-translate-y-2"></span>
+            </button>
         </nav>
     </header>
 
-    <main>
-        <div class="carousel">
-            <div class="carousel-slide" style="background-image: url('img\ 1.png');" id="slide1"> 
-                <button class="slide-button">Apply for your loan now</button>
-            </div>
-            <div class="carousel-slide" style="background-image: url('img\ 3.png');" id="slide2">
-                <button class="slide-button">Apply for your loan now</button>
-            </div>
-            <div class="carousel-slide" style="background-image: url('img\ 4.png');" id="slide3">
-                <button class="slide-button">Apply for your loan now</button>
-            </div>
-            <div class="carousel-slide" style="background-image: url('img\ 5.png');" id="slide4">
-                <button class="slide-button">Apply for your loan now</button>
-            </div>
-        </div>
-    </main>
-    <section class="home" id="home">
-       
-        <div class="content">
-           
-            <h1 class="title">"B&H loan <BR>in general"</h1 >
-                
-        </div>
-    </section>
-   
-      
-      </section>
-      
-      
-          <section class="product" id="product">
-          
-              <h1 class="heading">About Us</h1 >
-                  
-                  <div class="box-container">
-                  
-                      <div class="box">
-                          
-                          <h3>Mission</h3>
-                          <p>To provide financial support and security to our customers through loan facilities, focusing on direct attention and good service to guarantee customer satisfaction.</p>
-                      </div>
-          
-                      <div class="box">
-                         
-                          <h3>Vision</h3>
-                          <p>To be a profitable, safe, and reliable business, with the best rates for our customers and provide excellent quality service.</p>
-                      </div>
-          
-                      <div class="box">
-                         
-                          <h3>Values</h3>
-                          <p>Honesty <br> 
-                              Responsibility <br>
-                              Respect <br>
-                              Trust <br> 
-                              Teamwork</p>
-                      </div>
-          
-                  </div>
-       
-                  <a href="learn_more.html"><button>Learn more</button></a>
-               </section>
-      
-          <section class="about" id="about">
-      
-             
-                  
-                  <div class="content">
-                     
-                    
-                      <h1 class="location">Contact Number <br>(809) 789-5676 </h1>
-                      
-                     
-                  </div>
-              </div>
-      
-          </section>
-          <section class="contact" id="contact">
-            <section class="footer" id="footer">
+    <!-- Mobile Navigation Overlay -->
+    <div id="mobileMenu" class="fixed inset-0 bg-slate-900/95 backdrop-blur-2xl z-40 flex flex-col items-center justify-center translate-x-full transition-transform duration-500 md:hidden group">
+        <ul class="flex flex-col items-center space-y-8 text-2xl font-black text-white uppercase tracking-[0.2em]">
+            <li class="opacity-0 translate-y-4 transition-all duration-500 delay-100 group-[.open]:opacity-100 group-[.open]:translate-y-0"><a href="index_english.html" class="mobile-link hover:text-brand">Home</a></li>
+            <li class="opacity-0 translate-y-4 transition-all duration-500 delay-200 group-[.open]:opacity-100 group-[.open]:translate-y-0"><a href="nosotros_english.html" class="mobile-link hover:text-brand underline decoration-brand">About Us</a></li>
+            <li class="opacity-0 translate-y-4 transition-all duration-500 delay-300 group-[.open]:opacity-100 group-[.open]:translate-y-0"><a href="tipos_prestamos_english.html" class="mobile-link hover:text-brand">Services</a></li>
+            <li class="opacity-0 translate-y-4 transition-all duration-500 delay-400 group-[.open]:opacity-100 group-[.open]:translate-y-0 pt-4"><a href="solicitud_english.html" class="mobile-link bg-accent text-prime px-8 py-4 rounded-2xl text-lg shadow-2xl">Apply Now</a></li>
+        </ul>
+    </div>
 
-            
-          <h1 class="heading">We Are Located</h1>
-          <a href="https://www.google.com/maps/place/B%26H+LOANS+IN+GENERAL/@19.2208145,-70.5345771,21z/data=!4m6!3m5!1s0x8eb02dce8316882f:0xdc3da9ac11c55a2c!8m2!3d19.2208929!4d-70.5345872!16s%2Fg%2F11l38ygt3v?entry=ttu" target="_blank">
-           
-          <div id="map" style="width: 100%; height: 400px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); margin-bottom: 20px;"></div>
-          
-          <script> 
-          var map = L.map('map').setView([19.2208145, -70.5345771], 15);
-           L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-           }).addTo(map);
-           L.marker([19.2208145, -70.5345771]).addTo(map)
-             .bindPopup('B&amp;H LOANS IN GENERAL')
-             .openPopup();
-             </script>
-       </section> 
-              <a></a>     
-               
-               
-          </section> 
-       
-          <section class="footer">
-                <h1 class="heading">Apply for your loan now</h1>
-                <div class="product">
-                    <p></p>
-                    <a href="application.html"><button>Apply</button></a>
+    <main class="pt-16">
+        <!-- Hero Section -->
+        <section class="relative h-[45vh] bg-prime flex items-center justify-center overflow-hidden">
+            <div class="absolute inset-0 opacity-30 bg-cover bg-center" style="background-image: url('assets/img/imgp2.png');"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent to-slate-50"></div>
+            <div class="relative z-10 text-center px-4 -mt-10">
+                <span class="text-brand font-black tracking-[0.3em] uppercase text-xs mb-4 block">Meet Our Team</span>
+                <h1 class="text-5xl md:text-7xl font-black text-prime mb-4 drop-shadow-sm uppercase">Our <span class="text-brand underline decoration-8 underline-offset-8">Story</span></h1>
+            </div>
+        </section>
+
+        <!-- Mission, Vision, Values -->
+        <section class="py-12 max-w-7xl mx-auto px-4 -mt-24 relative z-20">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Mission -->
+                <div class="group bg-white p-10 rounded-[2.5rem] shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-slate-100 flex flex-col">
+                    <div class="w-16 h-16 bg-brand/10 text-brand rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:bg-brand group-hover:text-white transition-all">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h2 class="text-2xl font-black mb-6 text-prime uppercase tracking-tighter">Mission</h2>
+                    <p class="text-slate-600 leading-relaxed font-light italic flex-1">
+                        "To provide financial support and security to our customers through loan facilities, focusing on direct attention and good service to guarantee customer satisfaction."
+                    </p>
                 </div>
-            <p class="titulo">Hours</p>
-            <p class="subtitulo">Monday - Friday:</p>
-            <p class="subtitulo-horario">8:00 A.M. - 12:00 P.M.</p>
-            <p class="subtitulo-horario">2:00 P.M. - 6:00 P.M.</p>
-            <p class="subtitulo">Saturdays:</p>
-            <p class="subtitulo-horario">8:30 A.M. - 12:30 P.M.</p>
-            <div class="icons">
-              <a href="https://www.facebook.com/people/BH-Loans-in-General/100093270816838/?mibextid=ZbWKwL" class="fab fa-facebook-f"></a>
-              <a href="https://instagram.com/byh_loans?igshid=ZDc4ODBmNjlmNQ==" class="fab fa-instagram"></a>
-              <a href="https://wa.me/message/PKNRHNRDI7BDM1" class="fab fa-whatsapp-square"></a>
-          </div>
-          </section>
-      
-      
-      
-          <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-      
-    
 
-    <script src="script.js"></script>
+                <!-- Vision -->
+                <div class="group bg-white p-10 rounded-[2.5rem] shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-slate-100 flex flex-col">
+                    <div class="w-16 h-16 bg-brand/10 text-brand rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:bg-brand group-hover:text-white transition-all">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h2 class="text-2xl font-black mb-6 text-prime uppercase tracking-tighter">Vision</h2>
+                    <p class="text-slate-600 leading-relaxed font-light italic flex-1">
+                        "To be a profitable, safe, and reliable business, with the best rates for our customers and provide excellent quality service."
+                    </p>
+                </div>
+
+                <!-- Values -->
+                <div class="group bg-prime p-10 rounded-[2.5rem] shadow-2xl hover:-translate-y-2 transition-all duration-500 flex flex-col relative overflow-hidden">
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 bg-brand text-prime rounded-2xl flex items-center justify-center text-3xl mb-8">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h2 class="text-2xl font-black mb-6 text-white uppercase tracking-tighter">Values</h2>
+                        <ul class="space-y-4">
+                            <li class="flex items-center gap-3 text-white/90 font-bold uppercase tracking-widest text-xs"><i class="fas fa-check text-brand"></i> Honesty</li>
+                            <li class="flex items-center gap-3 text-white/90 font-bold uppercase tracking-widest text-xs"><i class="fas fa-check text-brand"></i> Responsibility</li>
+                            <li class="flex items-center gap-3 text-white/90 font-bold uppercase tracking-widest text-xs"><i class="fas fa-check text-brand"></i> Respect</li>
+                            <li class="flex items-center gap-3 text-white/90 font-bold uppercase tracking-widest text-xs"><i class="fas fa-check text-brand"></i> Trust</li>
+                            <li class="flex items-center gap-3 text-white/90 font-bold uppercase tracking-widest text-xs"><i class="fas fa-check text-brand"></i> Teamwork</li>
+                        </ul>
+                    </div>
+                    <!-- Decoración fondo -->
+                    <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-brand/10 rounded-full blur-3xl"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="py-24 bg-slate-100 text-center">
+            <h2 class="text-4xl font-black text-prime mb-8 uppercase tracking-tighter">Ready to Grow With Us?</h2>
+            <a href="solicitud_english.html" class="inline-block bg-accent text-prime px-12 py-5 rounded-2xl font-black text-lg shadow-xl shadow-accent/20 hover:scale-105 transition-all uppercase tracking-widest">Apply for a Loan</a>
+        </section>
+    </main>
+
+    <footer class="py-12 border-t border-slate-100 text-center">
+        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-[0.4em]">&copy; 2026 B&H Préstamos &bull; All Rights Reserved</p>
+    </footer>
+
+    <script type="module" src="src/js/main.js"></script>
 </body>
 </html>
+

@@ -1,182 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>B&H Loans</title>
-    <link rel="icon" href="b&H.ico" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Application | B&H LOANS</title>
+    <link rel="icon" href="assets/img/logob&H.ico">
+    <link rel="stylesheet" href="src/css/input.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 </head>
- 
-<body>
-    <header>
-      <div class="menu-btn" id="menuBtn">
-        <div class="btn-line"></div> 
-        <div class="btn-line"></div>
-        <div class="btn-line"></div>
-    </div>
-    <nav class="menu">
-      <div class="logo"> 
-          <img src="logob&H.ico" alt="company logo">
-      </div>
-      <ul>
-          <li><a href="index_english.html" class="">Home</a></li>
-          <li><a href="nosotros.html" >About Us</a></li>
-          <li><a href="tipos_prestamos.html" >Loan Types</a></li>
-          <li><a href="#review" >Social Media</a></li>
-          <li><a href="solicitud_english.html" class="active">Apply</a></li>
-          <li>
-            <select id="language-select">
-                <option value="en1">English</option>
-                <option value="es1">Spanish</option>
-            
+<body class="bg-slate-50 font-['Inter',sans-serif] text-slate-900 overflow-x-hidden">
+    <!-- Header Minimalista -->
+    <header class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 h-16 flex items-center">
+        <nav class="max-w-7xl mx-auto px-4 w-full flex justify-between items-center">
+            <a href="index_english.html" class="flex items-center gap-2 text-prime">
+                <i class="fas fa-chevron-left text-xs"></i>
+                <span class="font-bold tracking-tight uppercase">Home</span>
+            </a>
+            <div class="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
+                <img src="assets/img/logob&H.jpeg" alt="Logo" class="h-8 rounded">
+                <span class="font-black text-prime hidden sm:inline uppercase tracking-widest text-xs">B&H <span class="text-brand">LOANS</span></span>
+            </div>
+            <select id="language-select" class="bg-slate-100 border-none rounded px-2 py-1 text-xs font-bold text-prime focus:ring-1 focus:ring-brand">
+                <option value="en1">EN</option>
+                <option value="es1">ES</option>
             </select>
-        </li>
-      </ul>
-  </nav>
+
+            <!-- Mobile Menu Toggle -->
+            <button id="menuBtn" class="md:hidden relative z-50 w-10 h-10 flex flex-col justify-center items-center gap-1.5 focus:outline-none group ml-4">
+                <span class="w-6 h-0.5 bg-prime rounded-full transition-all duration-300 group-[.open]:rotate-45 group-[.open]:translate-y-2 group-[.open]:bg-white"></span>
+                <span class="w-6 h-0.5 bg-prime rounded-full transition-all duration-300 group-[.open]:opacity-0"></span>
+                <span class="w-6 h-0.5 bg-prime rounded-full transition-all duration-300 group-[.open]:-rotate-45 group-[.open]:-translate-y-2 group-[.open]:bg-white"></span>
+            </button>
+        </nav>
     </header>
-    <button onclick="topFunction()" id="myBtn" title="Go to top">Go Up <i class="fas fa-arrow-up"></i></button>
-    <section class="contact" id="contact">
-      <h1 class="solicitud">
-        <br />
-        Applicant's Information
-      </h1>
-      <div class="row">
-        <div class="form-container">
-          <form name="contact" method="POST" data-netlify="true">
-            <p>
-              <label class="texto">
-                Full Name:<input type="text" name="Nombre" placeholder="Full Name" /></label>
-            </p>
-            <p>
-              <label class="texto">Nickname: <input type="text" name="Apodo" placeholder="Nickname" /></label>
-            </p>
-            <p>
-              <label class="texto">Email: <input type="Email" name="email" placeholder="Email" /></label>
-            </p>
-            <p>
-              <label class="texto">Date of Birth: <input type="date" name="Fecha" placeholder="Date of Birth" /></label>
-            </p>
-            <p>
-              <label class="texto">ID Number: <input type="number" name="cedula" placeholder="ID Number" /></label>
-            </p>
-            <p>
-              <label class="texto">Gender:
-                <select class="select" name="sexo" > 
-                  <option>Select </option>
-                  <option value="Femenino">Female</option>
-                  <option value="Masculino">Male</option>
-                </select>
-              </label>
-            </p>
-            <br>
-            <p>
-              <label class="texto">Marital Status:
-                <select class="select" name="Estado" >
-                  <option>Select </option>
-                  <option value="Casado">Married</option>
-                  <option value="Soltero">Single</option>
-                  <option value="viudo">Widowed</option>
-                  <option value="Divorciado">Divorced</option>
-                </select>
-              </label>
-            </p>
-            <br>
-            <p>
-              <label class="texto">Nationality: <input type="text" name="nacionalidad" placeholder="Nationality" /></label>
-            </p>
-            <p>
-              <label class="texto">City: <input type="text" name="Ciudad" placeholder="City" /></label>
-            </p>
-            <p>
-              <label class="texto">Sector: <input type="text" name="Sector" placeholder="Sector" /></label>
-            </p>
-            <p>
-              <label class="texto">Street Name or Number and House: <input type="text" name="Calle" placeholder="Street Name or Number and house" /></label>
-            </p>
-            <p>
-              <label class="texto">Cellphone Number: <input type="number" name="Numero tel" placeholder="Cellphone Number" /></label>
-            </p>
-            <p>
-              <label class="texto">WhatsApp Number: <input type="text" name="Numero cel" placeholder="WhatsApp Number" /></label>
-            </p>
-            <p>  <h1 class="solicitud">Work Information</h1>  </p>
-              <label class="texto">Workplace: <input type="text" name="Lugar de trabajo" placeholder="Workplace" /></label>
-            </p>
-            <p>
-              <label class="texto">Occupation: <input type="text" name="Ocupacion" placeholder="Occupation" /></label>
-            </p>
-            <p>
-              <label class="texto">Time Employed: <input type="number" name="Tiempo laborando" placeholder="Time Employed" /></label>
-            </p>
-            <p>
-              <label class="texto">Salary: <input type="text" name="Sueldo" placeholder="Salary" /></label>
-            </p>
-            <p>  <h1 class="solicitud">Spouse's Information</h1>  </p>
-            <p>
-              <label class="texto">Spouse's Full Name: <input type="text" name="Nombre conyugue" placeholder="Spouse's Full Name" /></label>
-            </p>
-            <p>
-              <label class="texto">WhatsApp Number: <input type="number" name="Numero conyugue" placeholder="WhatsApp Number" /></label>
-            </p>
-            <p>
-              <label class="texto">Spouse's Workplace: <input type="text" name="Lugar de trabajo conyugue" placeholder="Spouse's Workplace" /></label>
-            </p>
-            <p>
-              <label class="texto">Spouse's Salary: <input type="number" name="Sueldo conyugue" placeholder="Spouse's Salary" /></label>
-            </p>
-            <p>  <h1 class="solicitud">Loan Information</h1>  </p>
-            <fieldset>
-              <p>
-                <label class="texto">Loan Amount: <input type="number" name="Monto a solicitar" placeholder="Enter an amount" /></label>
-              </p>
-              <p>
-                <label class="texto">Term: <input type="number" name="Tiempo del Prestamo" placeholder="Enter term" /></label>
-              </p>
-              <p>
-                <label class="texto">Type of loan to apply for:
-                  <select class="select" name="tipo">
-                    <option>Select</option>
-                    <option value="Personal">Personal</option>
-                    <option value="Vehicle">Vehicle</option>
-                    <option value="Mortgage">Mortgage</option>
-                  </select>
-                </label>
-              </p>
-            </fieldset>
-            <br>
-            <br>
-            <p class="texto-solicitud">We, the undersigned, declare that our data is correct and expressly authorize B&H Loans in general to access our credit information through credit information bureaus, for the purpose of evaluating our payment capacity and credit history in accordance with Law No. 172/03.</p>
-            <div class="conteiner-1"> 
-              <div class="form-group"> 
-                <input type="radio" name="size" id="small" required onchange="enableButton()">
-                <label class="texto-solicitud" for="small">Agree to terms and conditions</label>
-              </div>
+
+    <!-- Mobile Navigation Overlay -->
+    <div id="mobileMenu" class="fixed inset-0 bg-slate-900/95 backdrop-blur-2xl z-40 flex flex-col items-center justify-center translate-x-full transition-transform duration-500 md:hidden group">
+        <ul class="flex flex-col items-center space-y-8 text-2xl font-black text-white uppercase tracking-[0.2em]">
+            <li class="opacity-0 translate-y-4 transition-all duration-500 delay-100 group-[.open]:opacity-100 group-[.open]:translate-y-0"><a href="index_english.html" class="mobile-link hover:text-brand">Home</a></li>
+            <li class="opacity-0 translate-y-4 transition-all duration-500 delay-200 group-[.open]:opacity-100 group-[.open]:translate-y-0"><a href="nosotros_english.html" class="mobile-link hover:text-brand">About Us</a></li>
+            <li class="opacity-0 translate-y-4 transition-all duration-500 delay-300 group-[.open]:opacity-100 group-[.open]:translate-y-0"><a href="tipos_prestamos_english.html" class="mobile-link hover:text-brand">Services</a></li>
+        </ul>
+    </div>
+
+    <main class="pt-24 pb-20 px-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="bg-prime rounded-[3rem] p-8 md:p-16 text-white mb-12 shadow-2xl relative overflow-hidden">
+                <div class="relative z-10">
+                    <h1 class="text-3xl md:text-5xl font-black mb-4 uppercase">Fast <span class="text-brand underline decoration-brand/50">Application</span></h1>
+                    <p class="text-white/60 font-light italic">Complete the following information to evaluate your credit profile.</p>
+                </div>
+                <!-- Abstract -->
+                <div class="absolute -right-20 -bottom-20 w-64 h-64 bg-accent/10 rounded-full blur-3xl"></div>
             </div>
-            <br>
-            <div class="form-container">
-              <input type="submit" value="Submit Data" id="submitButton" disabled />
-            </div>
-          </form>
+
+            <form id="loan-form" class="space-y-12 bg-white p-8 md:p-16 rounded-[4rem] shadow-xl border border-slate-100">
+                <!-- Data del Solicitante -->
+                <div class="space-y-8">
+                    <div class="flex items-center gap-4 text-prime">
+                        <div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center font-black text-xl">01</div>
+                        <h2 class="text-xl font-black uppercase tracking-widest">Personal Information</h2>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-2">
+                            <label class="text-xs font-black text-slate-400 uppercase tracking-widest ml-2">Full Name</label>
+                            <input type="text" name="Nombre" placeholder="As shown on ID" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 focus:ring-2 focus:ring-brand transition-all text-sm font-semibold">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-black text-slate-400 uppercase tracking-widest ml-2">ID Number (Cedula)</label>
+                            <input type="text" name="cedula" placeholder="000-0000000-0" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 focus:ring-2 focus:ring-brand transition-all text-sm font-semibold">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-black text-slate-400 uppercase tracking-widest ml-2">Date of Birth</label>
+                            <input type="date" name="Fecha" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 focus:ring-2 focus:ring-brand transition-all text-sm font-semibold">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-black text-slate-400 uppercase tracking-widest ml-2">Gender</label>
+                            <select name="sexo" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 focus:ring-2 focus:ring-brand transition-all text-sm font-semibold appearance-none">
+                                <option>Select One</option>
+                                <option value="Femenino">Female</option>
+                                <option value="Masculino">Male</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-black text-slate-400 uppercase tracking-widest ml-2">City</label>
+                            <input type="text" name="Ciudad" placeholder="Santiago" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 focus:ring-2 focus:ring-brand transition-all text-sm font-semibold">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-black text-slate-400 uppercase tracking-widest ml-2">WhatsApp Number</label>
+                            <input type="tel" name="Numero cel" placeholder="809-000-0000" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 focus:ring-2 focus:ring-brand transition-all text-sm font-semibold">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data de Trabajo -->
+                <div class="space-y-8 pt-12 border-t border-slate-50">
+                    <div class="flex items-center gap-4 text-prime">
+                        <div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center font-black text-xl">02</div>
+                        <h2 class="text-xl font-black uppercase tracking-widest">Work Information</h2>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-2 md:col-span-2">
+                            <label class="text-xs font-black text-slate-400 uppercase tracking-widest ml-2">Workplace</label>
+                            <input type="text" name="Lugar de trabajo" placeholder="Company Name" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 focus:ring-2 focus:ring-brand transition-all text-sm font-semibold">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-black text-slate-400 uppercase tracking-widest ml-2">Position</label>
+                            <input type="text" name="Ocupacion" placeholder="Your Job Title" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 focus:ring-2 focus:ring-brand transition-all text-sm font-semibold">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-black text-slate-400 uppercase tracking-widest ml-2">Monthly Salary (RD$)</label>
+                            <input type="text" name="Sueldo" placeholder="Approximate Amount" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 focus:ring-2 focus:ring-brand transition-all text-sm font-semibold">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Solicitud -->
+                <div class="space-y-8 pt-12 border-t border-slate-50">
+                    <div class="flex items-center gap-4 text-prime">
+                        <div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center font-black text-xl">03</div>
+                        <h2 class="text-xl font-black uppercase tracking-widest">Loan Details</h2>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-2">
+                            <label class="text-xs font-black text-slate-400 uppercase tracking-widest ml-2">Amount to Request</label>
+                            <input type="number" name="Monto a solicitar" placeholder="RD$ 50,000" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 focus:ring-2 focus:ring-brand transition-all text-sm font-semibold">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-black text-slate-400 uppercase tracking-widest ml-2">Loan Type</label>
+                            <select name="tipo" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 focus:ring-2 focus:ring-brand transition-all text-sm font-semibold appearance-none">
+                                <option>Select Service</option>
+                                <option value="Personal">Personal</option>
+                                <option value="Vehicle">Vehicle</option>
+                                <option value="Mortgage">Mortgage</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Términos -->
+                <div class="pt-12 border-t border-slate-50">
+                    <div class="bg-slate-900 p-8 rounded-[2rem] text-white">
+                        <p class="text-[10px] uppercase tracking-widest leading-loose text-white/50 mb-8 italic">
+                            We, the undersigned, declare that our data is correct and expressly authorize B&H Loans in general to access our credit information through credit information bureaus, for the purpose of evaluating our payment capacity and credit history in accordance with Law No. 172/03.
+                        </p>
+                        <label class="flex items-center gap-4 group cursor-pointer">
+                            <div class="relative w-8 h-8">
+                                <input type="checkbox" id="terms" class="peer hidden" required>
+                                <div class="w-full h-full border-2 border-white/20 rounded-xl peer-checked:bg-brand peer-checked:border-brand transition-all"></div>
+                                <i class="fas fa-check absolute inset-0 flex items-center justify-center text-prime text-xs opacity-0 peer-checked:opacity-100 transition-all"></i>
+                            </div>
+                            <span class="text-xs font-bold uppercase tracking-widest group-hover:text-brand transition-all">I Agree to the Terms and Conditions</span>
+                        </label>
+                    </div>
+                    
+                    <button type="submit" id="submitButton" disabled class="w-full mt-10 bg-slate-200 text-slate-400 py-6 rounded-[2rem] font-black text-xl uppercase tracking-widest shadow-2xl transition-all cursor-not-allowed">
+                        Send Application
+                    </button>
+                </div>
+            </form>
         </div>
-      </div>
-    </section>
-    <section class="footer">
-      <p class="titulo">Opening Hours</p>
-      <p class="subtitulo">Monday - Friday:</p>
-      <p class="subtitulo-horario">8:00 A.M. - 12:00 P.M.</p>
-      <p class="subtitulo-horario">2:00 P.M. - 6:00 P.M.</p>
-      <p class="subtitulo">Saturdays:</p>
-      <p class="subtitulo-horario">8:30 A.M. - 12:30 P.M.</p>
-      <div class="icons">
-        <a href="https://www.facebook.com/people/BH-Loans-in-General/100093270816838/?mibextid=ZbWKwL" class="fab fa-facebook-f"></a>
-        <a href="https://instagram.com/byh_loans?igshid=ZDc4ODBmNjlmNQ==" class="fab fa-instagram"></a>
-        <a href="https://wa.me/message/PKNRHNRDI7BDM1" class="fab fa-whatsapp-square"></a>
-      </div>
-    </section>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="script.js"></script>
-  </body>
-</html>
+    </main>
+
+    <footer class="py-12 text-center text-slate-400 text-[10px] font-bold uppercase tracking-[0.5em]">
+        B&H Préstamos &bull; Safe Financing
+    </footer>
+
+    <script type="module" src="src/js/main.js"></script>
+</body>
+</html>
