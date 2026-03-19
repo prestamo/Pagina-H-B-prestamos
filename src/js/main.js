@@ -1,3 +1,4 @@
+import { getBanners, getCarouselImages } from './supabase.js';
 // B&H Main Logic - Modern ESM
 document.addEventListener('DOMContentLoaded', () => {
     // Mobile Menu Toggle Premium
@@ -85,9 +86,66 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pageMap[lang]) window.location.href = pageMap[lang];
     });
 
+    // Cargar contenido dinámico si estamos en el index
+    if (document.getElementById('carousel-dynamic')) {
+        loadDynamicContent();
+    }
+
     // Chatbot Logic
     initBot();
 });
+
+// Función para cargar contenido desde Supabase
+async function loadDynamicContent() {
+    try {
+        // 1. Cargar Banner
+        const { data: banners } = await getBanners();
+        if (banners && banners.length > 0) {
+            const activeBanner = banners[0];
+            const bannerEl = document.getElementById('promo-banner');
+            const bannerBox = document.getElementById('banner-top');
+            if (bannerEl && bannerBox) {
+                bannerEl.textContent = activeBanner.text;
+                bannerBox.style.backgroundColor = activeBanner.bg_color;
+                bannerBox.classList.remove('hidden');
+            }
+        }
+
+        // 2. Cargar Carrusel
+        const { data: slides } = await getCarouselImages();
+        if (slides && slides.length > 0) {
+            const carouselContainer = document.getElementById('carousel-dynamic');
+            if (carouselContainer) {
+                // Limpiar fallback si hay slides en la DB
+                carouselContainer.innerHTML = slides.map((slide, index) => `
+                    <div class="carousel-slide h-full bg-cover bg-center transition-opacity duration-1000 ${index === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'} absolute inset-0" 
+                         style="background-image: linear-gradient(to bottom, rgba(10,37,64,0.4), rgba(10,37,64,0.8)), url('${slide.image_url}');">
+                        <div class="flex flex-col items-center justify-center h-full text-center px-4">
+                            <h2 class="text-4xl md:text-7xl font-bold text-white mb-6 drop-shadow-2xl animate-fade-in-up">B&H Préstamos</h2>
+                            <p class="text-lg md:text-2xl text-white/80 max-w-2xl mb-10 leading-relaxed font-semibold">Soluciones dinámicas para tu futuro.</p>
+                            <a href="solicitud_español.html" class="bg-accent text-prime px-10 py-4 rounded-xl font-black text-lg hover:bg-yellow-600 transition-all shadow-[0_0_30px_rgba(193,162,42,0.4)] hover:-translate-y-1 uppercase tracking-tighter">COMENZAR SOLICITUD</a>
+                        </div>
+                    </div>
+                `).join('');
+                
+                // Reiniciar intervalo de rotación
+                let current = 0;
+                const dynamicSlides = carouselContainer.querySelectorAll('.carousel-slide');
+                if (dynamicSlides.length > 1) {
+                    setInterval(() => {
+                        dynamicSlides[current].classList.replace('opacity-100', 'opacity-0');
+                        dynamicSlides[current].classList.replace('z-10', 'z-0');
+                        current = (current + 1) % dynamicSlides.length;
+                        dynamicSlides[current].classList.replace('opacity-0', 'opacity-100');
+                        dynamicSlides[current].classList.replace('z-0', 'z-10');
+                    }, 5000);
+                }
+            }
+        }
+    } catch (err) {
+        console.error('Error cargando Supabase:', err);
+    }
+}
 
 function initBot() {
     const isEnglish = window.location.pathname.includes('english');

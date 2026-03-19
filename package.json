@@ -13,10 +13,15 @@
     "type": "git",
     "url": "git+https://github.com/prestamo/Pagina-H-B-prestamos.git"
   },
-  "keywords": ["tailwind", "pwa", "vite"],
+  "keywords": [
+    "tailwind",
+    "pwa",
+    "vite"
+  ],
   "author": "Antigravity",
   "license": "ISC",
   "dependencies": {
+    "@supabase/supabase-js": "^2.99.2",
     "@tailwindcss/vite": "^4.0.0",
     "vite": "^6.0.0",
     "vite-plugin-pwa": "^0.21.1"

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin | B&H Préstamos</title>
+    <link rel="stylesheet" href="../src/css/input.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+</head>
+<body class="bg-slate-50 font-['Inter',sans-serif] text-slate-900 overflow-x-hidden">
+    <!-- Admin Sidebar / Header -->
+    <div class="min-h-screen flex">
+        <aside class="w-64 bg-slate-900 text-white p-6 hidden md:flex flex-col border-r border-white/5">
+            <div class="flex items-center gap-3 mb-10">
+                <img src="../assets/img/logob&H.jpeg" alt="Logo" class="h-10 w-auto rounded-full border-2 border-brand">
+                <span class="font-black tracking-tighter text-xl">B&H <span class="text-brand">ADMIN</span></span>
+            </div>
+            
+            <nav class="flex-1 space-y-2">
+                <a href="#" class="flex items-center gap-3 bg-brand/10 text-brand p-3 rounded-xl font-bold transition-all">
+                    <i class="fas fa-home w-5"></i> Dashboard
+                </a>
+                <a href="#banners" class="flex items-center gap-3 text-slate-400 hover:text-white p-3 rounded-xl transition-all">
+                    <i class="fas fa-ad w-5"></i> Banners
+                </a>
+                <a href="#carousel" class="flex items-center gap-3 text-slate-400 hover:text-white p-3 rounded-xl transition-all">
+                    <i class="fas fa-images w-5"></i> Carrusel
+                </a>
+                <a href="#promos" class="flex items-center gap-3 text-slate-400 hover:text-white p-3 rounded-xl transition-all">
+                    <i class="fas fa-tags w-5"></i> Promociones
+                </a>
+            </nav>
+
+            <button id="logoutBtn" class="mt-auto flex items-center gap-3 text-red-400 hover:text-red-300 p-3 font-bold transition-all">
+                <i class="fas fa-sign-out-alt w-5"></i> Cerrar Sesión
+            </button>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-4 md:p-10">
+            <header class="flex justify-between items-center mb-10">
+                <h2 class="text-3xl font-black text-slate-900 italic tracking-tight">Panel de <span class="text-brand underline decoration-brand/30">Gestión</span></h2>
+                <div class="flex items-center gap-4">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Bienvenido,</p>
+                        <p id="userEmail" class="text-sm font-black text-slate-900"></p>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+                <div class="bg-white p-6 rounded-3xl shadow-xl border border-slate-100 flex items-center gap-5">
+                    <div class="w-14 h-14 bg-brand/10 rounded-2xl flex items-center justify-center text-brand text-2xl">
+                        <i class="fas fa-image"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Carrusel</p>
+                        <h4 class="text-2xl font-black text-slate-900">Activo</h4>
+                    </div>
+                </div>
+                <!-- More cards... -->
+            </div>
+
+            <!-- Management Sections -->
+            <section id="banners" class="bg-white p-8 rounded-[2.5rem] shadow-2xl border border-slate-100 mb-10">
+                <h3 class="text-xl font-black mb-6 flex items-center gap-3">
+                    <i class="fas fa-ad text-brand"></i> Configuración de Banner
+                </h3>
+                <form id="bannerForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <label class="block text-xs font-bold uppercase tracking-widest text-slate-500">Texto del Anuncio</label>
+                        <input type="text" id="bannerText" class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 focus:ring-2 focus:ring-brand outline-none" placeholder="Ej: ¡Aprobación en 24 horas!">
+                    </div>
+                    <div class="space-y-4">
+                        <label class="block text-xs font-bold uppercase tracking-widest text-slate-500">Color de Fondo</label>
+                        <input type="color" id="bannerColor" class="w-full h-14 bg-slate-50 border border-slate-200 rounded-2xl p-2 outline-none cursor-pointer">
+                    </div>
+                    <button type="submit" class="md:col-span-2 bg-prime text-white p-4 rounded-2xl font-black hover:bg-slate-800 transition-all">ACTUALIZAR ANUNCIO</button>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <script type="module" src="../src/js/admin.js"></script>
+</body>
+</html>

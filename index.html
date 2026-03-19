@@ -4,13 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>B&H PRÉSTAMOS | Soluciones Financieras Premium</title>
-    <link rel="icon" href="assets/img/logob&H.ico">
+    <link rel="icon" href="assets/img/logob&H.jpeg">
     <link rel="stylesheet" href="src/css/input.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="bg-slate-50 font-['Inter',sans-serif] text-slate-900 overflow-x-hidden">
+    <!-- Banner Dinámico (Supabase) -->
+    <div id="banner-top" class="hidden bg-brand text-white py-2 text-center text-xs font-bold uppercase tracking-[0.2em] relative z-[60]">
+        <span id="promo-banner">¡Cargando ofertas especiales...!</span>
+    </div>
+
     <!-- Header / Nav -->
     <header class="fixed top-0 w-full z-50 transition-all duration-300 bg-slate-900/80 backdrop-blur-md border-b border-white/10">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-20">
@@ -55,15 +60,15 @@
     <main id="home" class="pt-20">
         <!-- Hero Section con Carrusel Mejorado -->
         <section class="relative h-[85vh] overflow-hidden bg-slate-900">
-            <div class="carousel h-full w-full relative">
-                <div class="carousel-slide h-full bg-cover bg-center transition-opacity duration-1000 opacity-100 absolute inset-0" style="background-image: linear-gradient(to bottom, rgba(10,37,64,0.4), rgba(10,37,64,0.8)), url('assets/img/imgp.png');">
+            <div id="carousel-dynamic" class="carousel h-full w-full relative">
+                <!-- Los slides se inyectarán aquí desde Supabase -->
+                <div id="hero-fallback" class="carousel-slide h-full bg-cover bg-center transition-opacity duration-1000 opacity-100 absolute inset-0" style="background-image: linear-gradient(to bottom, rgba(10,37,64,0.4), rgba(10,37,64,0.8)), url('assets/img/imgp.png');">
                     <div class="flex flex-col items-center justify-center h-full text-center px-4">
                         <h1 class="text-4xl md:text-7xl font-bold text-white mb-6 drop-shadow-2xl animate-fade-in-up">B&H Préstamos <span class="text-brand italic block sm:inline">en General</span></h1>
                         <p class="text-lg md:text-2xl text-white/80 max-w-2xl mb-10 leading-relaxed">Tu futuro financiero comienza hoy. <span class="text-accent font-bold">Créditos rápidos</span>, seguros y diseñados a tu medida.</p>
                         <a href="solicitud_español.html" class="bg-accent text-prime px-10 py-4 rounded-xl font-black text-lg hover:bg-yellow-600 transition-all shadow-[0_0_30px_rgba(193,162,42,0.4)] hover:-translate-y-1 uppercase tracking-tighter">COMENZAR SOLICITUD</a>
                     </div>
                 </div>
-                <!-- Los demás slides se manejarán por JS para inyectarlos o rotarlos -->
             </div>
         </section>
 
