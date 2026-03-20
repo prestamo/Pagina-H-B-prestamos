@@ -83,24 +83,26 @@
             </div>
 
             <!-- Main Charts Row -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10 max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-10 max-w-6xl mx-auto">
                 <!-- Large Traffic Chart -->
-                <div class="lg:col-span-2 bg-white p-8 rounded-[3rem] shadow-2xl border border-slate-100 min-h-[450px]">
-                    <div class="flex justify-between items-center mb-10">
-                        <h3 class="text-xl font-black italic">Tendencia de Tráfico</h3>
-                        <select id="chartType" class="bg-slate-50 border-none text-xs font-bold uppercase tracking-widest p-2 rounded-lg outline-none cursor-pointer">
-                            <option value="daily">Diario</option>
-                            <option value="weekly">Semanal</option>
-                            <option value="monthly">Mensual</option>
+                <div class="lg:col-span-3 bg-white p-6 md:p-8 rounded-[2.5rem] shadow-xl border border-slate-100 h-[400px] flex flex-col">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-black italic uppercase tracking-tighter">Tendencia de Tráfico</h3>
+                        <select id="chartType" class="bg-slate-50 border-none text-[10px] font-black uppercase tracking-widest p-2 rounded-lg outline-none cursor-pointer hover:bg-slate-100 transition-colors">
+                            <option value="daily">Vista Diaria</option>
+                            <option value="weekly">Vista Semanal</option>
+                            <option value="monthly">Vista Mensual</option>
                         </select>
                     </div>
-                    <canvas id="trafficChart"></canvas>
+                    <div class="flex-1 min-h-0">
+                        <canvas id="trafficChart"></canvas>
+                    </div>
                 </div>
                 
-                <!-- Page Distribution -->
-                <div class="bg-white p-8 rounded-[3rem] shadow-2xl border border-slate-100">
-                    <h3 class="text-xl font-black mb-10 italic">Páginas Principales</h3>
-                    <div id="pagesList" class="space-y-4">
+                <!-- Page Distribution (More compact) -->
+                <div class="bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100 h-[400px] flex flex-col">
+                    <h3 class="text-lg font-black mb-6 italic uppercase tracking-tighter">Top Páginas</h3>
+                    <div id="pagesList" class="space-y-3 overflow-y-auto flex-1 pr-2 custom-scrollbar">
                         <!-- Items injected via JS -->
                     </div>
                 </div>
