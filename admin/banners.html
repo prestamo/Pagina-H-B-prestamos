@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Banners | B&H ADMIN</title>
+    <!-- Google Fonts - Colección Masiva -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Montserrat:wght@400;700;900&family=Poppins:wght@400;600;700;900&family=Raleway:wght@400;700;900&family=Playfair+Display:wght@400;700;900&family=Lora:wght@400;700&family=Oswald:wght@400;700&family=Anton&family=Caveat&family=Pacifico&family=Orbitron:wght@400;700&family=Bebas+Neue&family=Righteous&family=Satisfy&family=Dancing+Script&family=Shadows+Into+Light&family=Permanent+Marker&family=Luckiest+Guy&family=Titan+One&family=Lobster&family=Press+Start+2P&family=Bungee&family=Monoton&family=Special+Elite&family=Creepster&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="../src/css/input.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Cropper.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+</head>
+<body class="bg-slate-50 font-['Inter',sans-serif] text-slate-900 overflow-x-hidden">
+    <div class="min-h-screen flex flex-col md:flex-row">
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-64 bg-slate-800 text-white flex flex-col shadow-2xl z-50 min-h-screen">
+            <div class="p-6 border-b border-slate-700 flex justify-between items-center md:block">
+                <h1 class="text-xl font-bold tracking-tighter text-brand text-center md:mx-auto">B&H <span class="text-white">ADMIN</span></h1>
+                <button class="md:hidden text-slate-300" onclick="document.getElementById('mobileMenu').classList.toggle('hidden')">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+            <nav id="mobileMenu" class="hidden md:flex flex-col flex-1 p-4 space-y-2">
+                <a href="index.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-chart-line"></i> <span>Dashboard (Visitas)</span>
+                </a>
+                <a href="banners.html" class="flex items-center gap-3 p-3 rounded-xl bg-brand text-white shadow-lg">
+                    <i class="fas fa-ad"></i> <span>Banners</span>
+                </a>
+                <a href="carousel.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-images"></i> <span>Carrusel</span>
+                </a>
+                <a href="promotions.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-tag"></i> <span>Promociones</span>
+                </a>
+                <button id="logoutBtnMobile" class="md:hidden flex items-center gap-3 w-full p-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-all">
+                    <i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span>
+                </button>
+            </nav>
+            <div class="hidden md:block p-4 border-t border-slate-700">
+                <button id="logoutBtn" class="flex items-center gap-3 w-full p-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-all">
+                    <i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto bg-slate-50 p-4 md:p-8">
+            <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+                <div>
+                    <h2 class="text-3xl font-black text-prime uppercase tracking-tighter">Gestión de Banners</h2>
+                    <p class="text-slate-500 font-semibold italic">Control de avisos y ofertas en barra dinámica</p>
+                </div>
+            </header>
+
+            <!-- Real-time Preview Section -->
+            <div class="mb-10 w-full max-w-4xl mx-auto">
+                <label class="block text-[10px] font-bold uppercase mb-4 text-slate-400 tracking-[0.3em]">Vista Previa en Tiempo Real</label>
+                <div id="bannerPreview" class="w-full bg-slate-200 rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 relative group" style="min-height: 60px;">
+                    <!-- El contenido de la previsualización se inyectará aquí -->
+                    <div id="previewContainer" class="w-full h-full flex items-center justify-center transition-all duration-500">
+                        <span class="text-slate-400 font-bold text-xs uppercase italic">Configura el banner abajo para ver el resultado</span>
+                    </div>
+                </div>
+            </div>
+
+            <section id="banners" class="content-section max-w-7xl mx-auto px-4 md:px-0">
+                <form id="bannerForm" class="bg-white p-6 md:p-8 rounded-[2.5rem] shadow-xl border border-slate-100">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <!-- Columna 1: Contenido y Tipografía -->
+                        <div class="space-y-6">
+                            <div class="border-b border-slate-50 pb-2">
+                                <h3 class="text-xs font-black uppercase text-brand tracking-widest pl-2 mb-4">1. Texto y Estilo</h3>
+                                <label class="block text-[10px] font-bold uppercase mb-2 text-slate-400 pl-2">Contenido (Multilínea)</label>
+                                <textarea id="bannerText" rows="3" class="w-full p-4 bg-slate-50 rounded-2xl border-none focus:ring-brand font-semibold text-sm shadow-inner" placeholder="Escribe el anuncio aquí..."></textarea>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="col-span-2">
+                                    <label class="block text-[10px] font-bold uppercase mb-2 text-slate-400">Fuente (Word Style)</label>
+                                    <select id="bannerFont" class="w-full p-3 bg-slate-50 rounded-xl border-none shadow-sm focus:ring-brand font-bold text-[10px]">
+                                         <optgroup label="Modernos / Sans">
+                                            <option value="'Inter', sans-serif">Inter (Standard)</option>
+                                            <option value="'Montserrat', sans-serif">Montserrat</option>
+                                            <option value="'Raleway', sans-serif">Raleway</option>
+                                            <option value="'Poppins', sans-serif">Poppins</option>
+                                            <option value="'Roboto', sans-serif">Roboto</option>
+                                            <option value="'Open Sans', sans-serif">Open Sans</option>
+                                            <option value="'Lato', sans-serif">Lato</option>
+                                            <option value="'Outfit', sans-serif">Outfit</option>
+                                            <option value="'Sora', sans-serif">Sora</option>
+                                            <option value="'Work Sans', sans-serif">Work Sans</option>
+                                         </optgroup>
+                                         <optgroup label="Elegantes / Serif">
+                                            <option value="'Playfair Display', serif">Playfair Display</option>
+                                            <option value="'Lora', serif">Lora</option>
+                                            <option value="'Merriweather', serif">Merriweather</option>
+                                            <option value="'Crimson Text', serif">Crimson Text</option>
+                                            <option value="'Libre Baskerville', serif">Libre Baskerville</option>
+                                            <option value="'Cinzel', serif">Cinzel</option>
+                                            <option value="'Spectral', serif">Spectral</option>
+                                            <option value="'Cormorant Garamond', serif">Cormorant Garamond</option>
+                                         </optgroup>
+                                         <optgroup label="Impacto / Display">
+                                            <option value="'Anton', sans-serif">Anton (Pesado)</option>
+                                            <option value="'Oswald', sans-serif">Oswald</option>
+                                            <option value="'Bebas Neue', cursive">Bebas Neue</option>
+                                            <option value="'Orbitron', sans-serif">Orbitron (Futuro)</option>
+                                            <option value="'Archivo Black', sans-serif">Archivo Black</option>
+                                            <option value="'Righteous', cursive">Righteous</option>
+                                            <option value="'Titan One', cursive">Titan One</option>
+                                            <option value="'Luckiest Guy', cursive">Luckiest Guy</option>
+                                            <option value="'Bungee', cursive">Bungee</option>
+                                            <option value="'Monoton', cursive">Monoton</option>
+                                         </optgroup>
+                                         <optgroup label="Escritura / Decorativo">
+                                            <option value="'Caveat', cursive">Caveat</option>
+                                            <option value="'Dancing Script', cursive">Dancing Script</option>
+                                            <option value="'Pacifico', cursive">Pacifico</option>
+                                            <option value="'Satisfy', cursive">Satisfy</option>
+                                            <option value="'Great Vibes', cursive">Great Vibes</option>
+                                            <option value="'Shadows Into Light', cursive">Shadows Into Light</option>
+                                            <option value="'Permanent Marker', cursive">Permanent Marker</option>
+                                            <option value="'Lobster', cursive">Lobster</option>
+                                            <option value="'Satisfy', cursive">Satisfy</option>
+                                         </optgroup>
+                                         <optgroup label="Especiales / Retro">
+                                            <option value="'Press Start 2P', cursive">Press Start 2P</option>
+                                            <option value="'Special Elite', cursive">Special Elite</option>
+                                            <option value="'Creepster', cursive">Creepster</option>
+                                         </optgroup>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold uppercase mb-2 text-slate-400">Tamaño (PX): <span id="fontSizeVal">14</span></label>
+                                    <input type="range" id="bannerFontSize" min="8" max="250" value="14" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold uppercase mb-2 text-slate-400">Interlineado: <span id="lineHeightVal">1.2</span></label>
+                                    <input type="range" id="bannerLineHeight" min="0.8" max="3" step="0.1" value="1.2" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold uppercase mb-2 text-slate-400">Escala Y: <span id="fontScaleVal">1</span>x</label>
+                                    <input type="range" id="bannerFontScale" min="0.5" max="4" step="0.1" value="1" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold uppercase mb-2 text-slate-400">Color de Letra</label>
+                                    <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-xl border border-slate-100">
+                                        <input type="color" id="bannerFontColor" value="#FFFFFF" class="w-8 h-8 p-0 bg-transparent rounded-lg border-none cursor-pointer shadow-sm">
+                                        <span id="fontColorHex" class="text-[9px] font-mono font-bold text-slate-400 uppercase">#FFFFFF</span>
+                                    </div>
+                                </div>
+                                <div class="col-span-2">
+                                    <label class="block text-[10px] font-bold uppercase mb-2 text-slate-400">Alineación</label>
+                                    <select id="bannerTextAlign" class="w-full p-3 bg-slate-50 rounded-xl border-none shadow-sm focus:ring-brand font-bold text-[10px]">
+                                        <option value="center">Centro</option>
+                                        <option value="start">Izquierda</option>
+                                        <option value="end">Derecha</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Columna 2: Configuración Visual y Comportamiento -->
+                        <div class="space-y-6">
+                            <h3 class="text-xs font-black uppercase text-accent tracking-widest pl-2 mb-4 border-b border-slate-50 pb-2">2. Visual y Animación</h3>
+                            
+                            <div class="grid grid-cols-1 gap-4">
+                                <div class="flex items-center justify-between p-3 bg-slate-50 rounded-2xl">
+                                    <span class="text-[10px] font-bold text-slate-600 uppercase">Visibilidad Banner</span>
+                                    <label class="relative cursor-pointer">
+                                        <input type="checkbox" id="bannerVisible" class="sr-only peer" checked>
+                                        <div class="w-10 h-5 bg-slate-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-brand after:content-[''] after:absolute after:top-[1px] after:left-[1px] after:bg-white after:rounded-full after:h-4.5 after:w-4.5 after:transition-all"></div>
+                                    </label>
+                                </div>
+                                <div class="flex flex-col gap-3 p-3 bg-slate-50 rounded-2xl">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-[10px] font-bold text-slate-600 uppercase">Loop Marquee</span>
+                                        <label class="relative cursor-pointer">
+                                            <input type="checkbox" id="bannerScroll" class="sr-only peer" checked>
+                                            <div class="w-10 h-5 bg-slate-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-brand after:content-[''] after:absolute after:top-[1px] after:left-[1px] after:bg-white after:rounded-full after:h-4.5 after:w-4.5 after:transition-all"></div>
+                                        </label>
+                                    </div>
+                                    <div id="reappearContainer" class="pl-2 border-l-2 border-brand/20">
+                                        <label class="block text-[9px] font-bold uppercase text-slate-400 tracking-wider">Delay Re-entrada: <span id="loopDelayVal">4</span>s</label>
+                                        <input type="range" id="bannerLoopDelay" min="0" max="30" value="4" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-accent">
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between p-3 bg-slate-50 rounded-2xl">
+                                    <span class="text-[10px] font-bold text-slate-600 uppercase">Estilo Rayas</span>
+                                    <label class="relative cursor-pointer">
+                                        <input type="checkbox" id="bannerStripes" class="sr-only peer">
+                                        <div class="w-10 h-5 bg-slate-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-brand after:content-[''] after:absolute after:top-[1px] after:left-[1px] after:bg-white after:rounded-full after:h-4.5 after:w-4.5 after:transition-all"></div>
+                                    </label>
+                                </div>
+                                
+                                <div class="p-4 bg-slate-50 rounded-2xl space-y-4">
+                                    <div>
+                                        <label class="block text-[10px] font-bold uppercase mb-2 text-slate-400">Posición en Sitio</label>
+                                        <select id="bannerPosition" class="w-full p-2 bg-white rounded-xl border-none shadow-sm focus:ring-brand font-bold text-xs">
+                                            <option value="hero_bottom">Debajo de Portada</option>
+                                            <option value="center">Centro del Sitio</option>
+                                            <option value="bottom">Pie de Página</option>
+                                        </select>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="block text-[10px] font-bold uppercase mb-1 text-slate-400">Alto: <span id="heightVal">60</span>px</label>
+                                            <input type="range" id="bannerHeight" min="40" max="800" value="60" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-bold uppercase mb-1 text-slate-400">Velocidad: <span id="speedVal">20</span>s</label>
+                                            <input type="range" id="bannerSpeed" min="5" max="60" value="20" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand">
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between pt-2">
+                                        <label class="block text-[10px] font-bold uppercase text-slate-400">Color Fondo</label>
+                                        <div class="flex items-center gap-2">
+                                            <input type="color" id="bannerColor" class="w-8 h-8 p-0 bg-white rounded-lg border-none cursor-pointer shadow-sm">
+                                            <span id="colorHex" class="text-[9px] font-mono font-bold text-slate-400">#000000</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Columna 3: Multimedia e Imagen -->
+                        <div class="space-y-6">
+                            <h3 class="text-xs font-black uppercase text-prime tracking-widest pl-2 mb-4 border-b border-slate-50 pb-2">3. Multimedia (Imagen)</h3>
+                            
+                            <div class="p-5 bg-slate-50 rounded-[2rem] space-y-5">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[10px] font-bold text-slate-600 uppercase">Mostrar Multimedia</span>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" id="bannerShowImage" class="sr-only peer" checked>
+                                        <div class="w-10 h-5 bg-slate-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-brand after:content-[''] after:absolute after:top-[1px] after:left-[1px] after:bg-white after:rounded-full after:h-4.5 after:w-4.5 after:transition-all"></div>
+                                    </label>
+                                </div>
+
+                                <div class="space-y-4">
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div class="space-y-2">
+                                            <label class="text-[9px] uppercase font-black text-slate-400 pl-1">Modo</label>
+                                            <div class="grid grid-cols-2 gap-1 p-1 bg-white rounded-xl border border-slate-100">
+                                                <button type="button" id="idBtnIcon" onclick="setImageMode('icon')" class="text-[8px] font-bold uppercase p-2 rounded-lg bg-brand text-white shadow-sm transition-all">Ícono</button>
+                                                <button type="button" id="idBtnBanner" onclick="setImageMode('banner')" class="text-[8px] font-bold uppercase p-2 rounded-lg bg-white text-slate-400 border border-slate-100 transition-all">Detrás</button>
+                                                <input type="hidden" id="bannerImageMode" value="icon">
+                                            </div>
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label class="text-[9px] uppercase font-black text-slate-400 pl-1">Alineación</label>
+                                            <div class="grid grid-cols-2 gap-1 p-1 bg-white rounded-xl border border-slate-100">
+                                                <button type="button" id="btnImgLeft" onclick="setImagePosition('left')" class="text-[8px] font-bold uppercase p-2 rounded-lg bg-brand text-white shadow-sm transition-all">Izquierda</button>
+                                                <button type="button" id="btnImgRight" onclick="setImagePosition('right')" class="text-[8px] font-bold uppercase p-2 rounded-lg bg-white text-slate-400 border border-slate-100 transition-all">Derecha</button>
+                                                <input type="hidden" id="bannerImagePosition" value="left">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <input type="file" id="bannerImageFile" class="hidden" accept="image/*">
+                                    <label for="bannerImageFile" class="flex flex-col items-center justify-center p-6 border-2 border-dashed border-slate-200 rounded-3xl hover:border-brand cursor-pointer transition-colors bg-white group">
+                                        <i class="fas fa-cloud-upload-alt text-2xl text-slate-300 group-hover:text-brand transition-colors mb-2"></i>
+                                        <span class="text-[10px] font-bold text-slate-500">Cargar Nueva Imagen</span>
+                                    </label>
+
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="block text-[9px] font-bold uppercase mb-1 text-slate-400">Ancho: <span id="imgSizeVal">40</span>%</label>
+                                            <input type="range" id="bannerImgSize" min="5" max="100" value="40" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[9px] font-bold uppercase mb-1 text-slate-400">Alto: <span id="imgHeightVal">100</span>%</label>
+                                            <input type="range" id="bannerImgHeight" min="5" max="100" value="100" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-accent">
+                                        </div>
+                                    </div>
+
+                                    <div id="imagePreview" class="hidden w-full aspect-video bg-white rounded-2xl border border-slate-100 flex items-center justify-center overflow-hidden shadow-sm">
+                                        <img src="" id="currentBannerImg" class="w-full h-full object-contain">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-10 pt-8 border-t border-slate-50">
+                        <div class="flex flex-col sm:flex-row gap-4 justify-between items-center">
+                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest pl-2">
+                                <i class="fas fa-info-circle mr-1"></i> Todos los botones originales se han conservado
+                            </div>
+                            <div class="flex flex-wrap items-center gap-4">
+                                <button type="submit" class="relative group px-10 py-6 bg-brand text-white font-black rounded-3xl transition-all duration-500 hover:shadow-[0_0_40px_rgba(0,174,239,0.4)] hover:-translate-y-1 overflow-hidden flex items-center justify-center gap-4 min-w-[300px]">
+                                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-shimmer"></div>
+                                    <i class="fas fa-rocket"></i>
+                                    <span class="uppercase tracking-[0.2em] text-xs">Publicar en el Sitio</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Historial de Promociones -->
+            <div class="mt-12 max-w-4xl mx-auto">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-black uppercase text-prime tracking-tighter italic">Historial de Promociones (Banners)</h2>
+                    <span class="bg-slate-100 text-slate-500 px-4 py-1 rounded-full text-[10px] font-bold uppercase">Últimos guardados</span>
+                </div>
+                
+                <div id="bannerHistoryList" class="grid grid-cols-1 gap-4">
+                    <!-- Los items del historial se cargarán aquí dinámicamente -->
+                    <div class="p-6 bg-white rounded-3xl border border-slate-100 shadow-sm flex items-center justify-center italic text-slate-400 text-xs">
+                        Cargando historial...
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <!-- Modal de Recorte (Crop) -->
+    <div id="cropModal" class="hidden fixed inset-0 z-[100] bg-black/90 flex flex-col items-center justify-center p-4">
+        <div class="bg-white w-full max-w-2xl rounded-[2.5rem] overflow-hidden shadow-2xl">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                <h3 class="text-lg font-black uppercase text-prime tracking-tighter italic">Recortar y Ajustar Imagen</h3>
+                <button type="button" onclick="closeCropModal()" class="text-slate-400 hover:text-red-500 transition-colors"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <div class="p-6">
+                <div class="aspect-video bg-slate-100 rounded-2xl overflow-hidden mb-6">
+                    <img id="imageToCrop" class="max-w-full">
+                </div>
+                <div class="flex gap-4">
+                    <button type="button" onclick="applyCrop()" class="flex-1 bg-brand text-white font-black py-4 rounded-2xl hover:bg-slate-800 transition-all uppercase tracking-widest text-xs shadow-lg">Aplicar Recorte</button>
+                    <button type="button" onclick="closeCropModal()" class="px-8 bg-slate-100 text-slate-500 font-bold py-4 rounded-2xl hover:bg-slate-200 transition-all uppercase tracking-widest text-xs">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../src/js/admin.js"></script>
+</body>
+</html>

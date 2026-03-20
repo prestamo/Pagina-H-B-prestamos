@@ -4,6 +4,7 @@ const supabaseUrl = 'https://rjstcmowxhlfbualhtao.supabase.co'
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJqc3RjbW93eGhsZmJ1YWxodGFvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAwNjM3MTEsImV4cCI6MjA4NTYzOTcxMX0.JpEo5MbBXSEzftVCQqUip8wbH6NcQxX4QEcyUu2HK5M'
 
 export const supabase = createClient(supabaseUrl, supabaseKey)
+window.supabase = supabase; // Fallback global logic
 
 /**
  * Funciones de ayuda para obtener contenido dinámico
@@ -12,7 +13,7 @@ export const getBanners = async () => {
     const { data, error } = await supabase
         .from('banners')
         .select('*')
-        .eq('active', true)
+        .eq('is_visible', true)
     return { data, error }
 }
 

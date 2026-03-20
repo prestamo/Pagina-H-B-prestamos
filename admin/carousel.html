@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Carrusel | B&H ADMIN</title>
+    <link rel="icon" href="../assets/img/logob&H.jpeg">
+    <link rel="stylesheet" href="../src/css/input.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-slate-50 font-['Inter',sans-serif] text-slate-900 overflow-x-hidden">
+    <div class="min-h-screen flex flex-col md:flex-row">
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-64 bg-slate-800 text-white flex flex-col shadow-2xl z-50 min-h-screen">
+            <div class="p-6 border-b border-slate-700 flex justify-between items-center md:block">
+                <h1 class="text-xl font-bold tracking-tighter text-brand">B&H <span class="text-white">ADMIN</span></h1>
+                <button class="md:hidden text-slate-300" onclick="document.getElementById('mobileMenu').classList.toggle('hidden')">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+            <nav id="mobileMenu" class="hidden md:flex flex-col flex-1 p-4 space-y-2">
+                <a href="index.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-chart-line"></i> <span>Dashboard (Visitas)</span>
+                </a>
+                <a href="banners.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-ad"></i> <span>Banners</span>
+                </a>
+                <a href="carousel.html" class="flex items-center gap-3 p-3 rounded-xl bg-brand text-white shadow-lg">
+                    <i class="fas fa-images"></i> <span>Carrusel</span>
+                </a>
+                <a href="promotions.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-tag"></i> <span>Promociones</span>
+                </a>
+                <button id="logoutBtnMobile" class="md:hidden flex items-center gap-3 w-full p-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-all">
+                    <i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span>
+                </button>
+            </nav>
+            <div class="hidden md:block p-4 border-t border-slate-700">
+                <button id="logoutBtn" class="flex items-center gap-3 w-full p-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-all">
+                    <i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto bg-slate-50 p-8">
+            <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+            <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 max-w-2xl mx-auto w-full">
+                <div>
+                    <h2 class="text-3xl font-black text-prime uppercase tracking-tighter">Gestión de Carrusel</h2>
+                    <p class="text-slate-500 font-semibold italic">Administra las imágenes de impacto en la portada</p>
+                </div>
+            </header>
+            </header>
+
+            <section id="carousel" class="content-section max-w-2xl mx-auto">
+                <div class="bg-white p-6 md:p-8 rounded-[2.5rem] shadow-xl border border-slate-100 mb-10">
+                    <label class="block text-xs font-bold uppercase mb-6 text-slate-400 tracking-widest text-center">Subir Nueva Imagen</label>
+                    <div class="flex flex-col items-center justify-center p-10 border-2 border-dashed border-slate-200 rounded-3xl hover:border-brand transition-colors group cursor-pointer relative">
+                        <input type="file" id="carouselUpload" class="absolute inset-0 opacity-0 cursor-pointer">
+                        <i class="fas fa-cloud-upload-alt text-4xl text-slate-300 group-hover:text-brand transition-colors mb-4"></i>
+                        <p class="text-slate-500 font-bold">Haz clic o arrastra una imagen aquí</p>
+                        <p class="text-slate-400 text-xs mt-1">Formatos sugeridos: JPG, PNG, WEBP (Relación 16:9)</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="carouselList">
+                    <!-- Imagenes cargadas dinamicamente -->
+                    <div class="animate-pulse bg-slate-200 h-48 rounded-2xl"></div>
+                    <div class="animate-pulse bg-slate-200 h-48 rounded-2xl"></div>
+                    <div class="animate-pulse bg-slate-200 h-48 rounded-2xl"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script type="module" src="../src/js/admin.js"></script>
+</body>
+</html>

@@ -8,13 +8,9 @@
     <link rel="stylesheet" href="src/css/input.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Montserrat:wght@400;700&family=Poppins:wght@400;600&family=Raleway:wght@400;700&family=Playfair+Display:wght@400;700&family=Lora:wght@400;700&family=Oswald:wght@400;700&family=Anton&family=Caveat&family=Pacifico&family=Orbitron:wght@400;700&family=Bebas+Neue&family=Righteous&family=Satisfy&family=Dancing+Script&family=Shadows+Into+Light&family=Permanent+Marker&family=Luckiest+Guy&family=Titan+One&family=Lobster&family=Press+Start+2P&family=Bungee&family=Monoton&family=Special+Elite&family=Creepster&display=swap" rel="stylesheet">
 </head>
 <body class="bg-slate-50 font-['Inter',sans-serif] text-slate-900 overflow-x-hidden">
-    <!-- Banner Dinámico (Supabase) -->
-    <div id="banner-top" class="hidden bg-brand text-white py-2 text-center text-xs font-bold uppercase tracking-[0.2em] relative z-[60]">
-        <span id="promo-banner">¡Cargando ofertas especiales...!</span>
-    </div>
 
     <!-- Header / Nav -->
     <header class="fixed top-0 w-full z-50 transition-all duration-300 bg-slate-900/80 backdrop-blur-md border-b border-white/10">
@@ -64,13 +60,25 @@
                 <!-- Los slides se inyectarán aquí desde Supabase -->
                 <div id="hero-fallback" class="carousel-slide h-full bg-cover bg-center transition-opacity duration-1000 opacity-100 absolute inset-0" style="background-image: linear-gradient(to bottom, rgba(10,37,64,0.4), rgba(10,37,64,0.8)), url('assets/img/imgp.png');">
                     <div class="flex flex-col items-center justify-center h-full text-center px-4">
-                        <h1 class="text-4xl md:text-7xl font-bold text-white mb-6 drop-shadow-2xl animate-fade-in-up">B&H Préstamos <span class="text-brand italic block sm:inline">en General</span></h1>
+                        <h1 class="text-4xl md:text-7xl font-bold text-white mb-6 drop-shadow-2xl animate-fade-in-up uppercase tracking-tighter">B&H Préstamos <span class="text-brand italic block sm:inline">en General</span></h1>
                         <p class="text-lg md:text-2xl text-white/80 max-w-2xl mb-10 leading-relaxed">Tu futuro financiero comienza hoy. <span class="text-accent font-bold">Créditos rápidos</span>, seguros y diseñados a tu medida.</p>
                         <a href="solicitud_español.html" class="bg-accent text-prime px-10 py-4 rounded-xl font-black text-lg hover:bg-yellow-600 transition-all shadow-[0_0_30px_rgba(193,162,42,0.4)] hover:-translate-y-1 uppercase tracking-tighter">COMENZAR SOLICITUD</a>
                     </div>
                 </div>
             </div>
+
+            <!-- Logo Flotante en Carrusel (Fuera del contenedor dinámico) -->
+            <div class="absolute bottom-10 left-10 z-50 hidden md:block animate-fade-in">
+                <div class="p-3 bg-white/10 backdrop-blur-md rounded-[2.5rem] border border-white/20 shadow-2xl">
+                    <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-brand shadow-inner bg-white">
+                        <img src="assets/img/logo_round.png" alt="Logo B&H Circular" class="w-full h-full object-contain">
+                    </div>
+                </div>
+            </div>
         </section>
+
+        <!-- Banner Position: Hero Bottom -->
+        <div id="banner-hero_bottom" class="hidden overflow-hidden relative"></div>
 
         <!-- Servicios / Info Section -->
         <section class="py-24 max-w-7xl mx-auto px-4">
@@ -113,6 +121,9 @@
             </div>
         </section>
 
+        <!-- Banner Position: Center (Bajo Servicios) -->
+        <div id="banner-center" class="hidden overflow-hidden relative"></div>
+
         <!-- Sección de Tabla / Presentación -->
         <section class="bg-prime py-24 text-white">
             <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -151,6 +162,9 @@
             <div id="map" class="h-[450px] w-full rounded-[2.5rem] shadow-2xl border-8 border-white overflow-hidden"></div>
         </section>
     </main>
+
+    <!-- Banner Position: Bottom -->
+    <div id="banner-bottom" class="hidden overflow-hidden relative"></div>
 
     <!-- Footer -->
     <footer class="bg-slate-900 text-white pt-20 pb-10">

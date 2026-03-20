@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Promociones | B&H ADMIN</title>
+    <link rel="icon" href="../assets/img/logob&H.jpeg">
+    <link rel="stylesheet" href="../src/css/input.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-slate-50 font-['Inter',sans-serif] text-slate-900 overflow-x-hidden">
+    <div class="min-h-screen flex flex-col md:flex-row">
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-64 bg-slate-800 text-white flex flex-col shadow-2xl z-50 min-h-screen">
+            <div class="p-6 border-b border-slate-700 flex justify-between items-center md:block">
+                <h1 class="text-xl font-bold tracking-tighter text-brand">B&H <span class="text-white">ADMIN</span></h1>
+                <button class="md:hidden text-slate-300" onclick="document.getElementById('mobileMenu').classList.toggle('hidden')">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+            <nav id="mobileMenu" class="hidden md:flex flex-col flex-1 p-4 space-y-2">
+                <a href="index.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-chart-line"></i> <span>Dashboard (Visitas)</span>
+                </a>
+                <a href="banners.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-ad"></i> <span>Banners</span>
+                </a>
+                <a href="carousel.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-images"></i> <span>Carrusel</span>
+                </a>
+                <a href="promotions.html" class="flex items-center gap-3 p-3 rounded-xl bg-brand text-white shadow-lg">
+                    <i class="fas fa-tag"></i> <span>Promociones</span>
+                </a>
+                <button id="logoutBtnMobile" class="md:hidden flex items-center gap-3 w-full p-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-all">
+                    <i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span>
+                </button>
+            </nav>
+            <div class="hidden md:block p-4 border-t border-slate-700">
+                <button id="logoutBtn" class="flex items-center gap-3 w-full p-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-all">
+                    <i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto bg-slate-50 p-8">
+            <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+            <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 max-w-2xl mx-auto w-full">
+                <div>
+                    <h2 class="text-3xl font-black text-prime uppercase tracking-tighter">Gestión de Promociones</h2>
+                    <p class="text-slate-500 font-semibold italic">Crea y elimina ofertas especiales</p>
+                </div>
+            </header>
+            </header>
+
+            <section id="promotions" class="content-section max-w-2xl mx-auto">
+                <form id="promoForm" class="bg-white p-6 md:p-8 rounded-[2.5rem] shadow-xl border border-slate-100 mb-12">
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-xs font-bold uppercase mb-2 text-slate-400 tracking-widest">Título de la Oferta</label>
+                            <input type="text" id="promoTitle" placeholder="Ej: ¡Préstamos Navideños!" class="w-full p-4 bg-slate-50 rounded-2xl border-none focus:ring-brand font-bold" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase mb-2 text-slate-400 tracking-widest">Descripción / Detalles</label>
+                            <textarea id="promoDesc" placeholder="Describe los beneficios aquí..." class="w-full p-4 bg-slate-50 rounded-2xl border-none focus:ring-brand h-32" required></textarea>
+                        </div>
+                        <button type="submit" class="bg-brand text-white font-black py-4 px-10 rounded-2xl hover:bg-slate-700 transition-all shadow-xl hover:-translate-y-1 uppercase tracking-tighter">PUBLICAR PROMOCIÓN</button>
+                    </div>
+                </form>
+
+                <h3 class="text-xl font-black text-prime mb-6 uppercase tracking-tighter italic">Promociones Activas</h3>
+                <div id="promoList" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Promociones cargadas dinamicamente -->
+                    <p class="text-slate-400 italic">Cargando promociones...</p>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script type="module" src="../src/js/admin.js"></script>
+</body>
+</html>

@@ -44,7 +44,10 @@ export default defineConfig({
         solicitud_en: resolve(__dirname, 'solicitud_english.html'),
         descubre: resolve(__dirname, 'descubre_mas.html'),
         adminLogin: resolve(__dirname, 'admin/login.html'),
-        adminDashboard: resolve(__dirname, 'admin/index.html')
+        adminDashboard: resolve(__dirname, 'admin/index.html'),
+        adminBanners: resolve(__dirname, 'admin/banners.html'),
+        adminCarousel: resolve(__dirname, 'admin/carousel.html'),
+        adminPromotions: resolve(__dirname, 'admin/promotions.html')
       }
     }
   }

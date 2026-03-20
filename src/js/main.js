@@ -1,4 +1,4 @@
-import { getBanners, getCarouselImages } from './supabase.js';
+import { supabase, getBanners, getCarouselImages } from './supabase.js';
 // B&H Main Logic - Modern ESM
 document.addEventListener('DOMContentLoaded', () => {
     // Mobile Menu Toggle Premium
@@ -97,22 +97,101 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Función para cargar contenido desde Supabase
 async function loadDynamicContent() {
-    try {
-        // 1. Cargar Banner
-        const { data: banners } = await getBanners();
+    try {        // 1. Cargar Banner Avanzado (Solo Activos)
+        const { data: banners, error: bError } = await window.supabase.from('banners').select('*').eq('is_visible', true);
+        
+        const positions = ['hero_bottom', 'center', 'bottom'];
+        positions.forEach(pos => {
+            const el = document.getElementById(`banner-${pos}`);
+            if (el) el.classList.add('hidden');
+        });
+
         if (banners && banners.length > 0) {
-            const activeBanner = banners[0];
-            const bannerEl = document.getElementById('promo-banner');
-            const bannerBox = document.getElementById('banner-top');
-            if (bannerEl && bannerBox) {
-                bannerEl.textContent = activeBanner.text;
-                bannerBox.style.backgroundColor = activeBanner.bg_color;
-                bannerBox.classList.remove('hidden');
-            }
+            banners.forEach(b => {
+                if (!b.is_visible) return;
+                
+                // SEGURIDAD ANTI-FANTASMAS: Si no hay texto real ni se muestra imagen, ignorar
+                const cleanText = (b.text || "").trim();
+                if (!cleanText && !b.show_image) return;
+
+                const activeEl = document.getElementById(`banner-${b.position}`);
+                if (activeEl) {
+                    activeEl.classList.remove('hidden');
+                    activeEl.style.height = `${b.height || 60}px`;
+
+                    const fontScaleY = b.font_scale_y || 1.0;
+                    const textAlign = b.text_align || 'center';
+                    const imgPos = b.image_position || 'left';
+                    const imgScaleY = b.image_height || 100;
+                    const imgSize = b.image_size || 40;
+                    const fontSize = b.font_size || 32;
+                    const lineHeight = b.line_height || 1.2;
+                    const fontColor = b.font_color || '#FFFFFF';
+                    const bgColor = b.bg_color || '#000000';
+                    const font = b.font_family || "Inter";
+                    
+                    const horizontalAlign = textAlign === 'left' ? 'flex-start' : (textAlign === 'right' ? 'flex-end' : 'center');
+                    const flexDirVal = imgPos === 'right' ? 'row-reverse' : 'row';
+                    
+                    // Limpiar fuente para evitar errores de sintaxis
+                    let cleanFont = font.split(',')[0].replace(/['"]/g, '').trim();
+                    const fontStyle = `'${cleanFont}', sans-serif`;
+
+                    const commonTypography = `font-family: ${fontStyle} !important; font-size: ${fontSize}px !important; line-height: ${lineHeight} !important; color: ${fontColor} !important; transform: scaleY(${fontScaleY}) !important; transform-origin: center !important; text-decoration: none !important; font-weight: 900 !important; text-transform: uppercase !important; letter-spacing: 0.2em !important;`;
+                    const containerStyle = `display: flex !important; align-items: center !important; justify-content: ${horizontalAlign} !important; flex-direction: ${flexDirVal} !important; width: 100% !important; height: 100% !important; padding: 0 40px !important; box-sizing: border-box !important; position: relative !important; overflow: hidden !important; background-color: ${bgColor} !important; ${commonTypography}`;
+                    
+                    let bannerContent = "";
+                    const imgMode = b.image_mode || 'icon';
+                    const spanStyle = `position: relative; z-index: 2; display: flex !important; align-items: center !important; height: 100% !important; white-space: nowrap !important; ${commonTypography}`;
+
+                    if (b.show_image && b.image_url) {
+                        if (imgMode === 'icon') {
+                            const margin = imgPos === 'right' ? 'margin-left: 20px;' : 'margin-right: 20px;';
+                            const imgStyle = `width: ${imgSize}%; height: ${imgScaleY}%; max-height: 95%; object-fit: contain; ${margin} position: relative; z-index: 2; flex-shrink: 0;`;
+                            bannerContent = `<img src="${b.image_url}" style="${imgStyle}" alt="Icon"> <span style="${spanStyle}">${b.text}</span>`;
+                        } else {
+                            const imgStyle = `position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; z-index: 1;`;
+                            bannerContent = `<img src="${b.image_url}" style="${imgStyle}" alt="BG"> <span style="${spanStyle} width: 100%; justify-content: inherit; text-align: ${textAlign};">${b.text}</span>`;
+                        }
+                    } else {
+                        bannerContent = `<span style="${spanStyle} width: 100%; justify-content: inherit;">${b.text}</span>`;
+                    }
+
+                    if (b.scroll_text) {
+                        const speed = parseFloat(b.scroll_speed) || 20;
+                        const delay = parseFloat(b.loop_delay) || 4;
+                        const total = speed + delay;
+                        const pausePercent = (speed / total) * 100;
+                        const animId = `marquee_live_${Math.floor(Math.random()*1000)}`;
+                        const styleTag = document.createElement('style');
+                        styleTag.innerHTML = `
+                            @keyframes ${animId} {
+                                0% { transform: translateX(100vw); }
+                                ${pausePercent}% { transform: translateX(-100%); }
+                                0%, 100% { transform: translateX(100vw); } 
+                                ${pausePercent}%, 99.9% { transform: translateX(-100%); }
+                            }
+                            .${animId}-class {
+                                display: flex !important;
+                                align-items: center !important;
+                                flex-direction: inherit !important;
+                                height: 100% !important;
+                                animation: ${animId} ${total}s linear infinite !important;
+                                width: max-content !important;
+                                min-width: 100% !important;
+                            }
+                        `;
+                        document.head.appendChild(styleTag);
+                        activeEl.innerHTML = `<div class="${b.show_stripes ? 'bg-stripes' : ''}" style="${containerStyle}"><span class="${animId}-class">${bannerContent}</span></div>`;
+                    } else {
+                        activeEl.innerHTML = `<div class="${b.show_stripes ? 'bg-stripes' : ''}" style="${containerStyle}">${bannerContent}</div>`;
+                    }
+                }
+            });
         }
 
         // 2. Cargar Carrusel
-        const { data: slides } = await getCarouselImages();
+        const { data: slides } = await window.supabase.from('carousel').select('*').order('created_at', { ascending: false });
         if (slides && slides.length > 0) {
             const carouselContainer = document.getElementById('carousel-dynamic');
             if (carouselContainer) {
