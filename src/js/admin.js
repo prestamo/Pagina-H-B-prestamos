@@ -782,24 +782,43 @@ async function initAnalytics() {
                 datasets: [{
                     label: 'Visitas Únicas',
                     data: counts,
-                    borderColor: '#2D5CFF',
+                    borderColor: '#2D5CFF', // Azul Brand Vibrante
                     backgroundColor: gradient,
-                    borderWidth: 4,
+                    borderWidth: 6, // Línea más gruesa
                     fill: true,
-                    tension: 0.4,
+                    tension: 0.45, // Curvas más orgánicas para "montañas"
                     pointBackgroundColor: '#fff',
                     pointBorderColor: '#2D5CFF',
-                    pointRadius: 6,
-                    pointHoverRadius: 8
+                    pointBorderWidth: 4,
+                    pointRadius: 8, // "Velas" o puntos más grandes
+                    pointHoverRadius: 12,
+                    pointHoverBackgroundColor: '#2D5CFF',
+                    pointHoverBorderColor: '#fff',
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
+                plugins: { 
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#0F172A',
+                        titleFont: { size: 14, weight: '900' },
+                        padding: 12,
+                        cornerRadius: 12,
+                        displayColors: false
+                    }
+                },
                 scales: {
-                    y: { beginAtZero: true, grid: { display: true, color: 'rgba(0,0,0,0.05)' } },
-                    x: { grid: { display: false } }
+                    y: { 
+                        beginAtZero: true, 
+                        grid: { display: true, color: 'rgba(0,0,0,0.03)', drawBorder: false },
+                        ticks: { font: { weight: 'bold' }, stepSize: 1 }
+                    },
+                    x: { 
+                        grid: { display: false },
+                        ticks: { font: { weight: 'bold' } }
+                    }
                 }
             }
         });
