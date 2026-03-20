@@ -286,3 +286,23 @@ function initBot() {
         if (e.key === 'Enter') sendBtn.click();
     });
 }
+
+// 4. Registrar Visita (Analiticas Profesionales)
+const registerVisit = async () => {
+    try {
+        let viewerId = localStorage.getItem('bh_viewer_id');
+        if (!viewerId) {
+            viewerId = (window.crypto && window.crypto.randomUUID) ? window.crypto.randomUUID() : Math.random().toString(36).substring(2);
+            localStorage.setItem('bh_viewer_id', viewerId);
+        }
+
+        await window.supabase.from('page_views').insert({
+            viewer_id: viewerId,
+            path: window.location.pathname || '/',
+            user_agent: navigator.userAgent
+        });
+    } catch (e) {
+        console.log("Analytics: visit log skipped");
+    }
+};
+registerVisit();

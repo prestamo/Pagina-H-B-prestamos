@@ -92,6 +92,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (promoForm) {
         initPromotionsModule();
     }
+
+    // D. PÁGINA DE ANALÍTICAS (Dashboard Principal)
+    if (document.getElementById('trafficChart')) {
+        initAnalytics();
+    }
 });
 
 // --- MÓDULOS DE GESTIÓN ---
@@ -716,3 +721,106 @@ window.toggleHistoryActive = async (id) => {
     
     initBannerModule(); // Recargar UI
 };
+
+/**
+ * Lógica de Analíticas Profesionales (Dashboard)
+ */
+async function initAnalytics() {
+    const trafficChartCtx = document.getElementById('trafficChart')?.getContext('2d');
+    const chartTypeSelector = document.getElementById('chartType');
+    const statToday = document.getElementById('statToday');
+    const statWeek = document.getElementById('statWeek');
+    const statTotal = document.getElementById('statTotal');
+    const pagesList = document.getElementById('pagesList');
+    
+    if (!trafficChartCtx) return;
+
+    let myChart = null;
+
+    const updateDashboard = async () => {
+        // 1. Obtener Datos
+        const { data: views, error } = await supabase
+            .from('page_views')
+            .select('*')
+            .order('view_date', { ascending: true });
+
+        if (error || !views) return;
+
+        // 2. Estadísticas
+        const todayStr = new Date().toISOString().split('T')[0];
+        const lastWeekDate = new Date();
+        lastWeekDate.setDate(lastWeekDate.getDate() - 7);
+
+        const viewsToday = views.filter(v => v.view_date === todayStr).length;
+        const viewsWeek = views.filter(v => new Date(v.view_date) >= lastWeekDate).length;
+        const viewsTotal = views.length;
+
+        if (statToday) statToday.innerText = viewsToday;
+        if (statTotal) statTotal.innerText = viewsTotal;
+        if (statWeek) statWeek.innerText = viewsWeek;
+
+        // 3. Agrupar
+        const groupedData = {};
+        views.forEach(v => {
+            groupedData[v.view_date] = (groupedData[v.view_date] || 0) + 1;
+        });
+
+        // 4. Chart.js
+        if (myChart) myChart.destroy();
+        
+        const labels = Object.keys(groupedData).slice(-15);
+        const counts = labels.map(l => groupedData[l]);
+
+        const gradient = trafficChartCtx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(45, 92, 255, 0.4)');
+        gradient.addColorStop(1, 'rgba(45, 92, 255, 0)');
+
+        myChart = new Chart(trafficChartCtx, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Visitas Únicas',
+                    data: counts,
+                    borderColor: '#2D5CFF',
+                    backgroundColor: gradient,
+                    borderWidth: 4,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: '#2D5CFF',
+                    pointRadius: 6,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { display: true, color: 'rgba(0,0,0,0.05)' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // 5. Distribución de Páginas
+        if (pagesList) {
+            const pages = {};
+            views.forEach(v => pages[v.path] = (pages[v.path] || 0) + 1);
+            
+            pagesList.innerHTML = Object.entries(pages)
+                .sort((a,b) => b[1] - a[1])
+                .slice(0, 5)
+                .map(([path, count]) => `
+                    <div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl">
+                        <span class="text-xs font-bold text-slate-500 truncate max-w-[150px]">${path}</span>
+                        <span class="bg-brand/10 text-brand text-[10px] font-black px-2 py-1 rounded-lg">${count} VISTAS</span>
+                    </div>
+                `).join('') || '<p class="text-xs italic text-slate-400">Esperando datos...</p>';
+        }
+    };
+
+    updateDashboard();
+    setInterval(updateDashboard, 60000);
+}
