@@ -47,7 +47,12 @@ export default defineConfig({
         adminDashboard: resolve(__dirname, 'admin/index.html'),
         adminBanners: resolve(__dirname, 'admin/banners.html'),
         adminCarousel: resolve(__dirname, 'admin/carousel.html'),
-        adminPromotions: resolve(__dirname, 'admin/promotions.html')
+        adminPromotions: resolve(__dirname, 'admin/promotions.html'),
+        adminClientes: resolve(__dirname, 'admin/clientes.html'),
+        adminCuotas: resolve(__dirname, 'admin/cuotas.html'),
+        adminSolicitudes: resolve(__dirname, 'admin/solicitudes.html'),
+        adminSolicitudesList: resolve(__dirname, 'admin/solicitudes_list.html'),
+        adminFooter: resolve(__dirname, 'admin/footer.html')
       }
     }
   }
