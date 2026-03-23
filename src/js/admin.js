@@ -585,6 +585,48 @@ async function initBannerModule() {
         }
     });
 
+    const loadBannerData = async () => {
+        const { data: activeBanner } = await supabase.from('banners').select('*').eq('is_visible', true).maybeSingle();
+        if (activeBanner) {
+            bannerText.value = activeBanner.text || '';
+            bannerColor.value = activeBanner.bg_color || '#2d5cff';
+            colorHex.textContent = (activeBanner.bg_color || '#2d5cff').toUpperCase();
+            bannerVisible.checked = activeBanner.is_visible;
+            bannerScroll.checked = activeBanner.scroll_text;
+            bannerStripes.checked = activeBanner.show_stripes;
+            bannerHeight.value = activeBanner.height || 50;
+            heightVal.textContent = activeBanner.height || 50;
+            bannerPosition.value = activeBanner.position || 'top';
+            bannerFont.value = activeBanner.font_family || 'Montserrat';
+            bannerFontSize.value = activeBanner.font_size || 14;
+            fontSizeVal.textContent = activeBanner.font_size || 14;
+            bannerLineHeight.value = activeBanner.line_height || 1;
+            lineHeightVal.textContent = activeBanner.line_height || 1;
+            bannerFontScale.value = activeBanner.font_scale_y || 1;
+            fontScaleVal.textContent = activeBanner.font_scale_y || 1;
+            bannerFontColor.value = activeBanner.font_color || '#ffffff';
+            fontColorHex.textContent = (activeBanner.font_color || '#ffffff').toUpperCase();
+            bannerTextAlign.value = activeBanner.text_align || 'center';
+            bannerShowImage.checked = activeBanner.show_image;
+            bannerImagePosition.value = activeBanner.image_position || 'left';
+            bannerImgSize.value = activeBanner.image_size || 40;
+            imgSizeVal.textContent = activeBanner.image_size || 40;
+            bannerImgHeight.value = activeBanner.image_height || 100;
+            imgHeightVal.textContent = activeBanner.image_height || 100;
+            bannerSpeed.value = activeBanner.scroll_speed || 20;
+            speedVal.textContent = activeBanner.scroll_speed || 20;
+            bannerLoopDelay.value = activeBanner.loop_delay || 0;
+            loopDelayVal.textContent = activeBanner.loop_delay || 0;
+            bannerImageMode.value = activeBanner.image_mode || 'icon';
+            if (activeBanner.image_url) {
+                currentBannerImg.src = activeBanner.image_url;
+                imagePreview.classList.remove('hidden');
+            }
+            updatePreview();
+        }
+    };
+
+    loadBannerData();
     window.previewBanner = updatePreview;
 }
 
@@ -1224,8 +1266,16 @@ async function initPromotionsModule() {
         }
     });
 
+    const loadActivePromo = async () => {
+        const { data: activePromo } = await supabase.from('promotions').select('*').eq('active', true).maybeSingle();
+        if (activePromo && activePromo.id) {
+            window.reusePromo(activePromo.id);
+        }
+    };
+
     // Start fetching
     loadPromos();
+    loadActivePromo();
 }
 
 // --- FUNCIONES GLOBALES (Window access) ---
