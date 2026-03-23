@@ -2480,8 +2480,8 @@ async function initSolicitudesListModule() {
         const filtered = typeFilter === 'all' 
             ? sols 
             : sols.filter(s => {
-                // El tipo se guarda en s.data.tipoPrestamo (según mi implementación previa)
-                return s.data?.tipoPrestamo === typeFilter;
+                const actualType = (s.loan_type || s.data?.tipoPrestamo || 'personal').toLowerCase();
+                return actualType === typeFilter.toLowerCase();
             });
 
         if (!filtered || filtered.length === 0) {
@@ -2493,8 +2493,14 @@ async function initSolicitudesListModule() {
         emptyState?.classList.add('hidden');
         if (tableBody) {
             tableBody.innerHTML = filtered.map((s, index) => {
-                const clientName = s.clients?.full_name || 'Desconocido';
-                const loanType = s.data?.tipoPrestamo || 'Personal';
+                const d = s.data || {};
+                const sol = d.solicitante || {};
+                
+                // FALLBACKS ROBUSTOS
+                const clientName = s.clients?.full_name || (sol.nombres ? `${sol.nombres} ${sol.apellidos || ''}` : 'Desconocido');
+                const clientCedula = s.clients?.cedula || sol.identificador || '---';
+                const loanType = (s.loan_type || d.tipoPrestamo || 'personal').toLowerCase();
+                const monto = s.monto || d.monto || 0;
                 
                 // Estilos por tipo
                 const typeStyles = {
@@ -2513,7 +2519,7 @@ async function initSolicitudesListModule() {
                         </td>
                         <td class="p-6">
                             <span class="block font-black text-prime uppercase tracking-tighter">${clientName}</span>
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">${s.clients?.cedula || '---'}</span>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">${clientCedula}</span>
                         </td>
                         <td class="p-6 text-center">
                             <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${badgeClass}">
@@ -2521,7 +2527,7 @@ async function initSolicitudesListModule() {
                             </span>
                         </td>
                         <td class="p-6 text-center font-black text-brand tracking-tighter">
-                            RD$ ${Number(s.monto).toLocaleString()}
+                            RD$ ${Number(monto).toLocaleString()}
                         </td>
                         <td class="p-6 text-center">
                             <span class="px-3 py-1 bg-slate-100 text-slate-500 rounded-lg text-[9px] font-black uppercase tracking-widest border border-slate-200">
