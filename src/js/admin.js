@@ -1812,6 +1812,36 @@ async function initFooterModule() {
         { name: 'Web', class: 'fas fa-globe' }
     ];
 
+    let socials = [];
+
+    // --- INSTANT DEFAULTS (Fast Render) ---
+    const setDefaults = () => {
+        if (footerBgColor) footerBgColor.value = '#0f172a';
+        if (logoTitle) logoTitle.value = 'B&H <span class="text-brand">PRÉSTAMOS</span>';
+        if (copyrightText) copyrightText.value = '© 2026 B&H Préstamos. Todos los derechos reservados.';
+        if (hoursTitle) hoursTitle.value = 'Horarios de Atención';
+        if (contactTitle) contactTitle.value = 'Contacto Directo';
+        
+        const phoneEl = document.getElementById('phoneText');
+        const btnTextEl = document.getElementById('btnText');
+        if (phoneEl) phoneEl.value = '(809) 789-5676';
+        if (btnTextEl) btnTextEl.value = 'Solicitar Crédito Online';
+        if (btnLink) btnLink.value = 'solicitud_español.html';
+
+        const descElem = document.getElementById('editor-description');
+        const hoursElem = document.getElementById('editor-hours');
+        if (descElem) descElem.innerHTML = '<p>Líderes en soluciones financieras personalizadas.</p>';
+        if (hoursElem) hoursElem.innerHTML = '<p>Lunes - Viernes: 8:00 AM - 6:00 PM</p>';
+
+        socials = [
+            { id: '1', icon: 'fab fa-facebook-f', link: '#', color: '#ffffff', bgColor: '#1e293b' },
+            { id: '2', icon: 'fab fa-instagram', link: '#', color: '#ffffff', bgColor: '#1e293b' },
+            { id: '3', icon: 'fab fa-whatsapp', link: '#', color: '#ffffff', bgColor: '#1e293b' }
+        ];
+    };
+
+    setDefaults();
+
     // Quill Editors
     const quillDesc = new Quill('#editor-description', { 
         theme: 'snow', 
@@ -1824,7 +1854,9 @@ async function initFooterModule() {
         modules: { toolbar: [['bold', 'italic'], [{ 'list': 'unordered' }]] } 
     });
 
-    let socials = [];
+    // Initial render for instant feedback
+    renderSocials();
+    updatePreview();
 
     // 1. Gestión de Redes Sociales
     window.addSocialItem = (data = { icon: 'fab fa-facebook-f', link: '#', color: '#ffffff', bgColor: '#1e293b' }) => {
@@ -1852,7 +1884,7 @@ async function initFooterModule() {
         }
     };
 
-    const renderSocials = () => {
+    function renderSocials() {
         socialMediaItems.innerHTML = socials.map(s => `
             <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col gap-4">
                 <div class="flex items-center justify-between">
@@ -1898,7 +1930,7 @@ async function initFooterModule() {
     };
 
     // 2. Previsualización en Vivo
-    const updatePreview = () => {
+    function updatePreview() {
         if (!footerPreview || !footerPreviewContainer) return;
 
         footerPreviewContainer.style.backgroundColor = footerBgColor.value;
