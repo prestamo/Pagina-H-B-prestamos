@@ -1,0 +1,11 @@
+# Admin Pages Redirects to force .html extensions
+/admin/banners           /admin/banners.html          301
+/admin/carousel          /admin/carousel.html         301
+/admin/promotions        /admin/promotions.html       301
+/admin/cuotas            /admin/cuotas.html           301
+/admin/footer            /admin/footer.html           301
+/admin/solicitudes_list  /admin/solicitudes_list.html 301
+/admin/solicitudes       /admin/solicitudes.html      301
+/admin/clientes          /admin/clientes.html         301
+/admin/login             /admin/login.html            301
+/admin                   /admin/index.html            301

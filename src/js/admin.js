@@ -56,46 +56,62 @@ export const checkSession = async () => {
 
 // 2. Lógica General para todas las páginas administrativas (Banners, Carrusel, Promociones, Index)
 document.addEventListener('DOMContentLoaded', async () => {
-    // Si es la página de login, no procesar nada más
-    if (document.getElementById('loginForm')) return;
+    try {
+        // Si es la página de login, no procesar nada más
+        if (document.getElementById('loginForm')) return;
 
-    // Protección de Ruta & Sesión
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-        window.location.href = './login.html';
-        return;
-    }
+        // Protección de Ruta & Sesión
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+            window.location.href = './login.html';
+            return;
+        }
 
-    console.log('Admin autenticado:', session.user.email);
+        console.log('Admin autenticado:', session.user.email);
 
-    // Logout Genérico
-    document.getElementById('logoutBtn')?.addEventListener('click', async () => {
-        await supabase.auth.signOut();
-        window.location.href = './login.html';
-    });
+        // Logout Genérico
+        document.getElementById('logoutBtn')?.addEventListener('click', async () => {
+            await supabase.auth.signOut();
+            window.location.href = './login.html';
+        });
 
-    // --- INICIALIZACIÓN POR PÁGINA ---
-    const path = window.location.pathname;
-    
-    if (path.includes('banners.html')) {
-        initBannerModule();
-    } else if (path.includes('carousel.html')) {
-        initCarouselModule();
-    } else if (path.includes('promotions.html')) {
-        initPromotionsModule();
-    } else if (path.includes('cuotas.html')) {
-        initCuotasConfigModule(); 
-    } else if (path.includes('footer.html')) {
-        initFooterModule();
-    } else if (path.includes('solicitudes_list.html')) {
-        initSolicitudesListModule();
-    } else if (path.includes('solicitudes.html')) {
-        initSolicitudesModule();
-    } else if (path.includes('clientes.html')) {
-        initClientesModule();
-    } else if (path.includes('index.html') || path.endsWith('/admin/')) {
-        if (typeof initStats === 'function') initStats();
-        else if (typeof initAnalytics === 'function') initAnalytics();
+        // --- INICIALIZACIÓN POR PÁGINA ---
+        const getPageName = () => {
+            const path = window.location.pathname.toLowerCase();
+            // Manejar tanto /admin/como /admin/index.html
+            if (path.endsWith('/admin/') || path.endsWith('/admin')) return 'index';
+            const parts = path.split('/');
+            const lastPart = parts[parts.length - 1];
+            return lastPart.replace('.html', '') || 'index';
+        };
+
+        const page = getPageName();
+        console.log('DEBUG: Admin Page detected:', page);
+        console.log('DEBUG: initBannerModule type:', typeof initBannerModule);
+        console.log('DEBUG: initCarouselModule type:', typeof initCarouselModule);
+        
+        if (page === 'banners') {
+            initBannerModule();
+        } else if (page === 'carousel') {
+            initCarouselModule();
+        } else if (page === 'promotions') {
+            initPromotionsModule();
+        } else if (page === 'cuotas') {
+            initCuotasConfigModule(); 
+        } else if (page === 'footer') {
+            initFooterModule();
+        } else if (page === 'solicitudes_list') {
+            initSolicitudesListModule();
+        } else if (page === 'solicitudes') {
+            initSolicitudesModule();
+        } else if (page === 'clientes') {
+            initClientesModule();
+        } else if (page === 'index' || page === 'dashboard') {
+            if (typeof initStats === 'function') initStats();
+            else if (typeof initAnalytics === 'function') initAnalytics();
+        }
+    } catch (error) {
+        console.error('CRITICAL ADMIN ERROR:', error);
     }
 });
 
@@ -103,6 +119,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function initBannerModule() {
     const bannerText = document.getElementById('bannerText');
+    if (!bannerText) return;
     const bannerColor = document.getElementById('bannerColor');
     const bannerVisible = document.getElementById('bannerVisible');
     const bannerScroll = document.getElementById('bannerScroll');
@@ -631,8 +648,8 @@ async function initBannerModule() {
 }
 
 async function initCarouselModule() {
-    // Global Settings Elements
     const globalOverlayForm = document.getElementById('globalOverlayForm');
+    if (!globalOverlayForm) return;
     const globalEnable = document.getElementById('globalEnable');
     const globalTitle = document.getElementById('globalTitle');
     const globalSubtitle = document.getElementById('globalSubtitle');
@@ -884,8 +901,8 @@ async function initCarouselModule() {
 }
 
 async function initPromotionsModule() {
-    // DOM Elements
     const promoForm = document.getElementById('promoForm');
+    if (!promoForm) return;
     const promoList = document.getElementById('promoList');
     const promoTemplate = document.getElementById('promoTemplate');
     const heroOptions = document.getElementById('heroOptions');
@@ -1273,6 +1290,84 @@ async function initPromotionsModule() {
         }
     };
 
+    window.reusePromo = async (id) => {
+        const { data: promo } = await supabase.from('promotions').select('*').eq('id', id).single();
+        if (!promo) return;
+
+        try {
+            const pData = typeof promo.description === 'string' ? JSON.parse(promo.description) : promo.description;
+            if (pData.type === 'advanced_layout') {
+                // 1. Campos Básicos
+                if (promoTemplate) promoTemplate.value = pData.template;
+                if (promoBgColor) {
+                    promoBgColor.value = pData.bgColor || '#ffffff';
+                    if (promoBgHex) promoBgHex.textContent = (pData.bgColor || '#ffffff').toUpperCase();
+                }
+                if (promoAnimation) promoAnimation.value = pData.animation || 'none';
+                if (document.getElementById('heroImagePos')) {
+                    document.getElementById('heroImagePos').value = pData.heroPos || 'left';
+                }
+
+                // 2. Editores Quill
+                if (quillTitle) quillTitle.root.innerHTML = pData.htmlTitle || pData.title || '';
+                if (quillObj) quillObj.root.innerHTML = pData.htmlContent || '';
+
+                // 3. Imágenes y UI
+                updateTemplateUI(pData.images || []);
+                updatePromoPreview();
+
+                // 4. Scroll al editor para comodidad del usuario
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                // Notificar
+                console.log("Promoción cargada para reutilizar:", pData);
+            }
+        } catch(e) {
+            console.error("Error al reutilizar promoción:", e);
+        }
+    };
+
+    window.deletePromo = async (id) => {
+        if (!confirm('¿Estás seguro de eliminar esta promoción?')) return;
+        
+        // 1. Obtener datos para limpiar Storage
+        const { data: promo } = await supabase.from('promotions').select('*').eq('id', id).single();
+        if (promo) {
+            let filesToDelete = [];
+            if (promo.image_url) {
+                const parts = promo.image_url.split('/');
+                filesToDelete.push(parts[parts.length - 1]);
+            }
+            
+            try {
+                const pData = typeof promo.description === 'string' ? JSON.parse(promo.description) : promo.description;
+                if (pData.images && Array.isArray(pData.images)) {
+                    pData.images.forEach(url => {
+                        if (url) {
+                            const parts = url.split('/');
+                            filesToDelete.push(parts[parts.length - 1]);
+                        }
+                    });
+                }
+            } catch(e) {}
+
+            const uniqueFiles = [...new Set(filesToDelete)];
+            if (uniqueFiles.length > 0) {
+                console.log("Limpiando archivos de Storage:", uniqueFiles);
+                await supabase.storage.from('promocion').remove(uniqueFiles);
+                await supabase.storage.from('carousel').remove(uniqueFiles);
+            }
+        }
+
+        // 2. Borrar de DB
+        const { error } = await supabase.from('promotions').delete().eq('id', id);
+        if (error) {
+            alert("Error al eliminar de la base de datos: " + error.message);
+        } else {
+            loadPromos(); 
+        }
+    };
+
     // Start fetching
     loadPromos();
     loadActivePromo();
@@ -1305,90 +1400,7 @@ window.triggerPreviewAnimation = () => {
     el.style.animation = `${keyframe} 0.8s both`;
 };
 
-window.reusePromo = async (id) => {
-    const { data: promo } = await supabase.from('promotions').select('*').eq('id', id).single();
-    if (!promo) return;
 
-    try {
-        const pData = JSON.parse(promo.description);
-        if (pData.type === 'advanced_layout') {
-            // 1. Campos Básicos
-            if (promoTemplate) promoTemplate.value = pData.template;
-            if (promoBgColor) {
-                promoBgColor.value = pData.bgColor || '#ffffff';
-                if (promoBgHex) promoBgHex.textContent = (pData.bgColor || '#ffffff').toUpperCase();
-            }
-            if (promoAnimation) promoAnimation.value = pData.animation || 'none';
-            if (document.getElementById('heroImagePos')) {
-                document.getElementById('heroImagePos').value = pData.heroPos || 'left';
-            }
-
-            // 2. Editores Quill
-            if (quillTitle) quillTitle.root.innerHTML = pData.htmlTitle || pData.title || '';
-            if (quillObj) quillObj.root.innerHTML = pData.htmlContent || '';
-
-            // 3. Imágenes y UI
-            updateTemplateUI(pData.images || []);
-            updatePromoPreview();
-
-            // 4. Scroll al editor para comodidad del usuario
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            
-            // Notificar
-            console.log("Promoción cargada para reutilizar:", pData);
-        }
-    } catch(e) {
-        console.error("Error al reutilizar promoción:", e);
-    }
-};
-
-window.deletePromo = async (id) => {
-    if (!confirm('¿Estás seguro de eliminar esta promoción?')) return;
-    
-    // 1. Obtener datos para limpiar Storage
-    const { data: promo } = await supabase.from('promotions').select('*').eq('id', id).single();
-    if (promo) {
-        let filesToDelete = [];
-        // De image_url raíz si existe
-        if (promo.image_url) {
-            const parts = promo.image_url.split('/');
-            filesToDelete.push(parts[parts.length - 1]);
-        }
-        
-        // De description JSON (array de imágenes)
-        try {
-            const pData = JSON.parse(promo.description);
-            if (pData.images && Array.isArray(pData.images)) {
-                pData.images.forEach(img => {
-                    if (img && typeof img === 'string') {
-                        const parts = img.split('/');
-                        filesToDelete.push(parts[parts.length - 1]);
-                    }
-                });
-            }
-            if (pData.image_url && typeof pData.image_url === 'string') {
-                const parts = pData.image_url.split('/');
-                filesToDelete.push(parts[parts.length - 1]);
-            }
-        } catch(e) {}
-
-        // Borrar archivos únicos de los buckets posibles
-        if (filesToDelete.length > 0) {
-            const uniqueFiles = [...new Set(filesToDelete)];
-            console.log("Limpiando archivos de Storage:", uniqueFiles);
-            await supabase.storage.from('promocion').remove(uniqueFiles);
-            await supabase.storage.from('carousel').remove(uniqueFiles);
-        }
-    }
-
-    // 2. Borrar de DB
-    const { error } = await supabase.from('promotions').delete().eq('id', id);
-    if (error) {
-        alert("Error al eliminar de la base de datos: " + error.message);
-    } else {
-        window.location.reload(); 
-    }
-};
 
 window.deleteSlide = async (id, url) => {
     if (!confirm('¿Eliminar esta imagen del carrusel?')) return;
@@ -1579,6 +1591,7 @@ window.triggerPreviewAnimation = () => {
  */
 async function initCuotasConfigModule() {
     const cuotasForm = document.getElementById('cuotasForm');
+    if (!cuotasForm) return;
     const saveBtn = document.getElementById('saveCuotasBtn');
     const previewContainer = document.getElementById('cuotasPreview');
     
@@ -1838,6 +1851,8 @@ async function initCuotasConfigModule() {
  */
 async function initFooterModule() {
     const footerForm = document.getElementById('footerForm');
+    if (!footerForm) return;
+
     const footerPreview = document.getElementById('footerPreview');
     const copyrightPreview = document.getElementById('copyrightPreview');
     const socialMediaItems = document.getElementById('socialMediaItems');
@@ -1851,6 +1866,8 @@ async function initFooterModule() {
     const contactTitle = document.getElementById('contactTitle');
     const btnLink = document.getElementById('btnLink');
     const saveFooterBtn = document.getElementById('saveFooterBtn');
+    
+    if (!saveFooterBtn) return;
 
     const presetIcons = [
         { name: 'Facebook', class: 'fab fa-facebook-f' },
@@ -2130,6 +2147,7 @@ async function initFooterModule() {
 // --- MÓDULO DE SOLICITUDES ---
 async function initSolicitudesModule() {
     const form = document.getElementById('solicitudForm');
+    if (!form) return;
     const refTableBody = document.getElementById('referenciasTableBody');
     const solicitudNoEl = document.getElementById('solicitudNo');
     const tipoPrestamoSelect = document.getElementById('tipoPrestamo');
@@ -2458,6 +2476,7 @@ async function initSolicitudesModule() {
 // --- MÓDULO DE CLIENTES ---
 async function initClientesModule() {
     const tableBody = document.getElementById('clientsTableBody');
+    if (!tableBody) return;
     const emptyState = document.getElementById('clientsEmptyState');
     const searchInput = document.getElementById('clientSearch');
 
@@ -2511,6 +2530,7 @@ async function initClientesModule() {
  */
 async function initSolicitudesListModule() {
     const tableBody = document.getElementById('solicitudesTableBody');
+    if (!tableBody) return;
     const emptyState = document.getElementById('solicitudesEmptyState');
     const filterBtns = document.querySelectorAll('.filter-btn');
 
