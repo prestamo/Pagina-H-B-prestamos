@@ -8,7 +8,11 @@
     <link rel="stylesheet" href="src/css/input.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Montserrat:wght@400;700&family=Poppins:wght@400;600&family=Raleway:wght@400;700&family=Playfair+Display:wght@400;700&family=Lora:wght@400;700&family=Oswald:wght@400;700&family=Anton&family=Caveat&family=Pacifico&family=Orbitron:wght@400;700&family=Bebas+Neue&family=Righteous&family=Satisfy&family=Dancing+Script&family=Shadows+Into+Light&family=Permanent+Marker&family=Luckiest+Guy&family=Titan+One&family=Lobster&family=Press+Start+2P&family=Bungee&family=Monoton&family=Special+Elite&family=Creepster&display=swap" rel="stylesheet">
+    <!-- Quill Rich Text Editor Styles -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 </head>
 <body class="bg-slate-50 font-['Inter',sans-serif] text-slate-900 overflow-x-hidden">
 
@@ -16,7 +20,7 @@
     <header class="fixed top-0 w-full z-50 transition-all duration-300 bg-slate-900/80 backdrop-blur-md border-b border-white/10">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-20">
             <div class="flex items-center gap-3">
-                <img src="assets/img/logob&H.jpeg" alt="Logo B&H" class="h-12 w-auto rounded-lg border-2 border-brand shadow-lg animate-pulse shrink-0">
+                <img src="assets/img/logob&H.jpeg" alt="Logo B&H" class="h-12 w-auto rounded-lg border-2 border-brand shadow-lg shrink-0 global-portal-icon">
                 <span class="text-white font-bold text-xl tracking-tight hidden sm:block">B&H <span class="text-brand">PRÉSTAMOS</span></span>
             </div>
             
@@ -54,24 +58,38 @@
     </div>
 
     <main id="home" class="pt-20">
-        <!-- Hero Section con Carrusel Mejorado -->
-        <section class="relative h-[85vh] overflow-hidden bg-slate-900">
+        <!-- Hero Section con Carrusel Pro -->
+        <section class="relative h-[85vh] overflow-hidden bg-slate-900 group">
             <div id="carousel-dynamic" class="carousel h-full w-full relative">
-                <!-- Los slides se inyectarán aquí desde Supabase -->
-                <div id="hero-fallback" class="carousel-slide h-full bg-cover bg-center transition-opacity duration-1000 opacity-100 absolute inset-0" style="background-image: linear-gradient(to bottom, rgba(10,37,64,0.4), rgba(10,37,64,0.8)), url('assets/img/imgp.png');">
-                    <div class="flex flex-col items-center justify-center h-full text-center px-4">
-                        <h1 class="text-4xl md:text-7xl font-bold text-white mb-6 drop-shadow-2xl animate-fade-in-up uppercase tracking-tighter">B&H Préstamos <span class="text-brand italic block sm:inline">en General</span></h1>
-                        <p class="text-lg md:text-2xl text-white/80 max-w-2xl mb-10 leading-relaxed">Tu futuro financiero comienza hoy. <span class="text-accent font-bold">Créditos rápidos</span>, seguros y diseñados a tu medida.</p>
-                        <a href="solicitud_español.html" class="bg-accent text-prime px-10 py-4 rounded-xl font-black text-lg hover:bg-yellow-600 transition-all shadow-[0_0_30px_rgba(193,162,42,0.4)] hover:-translate-y-1 uppercase tracking-tighter">COMENZAR SOLICITUD</a>
+                
+                <!-- Swiper Container -->
+                <div class="swiper mySwiper w-full h-full">
+                    <div class="swiper-wrapper" id="carousel-swiper-wrapper">
+                        <!-- Fallback / Primer Paint Rápido -->
+                        <div id="hero-fallback" class="swiper-slide w-full h-full bg-slate-900 relative">
+                            <div class="absolute inset-0 bg-cover bg-center opacity-50 transition-transform duration-[10000ms] ease-out hover:scale-105" style="background-image: url('assets/img/imgp.png');"></div>
+                        </div>
+                    </div>
+                    <!-- Paginación -->
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-button-next text-brand drop-shadow-[0_0_15px_rgba(45,92,255,0.8)] opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="swiper-button-prev text-brand drop-shadow-[0_0_15px_rgba(45,92,255,0.8)] opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                </div>
+
+                <!-- GLOBAL OVERLAY CONTAINER (Injected via JS) -->
+                <div id="carousel-global-overlay" class="absolute inset-0 z-[40] pointer-events-none flex p-8 md:p-16 hidden">
+                    <div id="global-overlay-content" class="pointer-events-auto flex flex-col items-center justify-center text-center max-w-4xl w-full mx-auto text-white animate-fade-in-up">
+                        <!-- Contenido Inyectado via JS -->
                     </div>
                 </div>
+
             </div>
 
             <!-- Logo Flotante en Carrusel (Fuera del contenedor dinámico) -->
             <div class="absolute bottom-10 left-10 z-50 hidden md:block animate-fade-in">
-                <div class="p-3 bg-white/10 backdrop-blur-md rounded-[2.5rem] border border-white/20 shadow-2xl">
-                    <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-brand shadow-inner bg-white">
-                        <img src="assets/img/logo_round.png" alt="Logo B&H Circular" class="w-full h-full object-contain">
+                <div class="p-3 bg-white/10 backdrop-blur-md rounded-[2.5rem] border border-white/20 shadow-2xl hover:scale-105 transition-transform cursor-pointer">
+                    <div class="w-28 h-28 rounded-full overflow-hidden border-4 border-brand shadow-inner bg-white">
+                        <img id="portalIconImg" src="assets/img/logob&H.jpeg" alt="Logo B&H Circular" class="w-full h-full object-cover global-portal-icon">
                     </div>
                 </div>
             </div>
@@ -127,31 +145,40 @@
         <!-- Sección de Tabla / Presentación -->
         <section class="bg-prime py-24 text-white">
             <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                <div>
-                    <h3 class="text-3xl md:text-5xl font-extrabold mb-8 italic">Transparencia <span class="text-brand">Total</span></h3>
-                    <p class="text-xl text-slate-300 mb-10">Creemos en relaciones a largo plazo. Sin letras pequeñas, sin cargos ocultos. Solo soluciones reales.</p>
+                <div data-aos="fade-right">
+                    <h3 id="cuotas-title-1" class="text-3xl md:text-5xl font-extrabold mb-8 italic">Transparencia <span class="text-brand">Total</span></h3>
+                    <div id="cuotas-subtitle-1" class="text-xl text-slate-300 mb-10">
+                        <p>Creemos en relaciones a largo plazo. Sin letras pequeñas, sin cargos ocultos. Solo soluciones reales.</p>
+                    </div>
                     <div class="flex flex-wrap gap-6">
                         <div class="flex items-center gap-3">
                             <i class="fas fa-check-circle text-brand text-2xl"></i>
-                            <span class="font-semibold text-white">Tasas Competitivas</span>
+                            <span id="cuotas-feature-1" class="font-semibold text-white">Tasas Competitivas</span>
                         </div>
                         <div class="flex items-center gap-3">
                             <i class="fas fa-check-circle text-brand text-2xl"></i>
-                            <span class="font-semibold text-white">Aprobación en 24h</span>
+                            <span id="cuotas-feature-2" class="font-semibold text-white">Aprobación en 24h</span>
                         </div>
                     </div>
-                    <h2 class="text-4xl font-bold mb-8">Transparencia en cada cuota</h2>
-                    <p class="text-white/70 mb-10 text-lg leading-relaxed">En B&H Préstamos creemos en la claridad. Nuestra tabla de amortización te permite conocer exactamente lo que pagarás, sin sorpresas ni letras pequeñas.</p>
-                    <img src="assets/img/Tabla JPEG.jpeg" alt="Tabla de préstamos" class="rounded-2xl shadow-2xl border-4 border-white/10 hover:scale-[1.02] transition-transform">
+                    <div class="mt-12">
+                        <h2 id="cuotas-title-2" class="text-4xl font-bold mb-8">Transparencia en cada cuota</h2>
+                        <div id="cuotas-desc-2" class="text-white/70 mb-10 text-lg leading-relaxed">
+                            <p>En B&H Préstamos creemos en la claridad. Nuestra tabla de amortización te permite conocer exactamente lo que pagarás, sin sorpresas ni letras pequeñas.</p>
+                        </div>
+                        <img id="cuotas-img-table" src="assets/img/Tabla JPEG.jpeg" alt="Tabla de préstamos" class="rounded-2xl shadow-2xl border-4 border-white/10 hover:scale-[1.02] transition-transform">
+                    </div>
                 </div>
-                <div class="relative group">
-                    <img src="assets/img/Presentacion.jpeg" alt="Presentación" class="rounded-3xl shadow-2xl skew-y-2 group-hover:rotate-0 transition-all duration-500">
-                    <div class="absolute -bottom-6 -left-6 bg-accent p-8 rounded-2xl text-slate-900 font-bold text-xl shadow-xl hidden sm:block">
+                <div class="relative group" data-aos="fade-left">
+                    <img id="cuotas-img-presentation" src="assets/img/Presentacion.jpeg" alt="Presentación" class="rounded-3xl shadow-2xl skew-y-2 group-hover:rotate-0 transition-all duration-500">
+                    <div id="cuotas-floating-text" class="absolute -bottom-6 -left-6 bg-accent p-8 rounded-2xl text-slate-900 font-bold text-xl shadow-xl hidden sm:block">
                         ¡Somos tu mejor opción!
                     </div>
                 </div>
             </div>
         </section>
+
+        <!-- Dynamic Promotions Builder Section -->
+        <section id="dynamic-promotions-section" class="w-full flex flex-col items-center justify-center overflow-hidden"></section>
 
         <!-- Ubicación -->
         <section class="py-24 max-w-7xl mx-auto px-4">
@@ -167,12 +194,12 @@
     <div id="banner-bottom" class="hidden overflow-hidden relative"></div>
 
     <!-- Footer -->
-    <footer class="bg-slate-900 text-white pt-20 pb-10">
+    <footer id="footer-main" class="bg-slate-900 text-white pt-20 pb-10">
         <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
             <div>
-                <h4 class="text-2xl font-bold text-white mb-6">B&H <span class="text-brand">PRÉSTAMOS</span></h4>
-                <p class="text-slate-400 text-sm leading-relaxed mb-8">Líderes en soluciones financieras personalizadas. Tu aliado estratégico para el crecimiento personal y empresarial.</p>
-                <div class="flex gap-4">
+                <h4 id="footer-logo" class="text-2xl font-bold text-white mb-6">B&H <span class="text-brand">PRÉSTAMOS</span></h4>
+                <div id="footer-description" class="text-slate-400 text-sm leading-relaxed mb-8">Líderes en soluciones financieras personalizadas. Tu aliado estratégico para el crecimiento personal y empresarial.</div>
+                <div id="footer-socials" class="flex gap-4">
                     <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-brand transition-all group">
                         <i class="fab fa-facebook-f text-white group-hover:scale-110"></i>
                     </a>
@@ -185,20 +212,22 @@
                 </div>
             </div>
             <div>
-                <h5 class="font-bold text-lg mb-6">Horarios de Atención</h5>
-                <ul class="text-slate-400 space-y-3">
-                    <li class="flex justify-between"><span>Lunes - Viernes:</span> <span class="text-white">8:00 A.M. - 6:00 P.M.</span></li>
-                    <li class="flex justify-between border-b border-white/5 pb-2 italic text-xs"><span>Pausa mediodía:</span> <span>12:00 P.M. - 2:00 P.M.</span></li>
-                    <li class="flex justify-between"><span>Sábados:</span> <span class="text-white">8:30 A.M. - 12:30 P.M.</span></li>
-                </ul>
+                <h5 id="footer-hours-title" class="font-bold text-lg mb-6">Horarios de Atención</h5>
+                <div id="footer-hours-content" class="text-slate-400 space-y-3">
+                    <ul class="space-y-3">
+                        <li class="flex justify-between"><span>Lunes - Viernes:</span> <span class="text-white">8:00 A.M. - 6:00 P.M.</span></li>
+                        <li class="flex justify-between border-b border-white/5 pb-2 italic text-xs"><span>Pausa mediodía:</span> <span>12:00 P.M. - 2:00 P.M.</span></li>
+                        <li class="flex justify-between"><span>Sábados:</span> <span class="text-white">8:30 A.M. - 12:30 P.M.</span></li>
+                    </ul>
+                </div>
             </div>
             <div>
-                <h5 class="font-bold text-lg mb-6">Contacto Directo</h5>
-                <p class="text-slate-400 mb-4">(809) 789-5676</p>
-                <a href="solicitud_español.html" class="inline-block bg-white/10 px-6 py-3 rounded-lg hover:bg-white/20 transition-all font-semibold">Solicitar Crédito Online</a>
+                <h5 id="footer-contact-title" class="font-bold text-lg mb-6">Contacto Directo</h5>
+                <p id="footer-phone" class="text-slate-400 mb-4">(809) 789-5676</p>
+                <a id="footer-btn" href="solicitud_español.html" class="inline-block bg-white/10 px-6 py-3 rounded-lg hover:bg-white/20 transition-all font-semibold">Solicitar Crédito Online</a>
             </div>
         </div>
-        <div class="border-t border-white/5 pt-8 text-center text-slate-500 text-sm px-4">
+        <div id="footer-copyright" class="border-t border-white/5 pt-8 text-center text-slate-500 text-sm px-4">
             &copy; 2026 B&H Préstamos en General. Todos los derechos reservados.
         </div>
     </footer>
@@ -238,6 +267,8 @@
         <i class="fas fa-chevron-up"></i>
     </button>
 
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script type="module" src="src/js/main.js"></script>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>

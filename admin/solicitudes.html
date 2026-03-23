@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitud Credisticio | B&H ADMIN</title>
+    <link rel="icon" href="../assets/img/logob&H.jpeg">
+    <link rel="stylesheet" href="../src/css/input.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-slate-50 font-['Inter',sans-serif] text-slate-900 overflow-x-hidden">
+    <div class="min-h-screen flex flex-col md:flex-row">
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-64 bg-slate-800 text-white flex flex-col shadow-2xl z-50 min-h-screen">
+            <div class="p-6 border-b border-slate-700 flex justify-between items-center md:block">
+                <h1 class="text-xl font-bold tracking-tighter text-brand">B&H <span class="text-white">ADMIN</span></h1>
+                <button class="md:hidden text-slate-300" onclick="document.getElementById('mobileMenu').classList.toggle('hidden')">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+            <nav id="mobileMenu" class="hidden md:flex flex-col flex-1 p-4 space-y-2">
+                <a href="index.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-chart-line"></i> <span>Dashboard</span>
+                </a>
+                <a href="banners.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-ad"></i> <span>Banners</span>
+                </a>
+                <a href="carousel.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-images"></i> <span>Carrusel</span>
+                </a>
+                <a href="promotions.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-tag"></i> <span>Promociones</span>
+                </a>
+                <a href="cuotas.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-table-list"></i> <span>Cuotas/Transparencia</span>
+                </a>
+                <a href="footer.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-shoe-prints rotate-90"></i> <span>Redes y Footer</span>
+                </a>
+                <div class="h-px bg-slate-700 my-2"></div>
+                <a href="solicitudes_list.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-list-check"></i> <span>Ver Solicitudes</span>
+                </a>
+                <a href="solicitudes.html" class="flex items-center gap-3 p-3 rounded-xl bg-brand text-white shadow-lg">
+                    <i class="fas fa-file-circle-plus"></i> <span>Nueva Solicitud</span>
+                </a>
+                <a href="clientes.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-users"></i> <span>Clientes</span>
+                </a>
+            </nav>
+            <div class="hidden md:block p-4 border-t border-slate-700">
+                <button id="logoutBtn" class="flex items-center gap-3 w-full p-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-all">
+                    <i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto bg-slate-50 p-8">
+            <header class="mb-10 max-w-6xl mx-auto w-full flex justify-between items-end">
+                <div>
+                    <h2 class="text-3xl font-black text-prime uppercase tracking-tighter">Nueva Solicitud de Crédito</h2>
+                    <p class="text-slate-500 font-semibold italic">Gestión de expedientes crediticios detallados</p>
+                </div>
+                <div class="text-right">
+                    <span class="text-[10px] font-black uppercase text-slate-400 tracking-widest block mb-1">Solicitud No.</span>
+                    <span id="solicitudNo" class="text-2xl font-black text-brand tracking-tighter">---</span>
+                </div>
+            </header>
+
+            <section class="max-w-6xl mx-auto">
+                <form id="solicitudForm" class="space-y-10 pb-20">
+                    <!-- Segmento 0: Datos del Préstamo (Encabezado) -->
+                    <div class="bg-white p-8 rounded-[2rem] shadow-xl border border-slate-100 border-t-8 border-t-slate-800">
+                        <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
+                            <div>
+                                <label class="block text-[10px] font-black uppercase mb-2 text-slate-400 tracking-widest">Tipo de Préstamo</label>
+                                <select id="tipoPrestamo" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-black text-brand outline-none focus:ring-2 focus:ring-brand">
+                                    <option value="personal">Personal</option>
+                                    <option value="garante">Con Garante</option>
+                                    <option value="hipotecario">Hipotecario</option>
+                                    <option value="vehiculo">De Vehículo</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black uppercase mb-2 text-slate-400 tracking-widest">Fecha de Solicitud</label>
+                                <input type="date" id="fechaSolicitud" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold" value="${new Date().toISOString().split('T')[0]}">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black uppercase mb-2 text-slate-400 tracking-widest">Monto Solicitado RD$</label>
+                                <input type="text" id="montoSolicitado" class="mask-currency w-full p-5 bg-slate-50 border-2 border-slate-100 rounded-[2rem] font-black text-2xl text-prime focus:border-brand outline-none shadow-inner" placeholder="0.00">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black uppercase mb-2 text-slate-400 tracking-widest">Tiempo (Meses)</label>
+                                <input type="number" id="tiempoPrestamo" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold" placeholder="Ej: 12">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black uppercase mb-2 text-slate-400 tracking-widest">Cuota Estimada RD$</label>
+                                <input type="text" id="cuotaPrestamo" class="mask-currency w-full p-5 bg-slate-50 border-2 border-slate-100 rounded-[2rem] font-black text-2xl text-prime focus:border-brand outline-none shadow-inner" placeholder="0.00">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Segmento 1: Datos del Solicitante -->
+                    <div class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-xl border border-slate-100">
+                        <div class="flex items-center gap-4 mb-10 border-b border-slate-50 pb-6">
+                            <div class="w-12 h-12 bg-prime rounded-2xl flex items-center justify-center text-white text-xl shadow-lg">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-black text-slate-800 uppercase tracking-tighter">Datos del Solicitante</h3>
+                                <p class="text-xs font-bold text-slate-400 uppercase italic">Información personal y laboral</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
+                            <div class="space-y-2 lg:col-span-1">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Identificador (Cédula)</label>
+                                <input type="text" id="identificador" class="mask-cedula w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-[1.5rem] font-bold text-prime focus:border-brand focus:ring-4 focus:ring-brand/10 transition-all outline-none" placeholder="000-0000000-0">
+                            </div>
+                            <div class="space-y-2 lg:col-span-1">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Nombres</label>
+                                <input type="text" id="nombresSol" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none" required>
+                            </div>
+                            <div class="space-y-2 lg:col-span-1">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Apellidos</label>
+                                <input type="text" id="apellidosSol" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none" required>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Apodo</label>
+                                <input type="text" id="apodoSol" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Estado Civil</label>
+                                <select id="estadoCivilSol" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none">
+                                    <option value="">Elegir...</option>
+                                    <option>Soltero/a</option>
+                                    <option>Casado/a</option>
+                                    <option>Unión Libre</option>
+                                    <option>Divorciado/a</option>
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Fecha de Nacimiento</label>
+                                <input type="date" id="fechaNacimientoSol" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none">
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Teléfono de contacto</label>
+                                <input type="text" id="telefonoSol" class="mask-phone w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-[1.5rem] font-bold text-prime focus:border-brand outline-none" placeholder="000-000-0000">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Edad</label>
+                                <input type="number" id="edadSol" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Dependientes</label>
+                                <input type="number" id="dependientesSol" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none">
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Sexo</label>
+                                <select id="sexoSol" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none">
+                                    <option value="">Elegir...</option>
+                                    <option value="M">Masculino</option>
+                                    <option value="F">Femenino</option>
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Profesión</label>
+                                <input type="text" id="profesionSol" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Vehículo Propio?</label>
+                                <select id="vehiculoSol" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none">
+                                    <option>No</option>
+                                    <option>Si</option>
+                                </select>
+                            </div>
+
+                            <div class="space-y-2 lg:col-span-1">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Sector</label>
+                                <input type="text" id="sectorSol" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none">
+                            </div>
+                            <div class="space-y-2 lg:col-span-1">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Ciudad</label>
+                                <input type="text" id="ciudadSol" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none">
+                            </div>
+                            <div class="space-y-2 lg:col-span-1">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Dirección Residencial</label>
+                                <input type="text" id="direccionSol" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none">
+                            </div>
+
+                            <div class="lg:col-span-3 h-px bg-slate-100 my-4"></div>
+
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Ocupaciones</label>
+                                <input type="text" id="ocupacionesSol" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Lugar de Trabajo</label>
+                                <input type="text" id="trabajoSol" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Cargo</label>
+                                <input type="text" id="cargoSol" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none">
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Dirección Trabajo</label>
+                                <input type="text" id="direccionTrabajoSol" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Superior Inmediato</label>
+                                <input type="text" id="superiorSol" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Teléfono Trabajo</label>
+                                <input type="text" id="telTrabajoSol" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none">
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Tiempo Laborando</label>
+                                <input type="text" id="tiempoTrabajoSol" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none" placeholder="Ej: 2 años">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Ingresos Mensuales RD$</label>
+                                <input type="text" id="ingresosSol" class="mask-currency w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-[1.5rem] font-bold text-prime focus:border-brand outline-none" placeholder="0.00">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Otros Ingresos RD$</label>
+                                <input type="text" id="otrosIngresosSol" class="mask-currency w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-[1.5rem] font-bold text-prime focus:border-brand outline-none" placeholder="0.00">
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Casa (Propia/Alquilada)</label>
+                                <select id="tipoCasaSol" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none">
+                                    <option>Alquilada</option>
+                                    <option>Propia</option>
+                                    <option>Con Padres</option>
+                                </select>
+                            </div>
+                            <div class="space-y-2 lg:col-span-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Destino del Crédito</label>
+                                <input type="text" id="destinoCredito" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none" placeholder="Ej: Pago de deudas, Negocio, Salud...">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Segmento 1.5: Datos del Cónyuge -->
+                    <div id="sectionConyuge" class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-xl border border-slate-100 border-l-8 border-l-rose-400">
+                        <div class="flex items-center gap-4 mb-10 border-b border-slate-50 pb-6">
+                            <div class="w-12 h-12 bg-rose-400 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-black text-slate-800 uppercase tracking-tighter">Datos del Cónyuge</h3>
+                                <p class="text-xs font-bold text-slate-400 uppercase italic">Información de la pareja</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
+                            <div class="space-y-2 lg:col-span-1">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Nombres</label>
+                                <input type="text" id="nombresCon" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none">
+                            </div>
+                            <div class="space-y-2 lg:col-span-1">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Apellidos</label>
+                                <input type="text" id="apellidosCon" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Fecha de Nacimiento</label>
+                                <input type="date" id="fechaNacimientoCon" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Edad</label>
+                                <input type="number" id="edadCon" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Apodo</label>
+                                <input type="text" id="apodoCon" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Estado Civil</label>
+                                <select id="estadoCivilCon" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none">
+                                    <option value="">Elegir...</option>
+                                    <option>Casado/a</option>
+                                    <option>Unión Libre</option>
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Teléfono Cónyuge</label>
+                                <input type="text" id="telefonoCon" class="mask-phone w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none" placeholder="000-000-0000">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Ocupación / Profesión</label>
+                                <input type="text" id="ocupacionCon" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Lugar de Trabajo</label>
+                                <input type="text" id="trabajoCon" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Sector</label>
+                                <input type="text" id="sectorCon" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none">
+                            </div>
+                            <div class="space-y-2 lg:col-span-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Dirección Residencial</label>
+                                <input type="text" id="direccionCon" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Superior Inmediato</label>
+                                <input type="text" id="superiorCon" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Teléfono Oficina Cónyuge</label>
+                                <input type="text" id="telTrabajoCon" class="mask-phone w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none" placeholder="000-000-0000">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Tiempo Laborando</label>
+                                <input type="text" id="tiempoTrabajoCon" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Ingresos Mensuales Cónyuge RD$</label>
+                                <input type="text" id="ingresosCon" class="mask-currency w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-black text-emerald-600 outline-none" placeholder="0.00">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Segmento Adicional: Garantía Hipotecaria (Condicional) -->
+                    <div id="sectionHipotecaria" class="hidden bg-white p-8 md:p-12 rounded-[2.5rem] shadow-xl border border-slate-100 border-l-8 border-l-blue-600">
+                        <div class="flex items-center gap-4 mb-10 border-b border-slate-50 pb-6">
+                            <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg">
+                                <i class="fas fa-home"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-black text-slate-800 uppercase tracking-tighter">Datos de Garantía Higotecaria</h3>
+                                <p class="text-xs font-bold text-slate-400 uppercase italic">Detalles del inmueble</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
+                            <div class="space-y-2 lg:col-span-2"><label class="block text-[10px] font-bold text-slate-400">Propietario</label><input type="text" id="propHipo" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                            <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400">Distrito Catastral No.</label><input type="text" id="distHipo" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                            <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400">Fecha de Expedición</label><input type="date" id="fechaHipo" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                            <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400">Libro No.</label><input type="text" id="libroHipo" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                            <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400">Folio No.</label><input type="text" id="folioHipo" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                            <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400">Provincia o Distrito</label><input type="text" id="provHipo" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                            <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400">Ciudad o Municipio</label><input type="text" id="ciudadHipo" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                            <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400">Parcela No.</label><input type="text" id="parcelaHipo" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                            <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400">Area</label><input type="text" id="areaHipo" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                            <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400">Cedula/Pasaporte/RNC</label><input type="text" id="cedulaHipo" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                            <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400">Certificado Titulo No.</label><input type="text" id="tituloHipo" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                            <div class="space-y-2 lg:col-span-1"><label class="block text-[10px] font-bold text-slate-400">Dirección</label><input type="text" id="dirHipo" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                            <div class="space-y-2 lg:col-span-3"><label class="block text-[10px] font-bold text-slate-400">Descripción</label><textarea id="descHipo" class="w-full p-3 bg-slate-50 rounded-xl border h-20"></textarea></div>
+                        </div>
+                    </div>
+
+                    <!-- Segmento Adicional: Garantía Vehículo (Condicional) -->
+                    <div id="sectionVehiculo" class="hidden bg-white p-8 md:p-12 rounded-[2.5rem] shadow-xl border border-slate-100 border-l-8 border-l-indigo-600">
+                        <div class="flex items-center gap-4 mb-10 border-b border-slate-50 pb-6">
+                            <div class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg">
+                                <i class="fas fa-car-side"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-black text-slate-800 uppercase tracking-tighter">Datos de Garantía de Vehículo</h3>
+                                <p class="text-xs font-bold text-slate-400 uppercase italic">Detalles de la unidad vehicular</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
+                            <div class="space-y-2 lg:col-span-2"><label class="block text-[10px] font-bold text-slate-400">Nombres/Razon Social</label><input type="text" id="razonVeh" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                            <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400">Placa y Registro</label><input type="text" id="placaVeh" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                            <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400">Fecha de Expedición</label><input type="date" id="fechaVeh" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                            <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400">Chasis</label><input type="text" id="chasisVeh" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                            <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400">Estatus del Vehículo</label><input type="text" id="estatusVeh" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                            <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400">Tipo de Emision</label><input type="text" id="emisionVeh" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                            <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400">No de Matricula</label><input type="text" id="matriculaVeh" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                            <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400">Fuerza Motriz (HP/CC)</label><input type="text" id="fuerzaVeh" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                            <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400">Cilindros</label><input type="text" id="cilindrosVeh" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                            <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400">Cedula/Pasaporte/RNC</label><input type="text" id="cedulaPropVeh" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                            <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400">Tipo de Vehículo</label><input type="text" id="tipoVeh" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                            <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400">Marca</label><input type="text" id="marcaVeh" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                            <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400">Modelo</label><input type="text" id="modeloVeh" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                            <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400">Año de Fabricacion</label><input type="number" id="anioVeh" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                            <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400">Color</label><input type="text" id="colorVeh" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                            <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400">Motor o No de Serie</label><input type="text" id="motorVeh" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                            <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400">Pasajeros</label><input type="text" id="pasajerosVeh" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                            <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400">Cap Carga (Ton.)</label><input type="text" id="capCargaVeh" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                            <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400">No. Puertas</label><input type="text" id="puertasVeh" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                        </div>
+                    </div>
+
+                    <!-- Segmentos de Garante (Opcionales via JS) -->
+                    <div id="sectionGarante" class="hidden space-y-10 mt-10">
+                        <div class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-xl border border-slate-100 border-l-8 border-l-amber-500">
+                             <!-- Copy of Solicitante but with id suffix Garante -->
+                             <div class="flex items-center gap-4 mb-10 border-b border-slate-50 pb-6">
+                                <div class="w-12 h-12 bg-amber-500 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg">
+                                    <i class="fas fa-user-shield"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-black text-slate-800 uppercase tracking-tighter">Datos del Garante</h3>
+                                    <p class="text-xs font-bold text-slate-400 uppercase italic">Información del fiador solidario</p>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 tracking-widest ml-1">Cédula Garante</label><input type="text" id="identificadorGar" class="mask-cedula w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold"></div>
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 tracking-widest ml-1">Nombres</label><input type="text" id="nombresGar" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold"></div>
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 tracking-widest ml-1">Apellidos</label><input type="text" id="apellidosGar" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold"></div>
+                                
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 tracking-widest ml-1">Apodo</label><input type="text" id="apodoGar" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200"></div>
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 tracking-widest ml-1">Estado Civil</label><input type="text" id="estadoCivilGar" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200"></div>
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 tracking-widest ml-1">Fecha Nacimiento</label><input type="date" id="fechaNacimientoGar" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200"></div>
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 tracking-widest ml-1">Edad</label><input type="number" id="edadGar" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200"></div>
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 tracking-widest ml-1">Teléfono</label><input type="text" id="telefonoGar" class="mask-phone w-full p-3 bg-slate-50 rounded-xl border border-slate-200"></div>
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 tracking-widest ml-1">Sector</label><input type="text" id="sectorGar" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200"></div>
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 tracking-widest ml-1">Ciudad</label><input type="text" id="ciudadGar" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200"></div>
+                                <div class="space-y-2 lg:col-span-2"><label class="block text-[10px] font-bold text-slate-400 tracking-widest ml-1">Dirección Residencial</label><input type="text" id="direccionGar" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200"></div>
+                                
+                                <div class="lg:col-span-3 h-px bg-slate-100 my-4"></div>
+                                
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 tracking-widest ml-1">Ocupaciones</label><input type="text" id="ocupacionesGar" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200"></div>
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 tracking-widest ml-1">Lugar de Trabajo</label><input type="text" id="trabajoGar" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200"></div>
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 tracking-widest ml-1">Cargo</label><input type="text" id="cargoGar" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200"></div>
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 tracking-widest ml-1">Dirección Trabajo</label><input type="text" id="direccionTrabajoGar" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200"></div>
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 tracking-widest ml-1">Superior Inmediato</label><input type="text" id="superiorGar" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200"></div>
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 tracking-widest ml-1">Teléfono Trabajo</label><input type="text" id="telTrabajoGar" class="mask-phone w-full p-3 bg-slate-50 rounded-xl border border-slate-200"></div>
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 tracking-widest ml-1">Tiempo Laborando</label><input type="text" id="tiempoTrabajoGar" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200"></div>
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 tracking-widest ml-1">Ingresos Mensuales RD$</label><input type="text" id="ingresosGar" class="mask-currency w-full p-3 bg-slate-50 rounded-xl border border-slate-200"></div>
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 tracking-widest ml-1">Otros Ingresos RD$</label><input type="text" id="otrosIngresosGar" class="mask-currency w-full p-3 bg-slate-50 rounded-xl border border-slate-200"></div>
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 tracking-widest ml-1">Casa (Propia/Alq)</label><input type="text" id="tipoCasaGar" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200"></div>
+                                <div class="space-y-2 lg:col-span-2"><label class="block text-[10px] font-bold text-slate-400 tracking-widest ml-1">Destino del Crédito</label><input type="text" id="destinoGar" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200"></div>
+                            </div>
+                        </div>
+
+                        <div id="sectionConyugeGar" class="hidden bg-white p-8 md:p-12 rounded-[2.5rem] shadow-xl border border-slate-100 border-l-8 border-l-rose-400">
+                             <div class="flex items-center gap-4 mb-10 border-b border-slate-50 pb-6">
+                                <div class="w-12 h-12 bg-rose-400 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg">
+                                    <i class="fas fa-heart"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-black text-slate-800 uppercase tracking-tighter">Cónyuge del Garante</h3>
+                                    <p class="text-xs font-bold text-slate-400 uppercase italic">Información complementaria del garante</p>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 ml-1">Nombres</label><input type="text" id="nombresConGar" class="w-full p-3 bg-slate-50 rounded-xl border font-bold"></div>
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 ml-1">Apellidos</label><input type="text" id="apellidosConGar" class="w-full p-3 bg-slate-50 rounded-xl border font-bold"></div>
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 ml-1">Fecha Nacimiento</label><input type="date" id="fechaNacimientoConGar" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 ml-1">Edad</label><input type="number" id="edadConGar" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 ml-1">Teléfono</label><input type="text" id="telefonoConGar" class="mask-phone w-full p-3 bg-slate-50 rounded-xl border"></div>
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 ml-1">Ocupación</label><input type="text" id="ocupacionConGar" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 ml-1">Lugar de Trabajo</label><input type="text" id="trabajoConGar" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 ml-1">Sector</label><input type="text" id="sectorConGar" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                                <div class="space-y-2 lg:col-span-2"><label class="block text-[10px] font-bold text-slate-400 ml-1">Dirección Residencial</label><input type="text" id="direccionConGar" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 ml-1">Superior Inmediato</label><input type="text" id="superiorConGar" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 ml-1">Teléfono Oficina</label><input type="text" id="telTrabajoConGar" class="mask-phone w-full p-3 bg-slate-50 rounded-xl border"></div>
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 ml-1">Tiempo Laborando</label><input type="text" id="tiempoTrabajoConGar" class="w-full p-3 bg-slate-50 rounded-xl border"></div>
+                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 ml-1">Ingresos Mensuales RD$</label><input type="text" id="ingresosConGar" class="mask-currency w-full p-3 bg-slate-50 rounded-xl border"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Segmento 3: Referencias -->
+                    <div class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-xl border border-slate-100">
+                        <div class="flex items-center justify-between mb-10 border-b border-slate-50 pb-6">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-amber-500 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg">
+                                    <i class="fas fa-handshake"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-black text-slate-800 uppercase tracking-tighter">Referencias Personales / Familiares</h3>
+                                    <p class="text-xs font-bold text-slate-400 uppercase italic">Mínimo 2 referencias recomendadas</p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="window.addReferenciaRow()" class="px-6 py-3 bg-slate-100 hover:bg-slate-200 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all">
+                                <i class="fas fa-plus mr-1"></i> Añadir Referencia
+                            </button>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left">
+                                <thead class="text-[10px] font-black uppercase text-slate-400 tracking-widest">
+                                    <tr>
+                                        <th class="pb-4 px-2">Nombres</th>
+                                        <th class="pb-4 px-2">Teléfono</th>
+                                        <th class="pb-4 px-2">Dirección</th>
+                                        <th class="pb-4 px-2">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="referenciasTableBody" class="divide-y divide-slate-50">
+                                    <!-- Rows injected here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Submit Area -->
+                    <div class="flex justify-between items-center bg-slate-800 p-8 rounded-[2.5rem] shadow-2xl">
+                        <div class="text-white/60 text-xs italic max-w-md">
+                            "Al guardar, el sistema creará o actualizará automáticamente el expediente del cliente basado en la cédula proporcionada."
+                        </div>
+                        <button type="submit" id="saveSolicitudBtn" class="bg-brand text-white font-black py-5 px-16 rounded-2xl hover:bg-blue-600 transition-all shadow-2xl hover:-translate-y-1 active:scale-95 flex items-center gap-4 uppercase tracking-[0.2em]">
+                            <i class="fas fa-save text-xl"></i> GUARDAR SOLICITUD
+                        </button>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <script type="module" src="../src/js/admin.js"></script>
+</body>
+</html>

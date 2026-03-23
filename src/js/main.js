@@ -1,4 +1,5 @@
 import { supabase, getBanners, getCarouselImages } from './supabase.js';
+import { renderAdvancedPromo } from './promoRenderer.js';
 // B&H Main Logic - Modern ESM
 document.addEventListener('DOMContentLoaded', () => {
     // Mobile Menu Toggle Premium
@@ -87,9 +88,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Cargar contenido dinámico si estamos en el index
-    if (document.getElementById('carousel-dynamic')) {
+    if (document.getElementById('cuotas-title-1')) {
         loadDynamicContent();
+        loadCuotasConfig();
     }
+
+    // Configuración Global de Footer
+    loadFooterConfig();
 
     // Chatbot Logic
     initBot();
@@ -190,40 +195,190 @@ async function loadDynamicContent() {
             });
         }
 
-        // 2. Cargar Carrusel
+        // 2. Cargar Carrusel y Configuraciones Globales
+        const { data: settings } = await window.supabase.from('site_settings').select('*');
+        const settingsMap = {};
+        if (settings) {
+            settings.forEach(s => settingsMap[s.key] = s.value);
+        }
+
+        // Actualizar Icono Global
+        if (settingsMap['portal_icon']) {
+            const portalIcons = document.querySelectorAll('.global-portal-icon');
+            portalIcons.forEach(icon => icon.src = settingsMap['portal_icon']);
+        }
+
         const { data: slides } = await window.supabase.from('carousel').select('*').order('created_at', { ascending: false });
-        if (slides && slides.length > 0) {
-            const carouselContainer = document.getElementById('carousel-dynamic');
-            if (carouselContainer) {
-                // Limpiar fallback si hay slides en la DB
-                carouselContainer.innerHTML = slides.map((slide, index) => `
-                    <div class="carousel-slide h-full bg-cover bg-center transition-opacity duration-1000 ${index === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'} absolute inset-0" 
-                         style="background-image: linear-gradient(to bottom, rgba(10,37,64,0.4), rgba(10,37,64,0.8)), url('${slide.image_url}');">
-                        <div class="flex flex-col items-center justify-center h-full text-center px-4">
-                            <h2 class="text-4xl md:text-7xl font-bold text-white mb-6 drop-shadow-2xl animate-fade-in-up">B&H Préstamos</h2>
-                            <p class="text-lg md:text-2xl text-white/80 max-w-2xl mb-10 leading-relaxed font-semibold">Soluciones dinámicas para tu futuro.</p>
-                            <a href="solicitud_español.html" class="bg-accent text-prime px-10 py-4 rounded-xl font-black text-lg hover:bg-yellow-600 transition-all shadow-[0_0_30px_rgba(193,162,42,0.4)] hover:-translate-y-1 uppercase tracking-tighter">COMENZAR SOLICITUD</a>
+        
+        const swiperWrapper = document.getElementById('carousel-swiper-wrapper');
+        const globalOverlay = document.getElementById('carousel-global-overlay');
+        const globalOverlayContent = document.getElementById('global-overlay-content');
+
+        if (slides && slides.length > 0 && swiperWrapper) {
+            // Construir los slides
+            swiperWrapper.innerHTML = slides.map((slide) => {
+                // Lógica de Capa Individual (si existe)
+                let individualOverlay = '';
+                if (slide.text_content || slide.button_text) {
+                    const posClass = getPositionClass(slide.button_position || 'inherit', settingsMap['carousel_global_position']);
+                    
+                    individualOverlay = `
+                        <div class="absolute inset-0 z-20 flex p-8 md:p-16 pointer-events-none ${posClass}">
+                            <div class="pointer-events-auto flex flex-col max-w-3xl text-white animate-fade-in-up">
+                                ${slide.text_content ? `<h2 class="text-3xl md:text-6xl font-black mb-4 drop-shadow-2xl" style="font-family: '${slide.text_font || 'Inter'}'; color: ${slide.text_color || '#FFF'}">${slide.text_content}</h2>` : ''}
+                                ${slide.button_text ? `<a href="${slide.button_link || '#'}" class="mt-6 inline-block bg-accent text-prime px-8 py-3 rounded-xl font-black hover:bg-yellow-600 transition-all shadow-xl hover:-translate-y-1 uppercase w-fit">${slide.button_text}</a>` : ''}
+                            </div>
                         </div>
-                    </div>
-                `).join('');
-                
-                // Reiniciar intervalo de rotación
-                let current = 0;
-                const dynamicSlides = carouselContainer.querySelectorAll('.carousel-slide');
-                if (dynamicSlides.length > 1) {
-                    setInterval(() => {
-                        dynamicSlides[current].classList.replace('opacity-100', 'opacity-0');
-                        dynamicSlides[current].classList.replace('z-10', 'z-0');
-                        current = (current + 1) % dynamicSlides.length;
-                        dynamicSlides[current].classList.replace('opacity-0', 'opacity-100');
-                        dynamicSlides[current].classList.replace('z-0', 'z-10');
-                    }, 5000);
+                    `;
                 }
+
+                return `
+                    <div class="swiper-slide w-full h-full relative overflow-hidden bg-slate-900 border-none outline-none">
+                        <div class="absolute inset-0 bg-cover bg-center transition-transform duration-[10000ms] hover:scale-105" 
+                             style="background-image: linear-gradient(to bottom, rgba(10,37,64,0.3), rgba(10,37,64,0.7)), url('${slide.image_url}'); filter: ${slide.image_filters || 'none'};"></div>
+                        ${individualOverlay}
+                    </div>
+                `;
+            }).join('');
+
+            // Construir Capa Global si está activada
+            if (settingsMap['carousel_global_overlay'] === 'true' && globalOverlay && globalOverlayContent) {
+                globalOverlay.classList.remove('hidden');
+                globalOverlay.className = `absolute inset-0 z-[40] pointer-events-none flex p-8 md:p-16 ${getPositionClass(settingsMap['carousel_global_position'])}`;
+                
+                globalOverlayContent.innerHTML = `
+                    ${settingsMap['carousel_global_title'] ? `<h1 class="text-4xl md:text-7xl font-bold text-white mb-6 drop-shadow-[0_4px_20px_rgba(0,0,0,0.8)] uppercase tracking-tighter">${settingsMap['carousel_global_title']}</h1>` : ''}
+                    ${settingsMap['carousel_global_subtitle'] ? `<p class="text-lg md:text-2xl text-white/90 max-w-2xl leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] font-semibold mb-10">${settingsMap['carousel_global_subtitle']}</p>` : ''}
+                    ${settingsMap['carousel_global_btn_text'] ? `<a href="${settingsMap['carousel_global_btn_link'] || '#'}" class="bg-accent text-prime px-10 py-4 rounded-xl font-black text-lg hover:bg-yellow-600 transition-all shadow-[0_0_30px_rgba(193,162,42,0.6)] hover:-translate-y-1 uppercase tracking-tighter inline-block pointer-events-auto">${settingsMap['carousel_global_btn_text']}</a>` : ''}
+                `;
+            }
+
+            // Inicializar Swiper
+            // Usaremos el efecto del primer slide como efecto global del carrusel, por defecto 'fade'
+            const mainEffect = slides[0]?.transition_type || 'fade';
+            
+            new Swiper(".mySwiper", {
+                effect: mainEffect,
+                fadeEffect: { crossFade: true },
+                speed: 1000,
+                loop: true,
+                autoplay: {
+                    delay: 5000,
+                    disableOnInteraction: false,
+                },
+                pagination: {
+                    el: ".swiper-pagination",
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: ".swiper-button-next",
+                    prevEl: ".swiper-button-prev",
+                },
+                // Configuraciones para efectos 3D si se eligen
+                cubeEffect: { shadow: true, slideShadows: true, shadowOffset: 20, shadowScale: 0.94 },
+                flipEffect: { slideShadows: true },
+                cardsEffect: { slideShadows: true },
+            });
+        }
+        
+        // 3. Load Advanced Promotions Builder
+        const promoSection = document.getElementById('dynamic-promotions-section');
+        if (promoSection) {
+            const { data: promos } = await window.supabase.from('promotions').select('*').order('created_at', { ascending: false });
+            console.log("Promociones cargadas:", promos);
+            if (promos && promos.length > 0) {
+                let htmlOut = '';
+                promos.forEach((promo) => {
+                    let pData = null;
+                    try { pData = JSON.parse(promo.description); } catch(e){}
+                    
+                    if (pData && pData.type === 'advanced_layout') {
+                        // Inyectar propiedades de la fila raíz si faltan en el JSON
+                        if (!pData.htmlTitle && !pData.title && promo.title) pData.title = promo.title;
+                        if (!pData.image_url && promo.image_url) pData.image_url = promo.image_url;
+                        
+                        htmlOut += renderAdvancedPromo(pData, promo.id, false);
+                    } else {
+                        // Legacy Simple Text
+                        htmlOut += `
+                            <div class="w-full py-16 px-4 bg-white border-b border-slate-100">
+                                <div class="max-w-4xl mx-auto text-center" data-aos="fade-up">
+                                    <h2 class="text-4xl font-black text-prime mb-4">${promo.title}</h2>
+                                    <p class="text-lg text-slate-600">${promo.description}</p>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+                promoSection.innerHTML = htmlOut;
+                
+                // Aplicar estilos nativos de Quill al contenido para que respete fuentes, encabezados y alineaciones
+                promoSection.querySelectorAll('.editor-content').forEach(el => el.classList.add('ql-editor'));
+
+                initScrollAnimations();
+                loadCuotasConfig(); // Call the new function here
+            } else {
+                promoSection.innerHTML = '';
+                promoSection.style.display = 'none';
             }
         }
+
     } catch (err) {
         console.error('Error cargando Supabase:', err);
     }
+}
+
+function initScrollAnimations() {
+    const obv = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            const anim = entry.target.getAttribute('data-aos');
+            if(entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                
+                // Mapeo dinámico de animaciones
+                const map = {
+                    'fade-in': 'fadeIn', 'fade-up': 'fadeInUp', 'fade-down': 'fadeInDown', 'fade-left': 'fadeInLeft', 'fade-right': 'fadeInRight',
+                    'fade-up-big': 'fadeInUpBig', 'fade-down-big': 'fadeInDownBig', 'fade-out': 'fadeOut',
+                    'bounce-in': 'bounceIn', 'bounce-up': 'bounceInUp', 'bounce-down': 'bounceInDown', 'bounce-left': 'bounceInLeft', 'bounce-right': 'bounceInRight',
+                    'flip-up': 'flipInX', 'flip-side': 'flipInY', 'flip-out-x': 'flipOutX', 'rotate-in': 'rotateIn',
+                    'rotate-down-left': 'rotateInDownLeft', 'rotate-up-right': 'rotateInUpRight',
+                    'zoom-in': 'zoomIn', 'zoom-up': 'zoomInUp', 'zoom-down': 'zoomInDown', 'zoom-left': 'zoomInLeft', 'zoom-out': 'zoomOut',
+                    'light-speed-in': 'lightSpeedInRight', 'light-speed-left': 'lightSpeedInLeft', 'roll-in': 'rollIn',
+                    'back-in-up': 'backInUp', 'back-in-down': 'backInDown', 'back-in-left': 'backInLeft',
+                    'swing': 'swing', 'wobble': 'wobble', 'heartbeat': 'heartbeat', 'rubber-band': 'rubberBand',
+                    'pulse': 'pulse', 'tada': 'tada', 'jello': 'jello', 'slide-out-up': 'slideOutUp'
+                };
+
+                const keyframe = map[anim] || 'fadeIn';
+                entry.target.style.animation = `${keyframe} 0.8s cubic-bezier(0.16, 1, 0.3, 1) both`;
+            } else {
+                entry.target.style.opacity = '0';
+                entry.target.style.animation = 'none';
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+    
+    document.querySelectorAll('[data-aos]').forEach(el => {
+        el.style.opacity = '0';
+        obv.observe(el);
+    });
+}
+
+// Función auxiliar para clases Flexbox de posición
+function getPositionClass(pos, globalPos = 'center') {
+    if (pos === 'inherit' && globalPos) pos = globalPos;
+    const map = {
+        'center': 'items-center justify-center text-center',
+        'center-left': 'items-center justify-start text-left',
+        'center-right': 'items-center justify-end text-right',
+        'top-center': 'items-start justify-center text-center pt-24',
+        'top-left': 'items-start justify-start text-left pt-24',
+        'top-right': 'items-start justify-end text-right pt-24',
+        'bottom-center': 'items-end justify-center text-center pb-24',
+        'bottom-left': 'items-end justify-start text-left pb-24',
+        'bottom-right': 'items-end justify-end text-right pb-24',
+    };
+    return map[pos] || map['center'];
 }
 
 function initBot() {
@@ -296,13 +451,129 @@ const registerVisit = async () => {
             localStorage.setItem('bh_viewer_id', viewerId);
         }
 
-        await window.supabase.from('page_views').insert({
+        // Analytics disabled temporarily to stop 400 errors
+        /*
+        await window.supabase.from('page_views').upsert({
             viewer_id: viewerId,
             path: window.location.pathname || '/',
             user_agent: navigator.userAgent
-        });
-    } catch (e) {
-        console.log("Analytics: visit log skipped");
-    }
+        }, { onConflict: 'viewer_id, path' });
+        */
+    } catch (e) { }
 };
 registerVisit();
+
+/**
+ * Carga la configuración de la sección de Transparencia/Cuotas (Fix 400)
+ */
+async function loadCuotasConfig() {
+    try {
+        const { data, error } = await supabase
+            .from('promotions')
+            .select('*')
+            .eq('title', 'CONFIG_CUOTAS')
+            .maybeSingle();
+
+        if (error || !data || !data.description) return;
+
+        const config = typeof data.description === 'string' ? JSON.parse(data.description) : data.description;
+
+        // Inyectar textos de forma quirúrgica para no romper el diseño original
+        const title1El = document.getElementById('cuotas-title-1');
+        const subtitle1El = document.getElementById('cuotas-subtitle-1');
+        const feature1El = document.getElementById('cuotas-feature-1');
+        const feature2El = document.getElementById('cuotas-feature-2');
+        const title2El = document.getElementById('cuotas-title-2');
+        const desc2El = document.getElementById('cuotas-desc-2');
+        const imgTableEl = document.getElementById('cuotas-img-table');
+        const imgPresentationEl = document.getElementById('cuotas-img-presentation');
+        const floatingTextEl = document.getElementById('cuotas-floating-text');
+
+        // Para "tal cual la tarjeta", preservamos los estilos del contenedor inyectando el HTML
+        if (title1El) title1El.innerHTML = config.title1 || title1El.innerHTML;
+        if (subtitle1El) subtitle1El.innerHTML = config.subtitle1 || subtitle1El.innerHTML;
+        if (feature1El) feature1El.textContent = config.feature1 || feature1El.textContent;
+        if (feature2El) feature2El.textContent = config.feature2 || feature2El.textContent;
+        if (title2El) title2El.textContent = config.title2 || title2El.textContent;
+        if (desc2El) desc2El.innerHTML = config.desc2 || desc2El.innerHTML;
+        if (floatingTextEl) floatingTextEl.textContent = config.floatingText || floatingTextEl.textContent;
+
+        if (imgTableEl) imgTableEl.src = config.imgTable || 'https://rjstcmowxhlfbualhtao.supabase.co/storage/v1/object/public/promocion/img_tabla.jpg';
+        if (imgPresentationEl) imgPresentationEl.src = config.imgPresentation || 'https://rjstcmowxhlfbualhtao.supabase.co/storage/v1/object/public/promocion/img_presentacion.jpg';
+
+        // Clases de Quill para consistencia visual
+        [title1El, subtitle1El, desc2El].forEach(el => {
+            if (el) el.classList.add('editor-content', 'ql-editor', '!p-0');
+        });
+
+    } catch (err) {
+        console.error('Error cargando configuración de cuotas:', err);
+    }
+}
+
+/**
+ * --- SINCRONIZACIÓN DE FOOTER & REDES ---
+ */
+async function loadFooterConfig() {
+    const footerMain = document.getElementById('footer-main');
+    const footerLogo = document.getElementById('footer-logo');
+    const footerDesc = document.getElementById('footer-description');
+    const footerSocials = document.getElementById('footer-socials');
+    const footerHoursTitle = document.getElementById('footer-hours-title');
+    const footerHoursContent = document.getElementById('footer-hours-content');
+    const footerContactTitle = document.getElementById('footer-contact-title');
+    const footerPhone = document.getElementById('footer-phone');
+    const footerBtn = document.getElementById('footer-btn');
+    const footerCopyright = document.getElementById('footer-copyright');
+
+    if (!footerMain) return;
+
+    try {
+        const { data, error } = await supabase
+            .from('promotions')
+            .select('description')
+            .eq('title', 'CONFIG_FOOTER')
+            .maybeSingle();
+        
+        if (error || !data) return;
+
+        const config = typeof data.description === 'string' ? JSON.parse(data.description) : data.description;
+
+        // 1. Estética General
+        if (config.footerBg) footerMain.style.backgroundColor = config.footerBg;
+
+        // 2. Textos & Logo
+        if (footerLogo && config.logoTitle) footerLogo.innerHTML = config.logoTitle;
+        if (footerDesc && config.description) {
+            footerDesc.innerHTML = config.description;
+            footerDesc.classList.add('editor-content', 'ql-editor', '!p-0', '!text-slate-400');
+        }
+        if (footerCopyright && config.copyright) footerCopyright.innerHTML = config.copyright;
+
+        // 3. Secciones Específicas
+        if (footerHoursTitle && config.hoursTitle) footerHoursTitle.textContent = config.hoursTitle;
+        if (footerHoursContent && config.hoursContent) {
+            footerHoursContent.innerHTML = config.hoursContent;
+            footerHoursContent.classList.add('editor-content', 'ql-editor', '!p-0', '!text-slate-400');
+        }
+        
+        if (footerContactTitle && config.contactTitle) footerContactTitle.textContent = config.contactTitle;
+        if (footerPhone && config.phone) footerPhone.textContent = config.phone;
+        if (footerBtn) {
+            if (config.btnText) footerBtn.textContent = config.btnText;
+            if (config.btnLink) footerBtn.href = config.btnLink;
+        }
+
+        // 4. Redes Sociales
+        if (footerSocials && config.socials) {
+            footerSocials.innerHTML = config.socials.map(s => `
+                <a href="${s.link}" class="w-10 h-10 rounded-full flex items-center justify-center transition-all group" style="background-color: ${s.bgColor}">
+                    <i class="${s.icon} group-hover:scale-110" style="color: ${s.color}"></i>
+                </a>
+            `).join('');
+        }
+
+    } catch (err) {
+        console.error('Error syncing footer:', err);
+    }
+}

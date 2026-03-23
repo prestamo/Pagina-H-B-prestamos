@@ -20,7 +20,7 @@
             </div>
             <nav id="mobileMenu" class="hidden md:flex flex-col flex-1 p-4 space-y-2">
                 <a href="index.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
-                    <i class="fas fa-chart-line"></i> <span>Dashboard (Visitas)</span>
+                    <i class="fas fa-chart-line"></i> <span>Dashboard</span>
                 </a>
                 <a href="banners.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
                     <i class="fas fa-ad"></i> <span>Banners</span>
@@ -31,9 +31,22 @@
                 <a href="promotions.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
                     <i class="fas fa-tag"></i> <span>Promociones</span>
                 </a>
-                <button id="logoutBtnMobile" class="md:hidden flex items-center gap-3 w-full p-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-all">
-                    <i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span>
-                </button>
+                <a href="cuotas.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-table-list"></i> <span>Cuotas/Transparencia</span>
+                </a>
+                <a href="footer.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-shoe-prints rotate-90"></i> <span>Redes y Footer</span>
+                </a>
+                <div class="h-px bg-slate-700 my-2"></div>
+                <a href="solicitudes_list.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-list-check"></i> <span>Ver Solicitudes</span>
+                </a>
+                <a href="solicitudes.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-file-circle-plus"></i> <span>Nueva Solicitud</span>
+                </a>
+                <a href="clientes.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-users"></i> <span>Clientes</span>
+                </a>
             </nav>
             <div class="hidden md:block p-4 border-t border-slate-700">
                 <button id="logoutBtn" class="flex items-center gap-3 w-full p-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-all">
@@ -43,32 +56,190 @@
         </aside>
 
         <!-- Main Content Area -->
-        <main class="flex-1 overflow-y-auto bg-slate-50 p-8">
-            <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
-            <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 max-w-2xl mx-auto w-full">
+        <main class="flex-1 overflow-y-auto bg-slate-50 p-4 md:p-8">
+            <header class="mb-10 max-w-5xl mx-auto w-full">
                 <div>
-                    <h2 class="text-3xl font-black text-prime uppercase tracking-tighter">Gestión de Carrusel</h2>
-                    <p class="text-slate-500 font-semibold italic">Administra las imágenes de impacto en la portada</p>
+                    <h2 class="text-3xl font-black text-prime uppercase tracking-tighter">Estudio Carrusel Pro</h2>
+                    <p class="text-slate-500 font-semibold italic">Administración avanzada de portadas, transiciones y capas globales.</p>
                 </div>
             </header>
-            </header>
 
-            <section id="carousel" class="content-section max-w-2xl mx-auto">
-                <div class="bg-white p-6 md:p-8 rounded-[2.5rem] shadow-xl border border-slate-100 mb-10">
-                    <label class="block text-xs font-bold uppercase mb-6 text-slate-400 tracking-widest text-center">Subir Nueva Imagen</label>
-                    <div class="flex flex-col items-center justify-center p-10 border-2 border-dashed border-slate-200 rounded-3xl hover:border-brand transition-colors group cursor-pointer relative">
-                        <input type="file" id="carouselUpload" class="absolute inset-0 opacity-0 cursor-pointer">
-                        <i class="fas fa-cloud-upload-alt text-4xl text-slate-300 group-hover:text-brand transition-colors mb-4"></i>
-                        <p class="text-slate-500 font-bold">Haz clic o arrastra una imagen aquí</p>
-                        <p class="text-slate-400 text-xs mt-1">Formatos sugeridos: JPG, PNG, WEBP (Relación 16:9)</p>
+            <!-- ================= PORTAL ICON SETTINGS ================= -->
+            <section class="max-w-5xl mx-auto bg-white p-6 md:p-8 rounded-[2.5rem] shadow-xl border border-slate-100 mb-10 flex flex-col md:flex-row items-center gap-8 justify-between">
+                <div>
+                    <h3 class="text-xl font-black mb-2 flex items-center gap-3 text-prime">
+                        <i class="fas fa-certificate text-accent"></i> Sello / Icono del Portal
+                    </h3>
+                    <p class="text-slate-500 text-sm max-w-md">Sube una imagen para cambiar el logo circular que flota sobre el carrusel en la página principal.</p>
+                </div>
+                <div class="flex items-center gap-6">
+                    <div class="flex flex-col md:flex-row items-center gap-4">
+                        <div class="w-28 h-28 rounded-full overflow-hidden border-4 border-slate-100 shadow-inner bg-slate-50 flex items-center justify-center relative shrink-0">
+                            <img id="portalIconPreview" src="" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex flex-col gap-3">
+                            <label class="bg-prime text-white px-6 py-3 rounded-xl text-sm font-black shadow-lg hover:bg-slate-800 transition-colors cursor-pointer text-center w-full">
+                                <i class="fas fa-camera mr-2"></i> 1. SELECCIONAR LOGO
+                                <input type="file" id="portalIconUpload" accept="image/*" class="hidden">
+                            </label>
+                            <button id="savePortalIconBtn" class="bg-brand text-white px-6 py-3 rounded-xl text-sm font-black shadow-lg hover:bg-blue-600 transition-colors opacity-50 cursor-not-allowed pointer-events-none transition-all w-full flex items-center justify-center">
+                                <i class="fas fa-cloud-upload-alt mr-2"></i> 2. GUARDAR LOGO
+                            </button>
+                        </div>
                     </div>
                 </div>
+            </section>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="carouselList">
-                    <!-- Imagenes cargadas dinamicamente -->
-                    <div class="animate-pulse bg-slate-200 h-48 rounded-2xl"></div>
-                    <div class="animate-pulse bg-slate-200 h-48 rounded-2xl"></div>
-                    <div class="animate-pulse bg-slate-200 h-48 rounded-2xl"></div>
+            <!-- ================= GLOBAL OVERLAY SETTINGS ================= -->
+            <section class="max-w-5xl mx-auto bg-prime p-6 md:p-8 rounded-[2.5rem] shadow-2xl mb-10 text-white relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-8 opacity-5">
+                    <i class="fas fa-layer-group text-9xl"></i>
+                </div>
+                <h3 class="text-xl font-black mb-6 flex items-center gap-3 italic relative z-10">
+                    <i class="fas fa-globe text-brand"></i> Capa General (Global Overlay)
+                </h3>
+                <p class="text-white/70 text-sm mb-6 relative z-10">Configura el texto y botón que aparecerán flotando sobre TODAS las imágenes del carrusel por defecto.</p>
+                
+                <form id="globalOverlayForm" class="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
+                    <div class="space-y-4 md:col-span-2">
+                        <label class="flex items-center gap-3 cursor-pointer">
+                            <input type="checkbox" id="globalEnable" class="w-5 h-5 text-brand rounded focus:ring-brand accent-brand">
+                            <span class="text-sm font-bold tracking-widest uppercase">Activar Capa General</span>
+                        </label>
+                    </div>
+
+                    <div class="space-y-4">
+                        <label class="block text-xs font-bold uppercase tracking-widest text-white/50">Título Principal</label>
+                        <input type="text" id="globalTitle" class="w-full bg-slate-800 border border-slate-700 text-white rounded-2xl p-4 focus:ring-2 focus:ring-brand outline-none" placeholder="Ej: B&H Préstamos en General">
+                    </div>
+
+                    <div class="space-y-4">
+                        <label class="block text-xs font-bold uppercase tracking-widest text-white/50">Subtítulo</label>
+                        <input type="text" id="globalSubtitle" class="w-full bg-slate-800 border border-slate-700 text-white rounded-2xl p-4 focus:ring-2 focus:ring-brand outline-none" placeholder="Ej: Tu futuro financiero comienza hoy.">
+                    </div>
+
+                    <div class="space-y-4">
+                        <label class="block text-xs font-bold uppercase tracking-widest text-white/50">Texto del Botón</label>
+                        <input type="text" id="globalBtnText" class="w-full bg-slate-800 border border-slate-700 text-white rounded-2xl p-4 focus:ring-2 focus:ring-brand outline-none" placeholder="Ej: COMENZAR SOLICITUD">
+                    </div>
+
+                    <div class="space-y-4">
+                        <label class="block text-xs font-bold uppercase tracking-widest text-white/50">Enlace del Botón</label>
+                        <input type="text" id="globalBtnLink" class="w-full bg-slate-800 border border-slate-700 text-white rounded-2xl p-4 focus:ring-2 focus:ring-brand outline-none" placeholder="Ej: solicitud_español.html">
+                    </div>
+
+                    <div class="space-y-4 md:col-span-2">
+                        <label class="block text-xs font-bold uppercase tracking-widest text-white/50">Posición en Pantalla</label>
+                        <select id="globalPosition" class="w-full bg-slate-800 border border-slate-700 text-white rounded-2xl p-4 focus:ring-2 focus:ring-brand outline-none appearance-none cursor-pointer">
+                            <option value="center">Centro Absoluto</option>
+                            <option value="center-left">Centro Izquierda</option>
+                            <option value="center-right">Centro Derecha</option>
+                            <option value="bottom-center">Abajo Centro</option>
+                            <option value="bottom-left">Abajo Izquierda</option>
+                            <option value="bottom-right">Abajo Derecha</option>
+                            <option value="top-center">Arriba Centro</option>
+                            <option value="top-left">Arriba Izquierda</option>
+                            <option value="top-right">Arriba Derecha</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" id="saveGlobalBtn" class="md:col-span-2 bg-brand text-white p-4 rounded-2xl font-black hover:bg-blue-600 transition-all shadow-[0_0_20px_rgba(45,92,255,0.4)] active:scale-95 flex items-center justify-center gap-2">
+                        <i class="fas fa-save"></i> GUARDAR CONFIGURACIÓN GLOBAL
+                    </button>
+                </form>
+            </section>
+
+            <!-- ================= IMAGE STUDIO ================= -->
+            <section class="max-w-5xl mx-auto bg-white p-6 md:p-8 rounded-[2.5rem] shadow-2xl border border-slate-100 mb-10">
+                <h3 class="text-xl font-black mb-6 flex items-center gap-3 italic text-prime">
+                    <i class="fas fa-magic text-brand"></i> Estudio de Imagen (Nueva Diapositiva)
+                </h3>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Columna Izquierda: Carga y Preview -->
+                    <div class="space-y-6">
+                        <div class="flex flex-col items-center justify-center p-8 border-2 border-dashed border-slate-200 rounded-3xl hover:border-brand transition-colors group cursor-pointer relative bg-slate-50 overflow-hidden" id="uploadZone">
+                            <input type="file" id="carouselUploadInput" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-10 w-full h-full">
+                            
+                            <div id="uploadPrompt" class="text-center transition-all duration-300">
+                                <i class="fas fa-cloud-upload-alt text-4xl text-slate-300 group-hover:text-brand transition-colors mb-4"></i>
+                                <p class="text-slate-500 font-bold">Seleccionar o arrastrar imagen</p>
+                            </div>
+                            
+                            <img id="studioPreview" class="absolute inset-0 w-full h-full object-cover hidden transition-all duration-300">
+                        </div>
+
+                        <!-- Filtros de Imagen (CSS) -->
+                        <div class="bg-slate-50 p-6 rounded-3xl border border-slate-100 space-y-4">
+                            <h4 class="font-bold text-xs uppercase tracking-widest text-slate-400 mb-4 flex items-center gap-2"><i class="fas fa-sliders-h"></i> Ajustes Fotográficos</h4>
+                            
+                            <div>
+                                <label class="flex justify-between text-[10px] font-bold uppercase text-slate-500 mb-2">
+                                    <span>Brillo</span> <span id="valBrightness">100%</span>
+                                </label>
+                                <input type="range" id="filterBrightness" min="0" max="200" value="100" class="w-full accent-brand">
+                            </div>
+                            <div>
+                                <label class="flex justify-between text-[10px] font-bold uppercase text-slate-500 mb-2">
+                                    <span>Contraste</span> <span id="valContrast">100%</span>
+                                </label>
+                                <input type="range" id="filterContrast" min="0" max="200" value="100" class="w-full accent-brand">
+                            </div>
+                            <div>
+                                <label class="flex justify-between text-[10px] font-bold uppercase text-slate-500 mb-2">
+                                    <span>Saturación</span> <span id="valSaturation">100%</span>
+                                </label>
+                                <input type="range" id="filterSaturation" min="0" max="200" value="100" class="w-full accent-brand">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Columna Derecha: Opciones y Guardado -->
+                    <form id="slideUploadForm" class="space-y-6 flex flex-col justify-between">
+                        <div class="space-y-6">
+                            <!-- Tipo de Transición -->
+                            <div class="bg-slate-50 p-6 rounded-3xl border border-slate-100">
+                                <label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-4"><i class="fas fa-random mr-2"></i> Efecto de Transición (Entrada)</label>
+                                <select id="slideTransition" class="w-full bg-white border border-slate-200 text-slate-700 rounded-xl p-3 focus:ring-2 focus:ring-brand outline-none font-bold">
+                                    <option value="fade">Desvanecimiento Suave (Fade)</option>
+                                    <option value="slide">Deslizamiento Convencional (Slide)</option>
+                                    <option value="cube">Cubo 3D (Cube)</option>
+                                    <option value="flip">Giro 3D (Flip)</option>
+                                    <option value="cards">Cartas Apiladas (Cards)</option>
+                                </select>
+                            </div>
+
+                            <!-- Opciones Individuales (Opcional) -->
+                            <div class="bg-slate-50 p-6 rounded-3xl border border-slate-100 space-y-4">
+                                <label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2"><i class="fas fa-font mr-2"></i> Capa Individual (Opcional)</label>
+                                <p class="text-[10px] text-slate-400 mb-4">Si llenas esto, sobrescribirá la Configuración Global en esta imagen.</p>
+                                
+                                <input type="text" id="slideTitle" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-sm focus:ring-brand" placeholder="Título Específico (Opcional)">
+                                <div class="grid grid-cols-2 gap-3">
+                                    <input type="text" id="slideBtnText" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-sm focus:ring-brand" placeholder="Texto de Botón">
+                                    <input type="text" id="slideBtnLink" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-sm focus:ring-brand" placeholder="Enlace absoluto o relativo">
+                                </div>
+                                <select id="slidePosition" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-sm font-bold focus:ring-brand text-slate-500">
+                                    <option value="inherit">Usar Posición Global</option>
+                                    <option value="center">Centro Absoluto</option>
+                                    <option value="bottom-left">Abajo Izquierda</option>
+                                    <option value="bottom-right">Abajo Derecha</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" id="saveSlideBtn" disabled class="w-full bg-slate-300 text-slate-500 p-4 rounded-xl font-black transition-all flex items-center justify-center gap-2 cursor-not-allowed">
+                            <i class="fas fa-cloud-upload-alt"></i> PUBLICAR DIAPOSITIVA
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- ================= CAROUSEL LIST ================= -->
+            <section class="max-w-5xl mx-auto">
+                <h4 class="font-bold text-slate-400 text-xs uppercase tracking-[0.2em] mb-6 flex items-center gap-2"><i class="fas fa-film"></i> Diapositivas Activas</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="carouselList">
+                    <!-- Slides inyectados por JS -->
                 </div>
             </section>
         </main>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Clientes | B&H ADMIN</title>
+    <link rel="icon" href="../assets/img/logob&H.jpeg">
+    <link rel="stylesheet" href="../src/css/input.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-slate-50 font-['Inter',sans-serif] text-slate-900 overflow-x-hidden">
+    <div class="min-h-screen flex flex-col md:flex-row">
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-64 bg-slate-800 text-white flex flex-col shadow-2xl z-50 min-h-screen">
+            <div class="p-6 border-b border-slate-700 flex justify-between items-center md:block">
+                <h1 class="text-xl font-bold tracking-tighter text-brand">B&H <span class="text-white">ADMIN</span></h1>
+                <button class="md:hidden text-slate-300" onclick="document.getElementById('mobileMenu').classList.toggle('hidden')">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+            <nav id="mobileMenu" class="hidden md:flex flex-col flex-1 p-4 space-y-2">
+                <a href="index.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-chart-line"></i> <span>Dashboard</span>
+                </a>
+                <a href="banners.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-ad"></i> <span>Banners</span>
+                </a>
+                <a href="carousel.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-images"></i> <span>Carrusel</span>
+                </a>
+                <a href="promotions.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-tag"></i> <span>Promociones</span>
+                </a>
+                <a href="cuotas.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-table-list"></i> <span>Cuotas/Transparencia</span>
+                </a>
+                <a href="footer.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-shoe-prints rotate-90"></i> <span>Redes y Footer</span>
+                </a>
+                <div class="h-px bg-slate-700 my-2"></div>
+                <a href="solicitudes_list.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-list-check"></i> <span>Ver Solicitudes</span>
+                </a>
+                <a href="solicitudes.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-file-circle-plus"></i> <span>Nueva Solicitud</span>
+                </a>
+                <a href="clientes.html" class="flex items-center gap-3 p-3 rounded-xl bg-brand text-white shadow-lg">
+                    <i class="fas fa-users"></i> <span>Clientes</span>
+                </a>
+            </nav>
+            <div class="hidden md:block p-4 border-t border-slate-700">
+                <button id="logoutBtn" class="flex items-center gap-3 w-full p-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-all">
+                    <i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto bg-slate-50 p-8">
+            <header class="mb-10 max-w-7xl mx-auto w-full flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+                <div>
+                    <h2 class="text-3xl font-black text-prime uppercase tracking-tighter">Cartera de Clientes</h2>
+                    <p class="text-slate-500 font-semibold italic text-sm">Visualización y búsqueda de solicitantes registrados</p>
+                </div>
+                <div class="flex items-center gap-4 w-full md:w-auto">
+                    <div class="relative flex-1 md:w-80">
+                        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="clientSearch" placeholder="Buscar por Nombre o Cédula..." class="w-full pl-12 pr-4 py-4 bg-white rounded-2xl border border-slate-100 shadow-xl focus:ring-2 focus:ring-brand outline-none transition-all font-bold">
+                    </div>
+                </div>
+            </header>
+
+            <section class="max-w-7xl mx-auto">
+                <div class="bg-white rounded-[2rem] shadow-xl overflow-hidden border border-slate-100">
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left">
+                            <thead class="bg-slate-50 border-b border-slate-100">
+                                <tr class="text-[10px] font-black uppercase text-slate-400 tracking-widest">
+                                    <th class="p-6">Nombre Completo</th>
+                                    <th class="p-6">Cédula / ID</th>
+                                    <th class="p-6">Teléfono</th>
+                                    <th class="p-6">Email</th>
+                                    <th class="p-6">Creado en</th>
+                                    <th class="p-6 text-right">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="clientsTableBody" class="divide-y divide-slate-50">
+                                <!-- Clientes cargados dinámicamente -->
+                                <tr>
+                                    <td colspan="6" class="p-20 text-center">
+                                        <i class="fas fa-circle-notch animate-spin text-4xl text-brand mb-4"></i>
+                                        <p class="text-slate-400 font-bold uppercase tracking-widest text-xs">Cargando base de datos...</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="clientsEmptyState" class="hidden p-20 text-center bg-slate-50/50">
+                        <div class="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-users-slash text-3xl text-slate-400"></i>
+                        </div>
+                        <h3 class="text-lg font-black text-slate-800 uppercase tracking-tight">No hay clientes registrados</h3>
+                        <p class="text-slate-500 text-sm italic">Las solicitudes de crédito crearán clientes automáticamente.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script type="module" src="../src/js/admin.js"></script>
+</body>
+</html>

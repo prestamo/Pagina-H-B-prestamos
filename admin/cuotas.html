@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración de Cuotas | B&H ADMIN</title>
+    <link rel="icon" href="../assets/img/logob&H.jpeg">
+    <link rel="stylesheet" href="../src/css/input.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Cropper.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    
+    <!-- Quill.js for Rich Text Formatting -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+</head>
+<body class="bg-slate-50 font-['Inter',sans-serif] text-slate-900 overflow-x-hidden">
+    <div class="min-h-screen flex flex-col md:flex-row">
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-64 bg-slate-800 text-white flex flex-col shadow-2xl z-50 min-h-screen">
+            <div class="p-6 border-b border-slate-700 flex justify-between items-center md:block">
+                <h1 class="text-xl font-bold tracking-tighter text-brand">B&H <span class="text-white">ADMIN</span></h1>
+                <button class="md:hidden text-slate-300" onclick="document.getElementById('mobileMenu').classList.toggle('hidden')">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>            <nav id="mobileMenu" class="hidden md:flex flex-col flex-1 p-4 space-y-2">
+                <a href="index.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-chart-line"></i> <span>Dashboard</span>
+                </a>
+                <a href="banners.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-ad"></i> <span>Banners</span>
+                </a>
+                <a href="carousel.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-images"></i> <span>Carrusel</span>
+                </a>
+                <a href="promotions.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-tag"></i> <span>Promociones</span>
+                </a>
+                <a href="cuotas.html" class="flex items-center gap-3 p-3 rounded-xl bg-brand text-white shadow-lg">
+                    <i class="fas fa-table-list"></i> <span>Cuotas/Transparencia</span>
+                </a>
+                <a href="footer.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-shoe-prints rotate-90"></i> <span>Redes y Footer</span>
+                </a>
+                <div class="h-px bg-slate-700 my-2"></div>
+                <a href="solicitudes_list.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-list-check"></i> <span>Ver Solicitudes</span>
+                </a>
+                <a href="solicitudes.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-file-circle-plus"></i> <span>Nueva Solicitud</span>
+                </a>
+                <a href="clientes.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-users"></i> <span>Clientes</span>
+                </a>
+            </nav>
+            <div class="hidden md:block p-4 border-t border-slate-700">
+                <button id="logoutBtn" class="flex items-center gap-3 w-full p-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-all">
+                    <i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto bg-slate-50 p-8">
+            <header class="mb-10 max-w-6xl mx-auto w-full">
+                <h2 class="text-3xl font-black text-prime uppercase tracking-tighter">Configuración de Cuotas</h2>
+                <p class="text-slate-500 font-semibold italic">Personaliza la sección de transparencia informativa</p>
+            </header>
+
+            <section id="cuotasConfig" class="max-w-6xl mx-auto">
+                <!-- Live Preview Section -->
+                <div class="mb-10">
+                    <label class="block text-[10px] font-bold uppercase mb-4 text-slate-400 tracking-[0.3em]"><i class="fas fa-eye text-brand mr-2"></i> Vista Previa en Vivo</label>
+                    <div class="w-full bg-slate-900 border-4 border-slate-800 rounded-[2.5rem] overflow-hidden shadow-2xl p-8 md:p-12 min-h-[400px]">
+                        <div id="cuotasPreview" class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                            <!-- Live Content Injected here -->
+                            <div class="text-center p-20 text-slate-600 font-bold uppercase tracking-widest text-xs animate-pulse">Cargando previsualización...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Config Form -->
+                <form id="cuotasForm" class="bg-white p-6 md:p-10 rounded-[2.5rem] shadow-xl border border-slate-100 mb-12">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                        <!-- Text Content -->
+                        <div class="space-y-8">
+                            <div>
+                                <h3 class="text-xs font-black uppercase text-brand tracking-widest mb-6 border-b border-slate-50 pb-4"><i class="fas fa-font mr-2"></i> 1. Títulos y Textos</h3>
+                                
+                                <div class="space-y-6">
+                                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                                        <label class="block text-[10px] font-black uppercase mb-3 text-slate-500">Encabezado Principal (Grande)</label>
+                                        <div id="editor-title1" class="bg-white h-[80px] rounded-xl border border-slate-200 shadow-inner"></div>
+                                    </div>
+
+                                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                                        <label class="block text-[10px] font-black uppercase mb-3 text-slate-500">Subtítulo Descripción</label>
+                                        <div id="editor-subtitle1" class="bg-white h-[100px] rounded-xl border border-slate-200 shadow-inner"></div>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                                            <label class="block text-[10px] font-black uppercase mb-3 text-slate-500">Etiqueta 1</label>
+                                            <input type="text" id="feature1" class="w-full p-2 bg-white rounded-lg border border-slate-200 font-bold text-sm" placeholder="Tasas Competitivas">
+                                        </div>
+                                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                                            <label class="block text-[10px] font-black uppercase mb-3 text-slate-500">Etiqueta 2</label>
+                                            <input type="text" id="feature2" class="w-full p-2 bg-white rounded-lg border border-slate-200 font-bold text-sm" placeholder="Aprobación en 24h">
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                                        <label class="block text-[10px] font-black uppercase mb-3 text-slate-500">Título de Tabla (Abajo)</label>
+                                        <input type="text" id="title2" class="w-full p-3 bg-white rounded-xl border border-slate-200 font-black text-lg" placeholder="Transparencia en cada cuota">
+                                    </div>
+
+                                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                                        <label class="block text-[10px] font-black uppercase mb-3 text-slate-500">Descripción de Tabla</label>
+                                        <div id="editor-desc2" class="bg-white h-[120px] rounded-xl border border-slate-200 shadow-inner"></div>
+                                    </div>
+
+                                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                                        <label class="block text-[10px] font-black uppercase mb-3 text-slate-500">Texto Tarjeta Flotante</label>
+                                        <input type="text" id="floatingText" class="w-full p-3 bg-white rounded-xl border border-slate-200 font-bold text-prime" placeholder="¡Somos tu mejor opción!">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Visual Assets -->
+                        <div class="space-y-8">
+                            <h3 class="text-xs font-black uppercase text-brand tracking-widest mb-6 border-b border-slate-50 pb-4"><i class="fas fa-images mr-2"></i> 2. Imágenes Informativas</h3>
+                            
+                            <div class="grid grid-cols-1 gap-8">
+                                <!-- Slot 1: Table -->
+                                <div class="bg-white border-2 border-slate-100 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all">
+                                    <label class="block text-[10px] font-black uppercase mb-4 text-slate-400 tracking-widest underline decoration-brand decoration-2 underline-offset-4">FOTO 1: TABLA DE CUOTAS</label>
+                                    <div class="flex gap-6 items-center">
+                                        <div class="w-32 h-20 bg-slate-100 rounded-xl overflow-hidden border-2 border-slate-200 shadow-inner relative group">
+                                            <img id="previewImg0" class="w-full h-full object-cover hidden">
+                                            <div class="absolute inset-0 flex items-center justify-center text-slate-300">
+                                                <i class="fas fa-table text-xl"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex-1">
+                                            <input type="file" id="fileInput0" class="hidden" accept="image/*" onchange="window.openCuotasCrop(0, this)">
+                                            <button type="button" onclick="document.getElementById('fileInput0').click()" class="bg-slate-900 text-white font-black py-4 px-6 rounded-2xl w-full text-[10px] tracking-widest hover:bg-brand transition-all shadow-lg active:scale-95 uppercase">
+                                                <i class="fas fa-upload mr-2"></i> Cambiar Tabla
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Slot 2: Presentation -->
+                                <div class="bg-white border-2 border-slate-100 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all">
+                                    <label class="block text-[10px] font-black uppercase mb-4 text-slate-400 tracking-widest underline decoration-brand decoration-2 underline-offset-4">FOTO 2: PRESENTACIÓN/TARJETA</label>
+                                    <div class="flex gap-6 items-center">
+                                        <div class="w-32 h-24 bg-slate-100 rounded-xl overflow-hidden border-2 border-slate-200 shadow-inner relative">
+                                            <img id="previewImg1" class="w-full h-full object-cover hidden">
+                                            <div class="absolute inset-0 flex items-center justify-center text-slate-300">
+                                                <i class="fas fa-image text-xl"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex-1">
+                                            <input type="file" id="fileInput1" class="hidden" accept="image/*" onchange="window.openCuotasCrop(1, this)">
+                                            <button type="button" onclick="document.getElementById('fileInput1').click()" class="bg-slate-900 text-white font-black py-4 px-6 rounded-2xl w-full text-[10px] tracking-widest hover:bg-brand transition-all shadow-lg active:scale-95 uppercase">
+                                                <i class="fas fa-upload mr-2"></i> Cambiar Tarjeta
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-blue-50/50 p-6 rounded-[2rem] border border-blue-100 mt-10">
+                                <p class="text-[11px] text-blue-600 font-bold leading-relaxed italic"><i class="fas fa-info-circle mr-2"></i> Estas imágenes se guardarán en el nuevo contenedor 'config' para asegurar que siempre estén disponibles sin depender de archivos locales.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-12 pt-8 border-t border-slate-100 flex justify-end">
+                        <button type="submit" id="saveCuotasBtn" class="bg-brand text-white font-black py-5 px-14 rounded-2xl hover:bg-blue-600 transition-all shadow-[0_15px_30px_rgba(45,92,255,0.4)] hover:-translate-y-1 uppercase tracking-[0.2em] transform active:scale-95 flex items-center justify-center gap-3 w-full md:w-auto">
+                            <i class="fas fa-save text-xl"></i> GUARDAR CONFIGURACIÓN GLOBAL
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Modal de Recorte -->
+            <div id="cuotasCropModal" class="hidden fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4">
+                <div class="bg-white w-full max-w-4xl rounded-[2.5rem] overflow-hidden shadow-2xl flex flex-col md:flex-row">
+                    <div class="p-8 flex-1 border-r border-slate-100 bg-slate-100/50">
+                        <h3 class="text-sm font-black uppercase text-prime tracking-widest mb-6"><i class="fas fa-crop-alt text-brand mr-2"></i> Ajustar Fotografía</h3>
+                        <div class="aspect-video bg-white rounded-3xl overflow-hidden shadow-inner">
+                            <img id="cuotasImageToCrop" class="max-w-full">
+                        </div>
+                    </div>
+                    <div class="p-8 w-full md:w-80 bg-slate-50 flex flex-col justify-center gap-4">
+                        <button type="button" onclick="window.applyCuotasCrop()" class="w-full bg-brand text-white font-black py-5 px-6 rounded-2xl hover:bg-blue-600 transition-all uppercase tracking-widest text-xs shadow-xl active:scale-95">Aplicar Recorte</button>
+                        <button type="button" onclick="window.closeCuotasCrop()" class="w-full bg-white border-2 border-slate-200 text-slate-500 font-bold py-5 px-6 rounded-2xl hover:bg-slate-100 transition-all uppercase tracking-widest text-xs">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script type="module" src="../src/js/admin.js"></script>
+</body>
+</html>

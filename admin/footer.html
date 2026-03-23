@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración Footer | B&H ADMIN</title>
+    <link rel="icon" href="../assets/img/logob&H.jpeg">
+    <link rel="stylesheet" href="../src/css/input.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Quill.js for Rich Text Formatting -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+</head>
+<body class="bg-slate-50 font-['Inter',sans-serif] text-slate-900 overflow-x-hidden">
+    <div class="min-h-screen flex flex-col md:flex-row">
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-64 bg-slate-800 text-white flex flex-col shadow-2xl z-50 min-h-screen">
+            <div class="p-6 border-b border-slate-700 flex justify-between items-center md:block">
+                <h1 class="text-xl font-bold tracking-tighter text-brand">B&H <span class="text-white">ADMIN</span></h1>
+                <button class="md:hidden text-slate-300" onclick="document.getElementById('mobileMenu').classList.toggle('hidden')">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+            <nav id="mobileMenu" class="hidden md:flex flex-col flex-1 p-4 space-y-2">
+                <a href="index.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-chart-line"></i> <span>Dashboard</span>
+                </a>
+                <a href="banners.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-ad"></i> <span>Banners</span>
+                </a>
+                <a href="carousel.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-images"></i> <span>Carrusel</span>
+                </a>
+                <a href="promotions.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-tag"></i> <span>Promociones</span>
+                </a>
+                <a href="cuotas.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-table-list"></i> <span>Cuotas/Transparencia</span>
+                </a>
+                <a href="footer.html" class="flex items-center gap-3 p-3 rounded-xl bg-brand text-white shadow-lg">
+                    <i class="fas fa-shoe-prints rotate-90"></i> <span>Redes y Footer</span>
+                </a>
+                <div class="h-px bg-slate-700 my-2"></div>
+                <a href="solicitudes_list.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-list-check"></i> <span>Ver Solicitudes</span>
+                </a>
+                <a href="solicitudes.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-file-circle-plus"></i> <span>Nueva Solicitud</span>
+                </a>
+                <a href="clientes.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-users"></i> <span>Clientes</span>
+                </a>
+            </nav>
+            <div class="hidden md:block p-4 border-t border-slate-700">
+                <button id="logoutBtn" class="flex items-center gap-3 w-full p-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-all">
+                    <i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto bg-slate-50 p-8">
+            <header class="mb-10 max-w-6xl mx-auto w-full">
+                <h2 class="text-3xl font-black text-prime uppercase tracking-tighter">Configuración de Pie de Página</h2>
+                <p class="text-slate-500 font-semibold italic">Personaliza redes sociales, horarios y contacto</p>
+            </header>
+
+            <section class="max-w-6xl mx-auto">
+                <!-- Live Preview Section -->
+                <div class="mb-10">
+                    <label class="block text-[10px] font-bold uppercase mb-4 text-slate-400 tracking-[0.3em]"><i class="fas fa-eye text-brand mr-2"></i> Vista Previa en Vivo</label>
+                    <div id="footerPreviewContainer" class="w-full bg-slate-900 border-4 border-slate-800 rounded-[2.5rem] overflow-hidden shadow-2xl p-10 min-h-[300px] text-white">
+                        <!-- Live Content Injected here -->
+                        <div id="footerPreview" class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                            <div class="text-center p-10 text-slate-600 font-bold uppercase tracking-widest text-xs animate-pulse col-span-3">Cargando previsualización...</div>
+                        </div>
+                        <div id="copyrightPreview" class="mt-12 pt-8 border-t border-white/5 text-center text-slate-500 text-xs"></div>
+                    </div>
+                </div>
+
+                <!-- Config Form -->
+                <form id="footerForm" class="bg-white p-6 md:p-10 rounded-[2.5rem] shadow-xl border border-slate-100 mb-12">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                        <!-- Left: Main Footer Data -->
+                        <div class="space-y-8">
+                            <div>
+                                <h3 class="text-xs font-black uppercase text-brand tracking-widest mb-6 border-b border-slate-50 pb-4"><i class="fas fa-info-circle mr-2"></i> 1. Información General</h3>
+                                <div class="space-y-6">
+                                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                                        <label class="block text-[10px] font-black uppercase mb-3 text-slate-500">Color de Fondo del Footer</label>
+                                        <input type="color" id="footerBgColor" class="w-full h-10 p-1 bg-white rounded-lg border border-slate-200 cursor-pointer" value="#0f172a">
+                                    </div>
+
+                                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                                        <label class="block text-[10px] font-black uppercase mb-3 text-slate-500">Título/Logo (HTML Soportado)</label>
+                                        <input type="text" id="logoTitle" class="w-full p-3 bg-white rounded-xl border border-slate-200 font-black text-lg" placeholder='B&H <span class="text-brand">PRÉSTAMOS</span>'>
+                                    </div>
+
+                                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                                        <label class="block text-[10px] font-black uppercase mb-3 text-slate-500">Descripción Corta</label>
+                                        <div id="editor-description" class="bg-white h-[100px] rounded-xl border border-slate-200 shadow-inner"></div>
+                                    </div>
+                                    
+                                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                                        <label class="block text-[10px] font-black uppercase mb-3 text-slate-500">Texto de Copyright</label>
+                                        <input type="text" id="copyrightText" class="w-full p-3 bg-white rounded-xl border border-slate-200 font-bold text-slate-600 text-sm" placeholder="&copy; 2026 B&H Préstamos en General. Todos los derechos reservados.">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Sections & Socials -->
+                        <div class="space-y-8">
+                            <div>
+                                <h3 class="text-xs font-black uppercase text-brand tracking-widest mb-6 border-b border-slate-50 pb-4"><i class="fas fa-clock mr-2"></i> 2. Secciones de Contenido</h3>
+                                <div class="space-y-6">
+                                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                                        <label class="block text-[10px] font-black uppercase mb-3 text-slate-500">Título Sección Horarios</label>
+                                        <input type="text" id="hoursTitle" class="w-full p-3 bg-white rounded-xl border border-slate-200 font-bold" placeholder="Horarios de Atención">
+                                    </div>
+                                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                                        <label class="block text-[10px] font-black uppercase mb-3 text-slate-500">Contenido Horarios (HTML)</label>
+                                        <div id="editor-hours" class="bg-white h-[120px] rounded-xl border border-slate-200 shadow-inner"></div>
+                                    </div>
+
+                                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                                        <label class="block text-[10px] font-black uppercase mb-3 text-slate-500">Título Sección Contacto</label>
+                                        <input type="text" id="contactTitle" class="w-full p-3 bg-white rounded-xl border border-slate-200 font-bold" placeholder="Contacto Directo">
+                                    </div>
+                                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                                        <label class="block text-[10px] font-black uppercase mb-3 text-slate-500">Detalles de Contacto</label>
+                                        <div class="space-y-3">
+                                            <div class="flex items-center gap-2">
+                                                <span class="text-[9px] font-bold text-slate-400 w-20">TELÉFONO</span>
+                                                <input type="text" id="phoneText" class="flex-1 p-2 bg-white rounded-lg border border-slate-200 font-bold text-xs" placeholder="(809) 789-5676">
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <span class="text-[9px] font-bold text-slate-400 w-20">TEXTO BOTÓN</span>
+                                                <input type="text" id="btnText" class="flex-1 p-2 bg-white rounded-lg border border-slate-200 font-bold text-xs" placeholder="Solicitar Crédito Online">
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <span class="text-[9px] font-bold text-slate-400 w-20">LINK BOTÓN</span>
+                                                <input type="text" id="btnLink" class="flex-1 p-2 bg-white rounded-lg border border-slate-200 font-bold text-xs" placeholder="solicitud_español.html">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 class="text-xs font-black uppercase text-brand tracking-widest mb-6 border-b border-slate-50 pb-4"><i class="fas fa-share-alt mr-2"></i> 3. Redes Sociales</h3>
+                                <div id="socialMediaItems" class="space-y-4">
+                                    <!-- Social media rows injected here -->
+                                </div>
+                                <button type="button" onclick="window.addSocialItem()" class="mt-4 w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 font-black text-[10px] uppercase tracking-widest rounded-xl transition-all border-2 border-dashed border-slate-200">
+                                    <i class="fas fa-plus-circle mr-2"></i> Añadir Red Social
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-12 pt-8 border-t border-slate-100 flex justify-end">
+                        <button type="submit" id="saveFooterBtn" class="bg-brand text-white font-black py-5 px-14 rounded-2xl hover:bg-blue-600 transition-all shadow-[0_15px_30px_rgba(45,92,255,0.4)] hover:-translate-y-1 uppercase tracking-[0.2em] transform active:scale-95 flex items-center justify-center gap-3 w-full md:w-auto">
+                            <i class="fas fa-save text-xl"></i> GUARDAR CONFIGURACIÓN PIE DE PÁGINA
+                        </button>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <!-- Script para Icon Selection (FontAwesome Simple) -->
+    <script type="module" src="../src/js/admin.js"></script>
+</body>
+</html>
