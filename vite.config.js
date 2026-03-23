@@ -43,16 +43,16 @@ export default defineConfig({
         solicitud_es: resolve(__dirname, 'solicitud_español.html'),
         solicitud_en: resolve(__dirname, 'solicitud_english.html'),
         descubre: resolve(__dirname, 'descubre_mas.html'),
-        adminLogin: resolve(__dirname, 'admin/login.html'),
-        adminDashboard: resolve(__dirname, 'admin/index.html'),
-        adminBanners: resolve(__dirname, 'admin/banners.html'),
-        adminCarousel: resolve(__dirname, 'admin/carousel.html'),
-        adminPromotions: resolve(__dirname, 'admin/promotions.html'),
-        adminClientes: resolve(__dirname, 'admin/clientes.html'),
-        adminCuotas: resolve(__dirname, 'admin/cuotas.html'),
-        adminSolicitudes: resolve(__dirname, 'admin/solicitudes.html'),
-        adminSolicitudesList: resolve(__dirname, 'admin/solicitudes_list.html'),
-        adminFooter: resolve(__dirname, 'admin/footer.html')
+        'admin/login': resolve(__dirname, 'admin/login.html'),
+        'admin/index': resolve(__dirname, 'admin/index.html'),
+        'admin/banners': resolve(__dirname, 'admin/banners.html'),
+        'admin/carousel': resolve(__dirname, 'admin/carousel.html'),
+        'admin/promotions': resolve(__dirname, 'admin/promotions.html'),
+        'admin/clientes': resolve(__dirname, 'admin/clientes.html'),
+        'admin/cuotas': resolve(__dirname, 'admin/cuotas.html'),
+        'admin/solicitudes': resolve(__dirname, 'admin/solicitudes.html'),
+        'admin/solicitudes_list': resolve(__dirname, 'admin/solicitudes_list.html'),
+        'admin/footer': resolve(__dirname, 'admin/footer.html')
       }
     }
   }
