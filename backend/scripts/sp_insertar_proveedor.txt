@@ -1,0 +1,12 @@
+definition                                                                                                                                                                                                                                                      
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+---- procedimiento de almacenado para el nuevo formulario proveedor
+-- insertar proveedor
+CREATE PROCEDURE sp_insertar_proveedor
+    @nombre NVARCHAR(100),
+    @direccion NVARCHAR(200),
+    @telefono NVARCHAR(15),
+    @email NVARCHAR(100)
+AS
+BEGI

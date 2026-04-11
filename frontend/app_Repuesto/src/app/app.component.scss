@@ -1,0 +1,201 @@
+.menu-header {
+  --background: #1a1a2e;
+  padding: 15px 0;
+  border-bottom: 2px solid #e94560;
+
+  .user-minimal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .user-icon-small {
+      font-size: 50px;
+      color: #e94560;
+    }
+
+    .user-info-text {
+      text-align: center;
+      h2 {
+        margin: 5px 0 0 0;
+        font-size: 18px;
+        font-weight: 800;
+        color: #ffffff;
+        text-transform: uppercase;
+      }
+      p {
+        margin: 0;
+        font-size: 10px;
+        color: #64748b;
+        letter-spacing: 2px;
+      }
+    }
+  }
+}
+
+.sidebar-content {
+  --background: #1a1a2e;
+  display: flex;
+  flex-direction: column;
+}
+
+.calculator-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 15px 5px;
+}
+
+.calc-btn {
+  background: rgba(255, 255, 255, 0.03);
+  height: 70px;
+  width: 70px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+  cursor: pointer;
+
+  ion-icon {
+    font-size: 32px;
+    color: #94a3b8;
+  }
+
+  &.btn-active {
+    background: rgba(233, 69, 96, 0.2);
+    border: 1px solid #e94560;
+    box-shadow: 0 0 10px rgba(233, 69, 96, 0.4);
+    ion-icon { color: #ffffff; }
+  }
+
+  &:hover:not(.btn-active) {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.cash-tool {
+  padding: 15px 10px;
+  margin-top: auto; 
+  background: rgba(0,0,0,0.3);
+  border-top: 1px solid rgba(255,255,255,0.05);
+
+  .cash-input-group {
+    margin-bottom: 12px;
+
+    ion-label {
+      font-size: 10px;
+      font-weight: 800;
+      color: #94a3b8;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+    }
+
+    .money-display {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 8px;
+      border-radius: 6px;
+      font-size: 18px;
+      font-weight: 700;
+      text-align: right;
+      
+      &.total-val { color: #ffffff; }
+      &.change-val { 
+        color: #4ade80; 
+        &.negative { color: #ef4444; }
+      }
+    }
+
+    .money-item {
+      --background: rgba(255, 255, 255, 0.05);
+      --color: white;
+      --padding-start: 10px;
+      border-radius: 6px;
+      height: 40px;
+      
+      ion-icon { color: #e94560; font-size: 18px; }
+      ion-input { font-weight: 700; font-size: 16px; }
+    }
+  }
+}
+
+.logout-grid-btn {
+  background: #1a1a2e;
+  padding: 15px;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  ion-icon { font-size: 24px; color: #ef4444; }
+}
+
+ion-split-pane {
+  --side-width: 175px !important;
+  --side-min-width: 175px !important;
+  --side-max-width: 175px !important;
+}
+
+ion-menu {
+  --width: 175px !important;
+  --min-width: 175px !important;
+  --max-width: 175px !important;
+}
+
+/* FLOATING SUB-MENU */
+.floating-menu {
+  position: fixed;
+  z-index: 9999;
+  background: rgba(26, 26, 46, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(233, 69, 96, 0.3);
+  border-radius: 12px 24px 24px 12px;
+  box-shadow: 0 15px 50px rgba(0,0,0,0.5), 0 0 15px rgba(233, 69, 96, 0.1);
+  padding: 12px;
+  animation: slideRight 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  min-width: 220px;
+
+  .floating-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    
+    ion-icon { color: #e94560; font-size: 18px; }
+    span { color: #94a3b8; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+  }
+
+  .floating-options {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .sub-option-btn {
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    width: 100%;
+    color: #ffffff;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+
+    ion-icon { font-size: 20px; color: #e94560; }
+    .sub-label { font-size: 14px; font-weight: 600; }
+
+    &:hover {
+      background: rgba(233, 69, 96, 0.1);
+      transform: translateX(5px);
+    }
+  }
+}
+
+@keyframes slideRight {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: translateX(0); }
+}

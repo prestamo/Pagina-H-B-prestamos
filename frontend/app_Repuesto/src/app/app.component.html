@@ -1,0 +1,87 @@
+<ion-app>
+  <ion-split-pane contentId="main-content" [when]="'lg'">
+    <ion-menu contentId="main-content" type="overlay" *ngIf="authService.currentUser$ | async">
+      <ion-header class="ion-no-border">
+        <ion-toolbar class="menu-header">
+          <div class="user-minimal">
+            <ion-icon name="person-circle-outline" class="user-icon-small"></ion-icon>
+            <div class="user-info-text">
+              <h2>{{ (authService.currentUser$ | async)?.usuario }}</h2>
+              <p>H&B RACING</p>
+            </div>
+          </div>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="sidebar-content">
+        <!-- SECCIÓN SUPERIOR: CUADRÍCULA DE BOTONES -->
+        <div class="calculator-grid">
+          <div 
+            *ngFor="let p of appPages"
+            class="calc-btn" 
+            (click)="handlePageClick($event, p)"
+            [class.btn-active]="activeSubMenu === p">
+            <ion-icon [name]="p.icon"></ion-icon>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- SECCIÓN INFERIOR: COBRO Y DEVUELTA -->
+        <div class="cash-tool">
+          <div class="cash-input-group">
+            <ion-label>TOTAL VENTA</ion-label>
+            <div class="money-display total-val">$ {{ totalVenta | number:'1.2-2' }}</div>
+          </div>
+
+          <div class="cash-input-group">
+            <ion-label>RECIBIDO</ion-label>
+            <ion-item lines="none" class="money-item">
+              <ion-icon name="cash-outline" slot="start"></ion-icon>
+              <ion-input type="number" [(ngModel)]="cobro" placeholder="0.00"></ion-input>
+            </ion-item>
+          </div>
+
+          <div class="cash-input-group">
+            <ion-label>DEVUELTA</ion-label>
+            <div class="money-display change-val" [class.negative]="devuelta < 0">
+              $ {{ devuelta | number:'1.2-2' }}
+            </div>
+          </div>
+        </div>
+      </ion-content>
+
+      <ion-footer class="ion-no-border">
+        <div class="logout-grid-btn" (click)="logout()">
+          <ion-icon name="log-out-outline"></ion-icon>
+        </div>
+      </ion-footer>
+    </ion-menu>
+
+    <!-- SUB-MENÚ FLOTANTE (BURBUJAS) -->
+    <div 
+      class="floating-menu" 
+      *ngIf="activeSubMenu" 
+      [style.top.px]="subMenuPos.top"
+      [style.left.px]="subMenuPos.left"
+      (click)="$event.stopPropagation()">
+      <div class="floating-header">
+        <ion-icon [name]="activeSubMenu.icon"></ion-icon>
+        <span>{{ activeSubMenu.title }}</span>
+      </div>
+      <div class="floating-options">
+        <button 
+          *ngFor="let sub of activeSubMenu.subPages" 
+          (click)="navigateTo(sub.url)"
+          class="sub-option-btn">
+          <ion-icon [name]="sub.icon"></ion-icon>
+          <span class="sub-label">{{ sub.title }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="ion-page" id="main-content">
+      <ion-router-outlet></ion-router-outlet>
+    </div>
+  </ion-split-pane>
+</ion-app>

@@ -1,0 +1,11 @@
+CREATE TABLE [ClienteCredito] (id_credito int NOT NULL, nombre_cliente nvarchar(100) NOT NULL, direccion nvarchar(200), dni nvarchar(20), telefono nvarchar(15), nombre_vendedor nvarchar(100) NOT NULL, numero_factura nvarchar(50) NOT NULL, monto_adeudado decimal NOT NULL, fecha_inicio date NOT NULL, fecha_vencimiento date NOT NULL, estado nvarchar(50), cod_cliente char(10));
+CREATE TABLE [Descuentos] (Id int NOT NULL, CodProducto varchar(50), NombreProducto varchar(100), Cantidad int, TotalDescuento decimal, Concepto varchar(255), FechaDescuento datetime, Usuario varchar(100));
+CREATE TABLE [DetalleproductoCredito] (id_producto_credito int NOT NULL, id_credito int NOT NULL, cod_producto nvarchar(50) NOT NULL, nombre_producto nvarchar(100) NOT NULL, cantidad int NOT NULL, precio_unitario decimal NOT NULL, subtotal decimal NOT NULL);
+CREATE TABLE [detalleventa] (num_documento char(20), serie char(4), cod_producto char(10), cantidad int, precio decimal, estado char(1), fecha_registro datetime);
+CREATE TABLE [DistribucionDenominaciones] (id_distribucion int NOT NULL, id_caja int, denominacion nvarchar(50), cantidad int, fecha date NOT NULL);
+CREATE TABLE [EstadoCaja] (id_caja int NOT NULL, estado nvarchar(10) NOT NULL, fecha_apertura date, fecha_cierre date);
+CREATE TABLE [HistorialCaja] (id_historial int NOT NULL, id_caja int, fecha_apertura date, fecha_cierre date, fondo_inicial decimal, fondo_final decimal, id_usuario int);
+CREATE TABLE [PagosCredito] (id_pago int NOT NULL, id_credito int NOT NULL, fecha_pago date NOT NULL, monto_pago decimal NOT NULL);
+CREATE TABLE [TotalDescuento] (id_totaldescuento int NOT NULL, fecha datetime, totaldescuento decimal NOT NULL, num_documento varchar(20) NOT NULL);
+CREATE TABLE [venta] (num_documento char(20) NOT NULL, serie char(4), fecha date, cod_cliente char(10), dni varchar(10), total decimal, id_usuario int, id_caja int, estado char(1));
+CREATE TABLE [ventas_eliminadas] (num_documento varchar(50), serie char(4), fecha date, cod_cliente char(10), dni varchar(10), total decimal, estado char(1), fecha_eliminacion datetime, cod_producto char(10), nombre_producto varchar(50), descripcion_producto varchar(100), precio_compra decimal, precio_venta decimal, cantidad int);

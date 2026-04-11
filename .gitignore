@@ -1,0 +1,28 @@
+# Python
+**/venv/
+**/__pycache__/
+**/*.pyc
+**/.pytest_cache/
+**/error_log.txt
+**/main_debug_log.txt
+
+# Ionic / Angular
+**/node_modules/
+**/.angular/
+**/.ionic/
+**/www/
+**/dist/
+**/platforms/
+**/plugins/
+**/*.log
+
+# IDEs
+**/.vscode/
+**/.idea/
+**/.DS_Store
+
+# Environment
+**/.env
+**/.ngrok
+**/uploads/*
+!**/uploads/.gitkeep
