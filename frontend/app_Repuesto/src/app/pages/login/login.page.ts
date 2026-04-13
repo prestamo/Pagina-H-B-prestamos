@@ -1,8 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
-import { ToastController } from '@ionic/angular/standalone';
+import { 
+  IonContent, IonHeader, IonToolbar, IonTitle, IonButton, 
+  IonIcon, IonInput, IonItem, IonSpinner, IonModal, 
+  IonList, IonButtons, IonLabel 
+} from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { UiService } from '../../services/ui.service';
@@ -18,7 +21,13 @@ import {
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule]
+  imports: [
+    CommonModule, 
+    FormsModule,
+    IonContent, IonHeader, IonToolbar, IonTitle, IonButton, 
+    IonIcon, IonInput, IonItem, IonSpinner, IonModal, 
+    IonList, IonButtons, IonLabel
+  ]
 })
 export class LoginPage {
   credentials = {
