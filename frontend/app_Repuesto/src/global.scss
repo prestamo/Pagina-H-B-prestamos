@@ -35,3 +35,15 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+
+// Safety fix for Netlify/Production blank screen
+// Ensures that ion-page doesn't stay invisible if a transition hangs
+.ion-page-invisible {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+// Background for the overall app to avoid black screen if bootstrap is slow
+ion-app {
+  background: var(--ion-background-color, #ffffff);
+}
