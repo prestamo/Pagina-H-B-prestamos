@@ -24,38 +24,55 @@ import {
 })
 export class AppComponent {
   public appPages = [
-    { title: 'Inicio', url: '/home', icon: 'home-outline' },
-    { title: 'Productos', url: '/inventory', icon: 'cube-outline' },
-    { title: 'Categorías', url: '/categories', icon: 'pricetags-outline' },
-    { title: 'Ventas', url: '/sales', icon: 'cart-outline' },
-    { title: 'Créditos', url: '/credits', icon: 'card-outline' },
-    { title: 'Clientes', url: '/clients', icon: 'people-outline' },
-    { title: 'Proveedores', url: '/suppliers', icon: 'briefcase-outline' },
     { 
-      title: 'Caja', 
-      icon: 'wallet-outline',
+      title: 'Panel de Control', 
+      url: '/home', 
+      icon: 'analytics-outline',
+      description: 'Vista General y KPIs'
+    },
+    { 
+      title: 'Inventario', 
+      icon: 'cube-outline',
+      description: 'Gestión de Stock',
       subPages: [
-        { title: 'Apertura de Caja', url: '/finance/opening', icon: 'lock-open-outline' },
-        { title: 'Cierre de Caja', url: '/finance/closing', icon: 'checkmark-circle-outline' },
-        { title: 'Historial de Cajas', url: '/finance/history', icon: 'document-text-outline' },
-        { title: 'Estado / Transac.', url: '/finance/status', icon: 'analytics-outline' }
+        { title: 'Productos', url: '/inventory', icon: 'pricetag-outline' },
+        { title: 'Categorías', url: '/categories', icon: 'grid-outline' },
+      ]
+    },
+    { 
+      title: 'Ventas ', 
+      icon: 'cart-outline',
+      description: 'Facturación y POS',
+      subPages: [
+        { title: 'Nueva Venta', url: '/sales', icon: 'add-circle-outline' },
+        { title: 'Historial', url: '/sales/history', icon: 'receipt-outline' },
+        { title: 'Créditos', url: '/credits', icon: 'card-outline' },
+      ]
+    },
+    { 
+      title: 'Finanzas', 
+      icon: 'wallet-outline',
+      description: 'Caja y Utilidades',
+      subPages: [
+        { title: 'Estado de Caja', url: '/finance/status', icon: 'pulse-outline' },
+        { title: 'Apertura/Cierre', url: '/finance/opening', icon: 'lock-open-outline' },
+        { title: 'Historial Cajas', url: '/finance/history', icon: 'time-outline' },
       ]
     },
     { 
       title: 'Configuración', 
       icon: 'settings-outline', 
+      description: 'Sistema y Usuarios',
       subPages: [
         { title: 'Usuarios', url: '/settings/users', icon: 'people-outline' },
-        { title: 'Permisos', url: '/settings/permissions', icon: 'lock-open-outline' },
+        { title: 'Empresa', url: '/settings/business', icon: 'business-outline' },
         { title: 'Auditoría', url: '/settings/audit', icon: 'shield-checkmark-outline' },
-        { title: 'Negocio', url: '/settings/business', icon: 'storefront-outline' }
       ]
     },
-    { title: 'Reportes', url: '/reports', icon: 'stats-chart-outline' },
   ];
 
   public activeSubMenu: any = null;
-  public subMenuPos = { top: 0, left: 185 };
+  public subMenuPos = { top: 0, left: 240 };
 
   // Variables para la calculadora
   public cobro: number = 0;

@@ -10,24 +10,26 @@
   <div class="login-container">
     <div class="login-card">
       
-      <!-- BOTÓN DE AJUSTES DE CONEXIÓN -->
+      <!-- Luxury Settings Toggle -->
       <div class="settings-trigger">
-        <ion-button fill="clear" (click)="isSettingsModalOpen = true">
-          <ion-icon name="settings-outline" slot="icon-only"></ion-icon>
+        <ion-button fill="clear" (click)="openSettings()" title="Configuración de Red">
+          <i class="fa-solid fa-gear"></i>
         </ion-button>
       </div>
 
       <div class="login-header">
-        <ion-icon name="construct-outline" class="app-logo"></ion-icon>
-        <h1>H&amp;B Racing</h1>
-        <p>Gestión de Repuestos y Almacén</p>
+        <div class="app-logo">
+          <i class="fa-solid fa-bolt-lightning"></i>
+        </div>
+        <h1>H&B Racing</h1>
+        <p>Advanced Management System</p>
         
-        <!-- INDICADOR DE CONEXIÓN MODAL -->
-        <div class="connection-badge" (click)="isSettingsModalOpen = true">
-          <ion-icon name="server-outline"></ion-icon>
+        <!-- Premium Connection Info -->
+        <div class="connection-badge" (click)="openSettings()">
+          <div class="conn-indicator"></div>
           <div class="conn-text">
-            <span class="instance">{{ serverInstance }}</span>
-            <span class="db">{{ dbName }}</span>
+            <span class="instance">{{ connectionInfo?.instance || 'Local Mode' }}</span>
+            <span class="db">{{ connectionInfo?.database || 'Syncing...' }}</span>
           </div>
         </div>
       </div>

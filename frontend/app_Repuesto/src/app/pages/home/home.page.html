@@ -1,0 +1,123 @@
+<ion-header [translucent]="true" class="ion-no-border">
+  <ion-toolbar class="dashboard-toolbar">
+    <ion-buttons slot="start">
+      <ion-menu-button color="primary"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Executive Overview</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear">
+        <i class="fa-solid fa-bell"></i>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="dashboard-content">
+  <div class="dashboard-container">
+    
+    <!-- KPI Overview -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-icon blue">
+          <i class="fa-solid fa-chart-line"></i>
+        </div>
+        <div class="kpi-info">
+          <h3>Ventas del Mes</h3>
+          <div class="value">$42,500.00</div>
+          <div class="trend up">
+            <i class="fa-solid fa-arrow-up"></i>
+            <span>+12.5%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon green">
+          <i class="fa-solid fa-hand-holding-dollar"></i>
+        </div>
+        <div class="kpi-info">
+          <h3>Utilidad Neta</h3>
+          <div class="value">$12,840.40</div>
+          <div class="trend up">
+            <i class="fa-solid fa-arrow-up"></i>
+            <span>+8.2%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon orange">
+          <i class="fa-solid fa-box-open"></i>
+        </div>
+        <div class="kpi-info">
+          <h3>Stock Bajo</h3>
+          <div class="value">14 Items</div>
+          <div class="trend down">
+            <span>Requiere Atención</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-icon red">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+        </div>
+        <div class="kpi-info">
+          <h3>Cajas Abiertas</h3>
+          <div class="value">2 Sedes</div>
+          <div class="trend up">
+            <span>En Línea</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Dashboard Body -->
+    <div class="dashboard-grid">
+      
+      <!-- Trend Analysis -->
+      <div class="dashboard-section main-chart">
+        <div class="section-header">
+          <h2>Tendencia de Ventas (7 Días)</h2>
+          <select class="premium-select">
+            <option>Semana Actual</option>
+            <option>Semana Pasada</option>
+          </select>
+        </div>
+
+        <div class="trend-container">
+          <div class="bar-wrapper" *ngFor="let day of weekData">
+            <div class="bar" [style.height.%]="day.val"></div>
+            <span class="label">{{ day.label }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="dashboard-section recent-activity">
+        <div class="section-header">
+          <h2>Actividad Reciente</h2>
+          <a href="#" (click)="$event.preventDefault()" class="action-link">Ver Todo</a>
+        </div>
+
+        <div class="transaction-list">
+          <div class="transaction-item" *ngFor="let tx of recentTx">
+            <div class="tx-icon">
+              <i class="fa-solid fa-receipt"></i>
+            </div>
+            <div class="tx-details">
+              <span class="tx-customer">{{ tx.customer }}</span>
+              <span class="tx-date">{{ tx.time }}</span>
+            </div>
+            <div class="tx-amount" [class.completed]="tx.status === 'success'" [class.pending]="tx.status === 'pending'">
+              <span class="amount">${{ tx.amount | number:'1.2-2' }}</span>
+              <span class="status">{{ tx.status === 'success' ? 'Pagado' : 'Pendiente' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</ion-content>

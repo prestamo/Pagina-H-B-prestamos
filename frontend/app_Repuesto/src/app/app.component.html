@@ -1,61 +1,49 @@
 <ion-app>
   <ion-split-pane contentId="main-content" [when]="'lg'">
     <ion-menu contentId="main-content" type="overlay" *ngIf="authService.currentUser$ | async">
-      <ion-header class="ion-no-border">
-        <ion-toolbar class="menu-header">
-          <div class="user-minimal">
-            <ion-icon name="person-circle-outline" class="user-icon-small"></ion-icon>
-            <div class="user-info-text">
+      <div class="sidebar-wrapper">
+        <div class="sidebar-header">
+          <div class="status-dot"></div>
+          <div class="profile-container">
+            <div class="avatar">
+              <i class="fa-solid fa-user-tie"></i>
+            </div>
+            <div class="profile-info">
               <h2>{{ (authService.currentUser$ | async)?.usuario }}</h2>
-              <p>H&B RACING</p>
-            </div>
-          </div>
-        </ion-toolbar>
-      </ion-header>
-
-      <ion-content class="sidebar-content">
-        <!-- SECCIÓN SUPERIOR: CUADRÍCULA DE BOTONES -->
-        <div class="calculator-grid">
-          <div 
-            *ngFor="let p of appPages"
-            class="calc-btn" 
-            (click)="handlePageClick($event, p)"
-            [class.btn-active]="activeSubMenu === p">
-            <ion-icon [name]="p.icon"></ion-icon>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <!-- SECCIÓN INFERIOR: COBRO Y DEVUELTA -->
-        <div class="cash-tool">
-          <div class="cash-input-group">
-            <ion-label>TOTAL VENTA</ion-label>
-            <div class="money-display total-val">$ {{ totalVenta | number:'1.2-2' }}</div>
-          </div>
-
-          <div class="cash-input-group">
-            <ion-label>RECIBIDO</ion-label>
-            <ion-item lines="none" class="money-item">
-              <ion-icon name="cash-outline" slot="start"></ion-icon>
-              <ion-input type="number" [(ngModel)]="cobro" placeholder="0.00"></ion-input>
-            </ion-item>
-          </div>
-
-          <div class="cash-input-group">
-            <ion-label>DEVUELTA</ion-label>
-            <div class="money-display change-val" [class.negative]="devuelta < 0">
-              $ {{ devuelta | number:'1.2-2' }}
+              <span class="role">Administrator</span>
             </div>
           </div>
         </div>
-      </ion-content>
 
-      <ion-footer class="ion-no-border">
-        <div class="logout-grid-btn" (click)="logout()">
-          <ion-icon name="log-out-outline"></ion-icon>
+        <ion-content class="menu-content" forceOverscroll="false">
+          <div class="nav-section">
+            <p class="section-label">Management</p>
+            <div 
+              *ngFor="let p of appPages" 
+              class="nav-item"
+              [class.active]="activeSubMenu === p"
+              (click)="handlePageClick($event, p)">
+              <div class="nav-icon">
+                <ion-icon [name]="p.icon"></ion-icon>
+              </div>
+              <div class="nav-text">
+                <span class="nav-title">{{ p.title }}</span>
+                <span class="nav-desc">{{ p.description }}</span>
+              </div>
+              <div class="nav-arrow" *ngIf="p.subPages">
+                <i class="fa-solid fa-chevron-right"></i>
+              </div>
+            </div>
+          </div>
+        </ion-content>
+
+        <div class="sidebar-footer">
+          <div class="logout-btn" (click)="logout()">
+            <i class="fa-solid fa-power-off"></i>
+            <span>Desconectarse</span>
+          </div>
         </div>
-      </ion-footer>
+      </div>
     </ion-menu>
 
     <!-- SUB-MENÚ FLOTANTE (BURBUJAS) -->

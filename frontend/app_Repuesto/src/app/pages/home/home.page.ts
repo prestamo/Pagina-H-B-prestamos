@@ -4,38 +4,29 @@ import { IonicModule } from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
-  template: `
-    <ion-header [translucent]="true">
-      <ion-toolbar>
-        <ion-buttons slot="start">
-          <ion-menu-button></ion-menu-button>
-        </ion-buttons>
-        <ion-title>Inicio</ion-title>
-      </ion-toolbar>
-    </ion-header>
-
-    <ion-content [fullscreen]="true" class="ion-padding">
-      <div class="welcome-container">
-        <ion-icon name="sparkles-outline" color="primary"></ion-icon>
-        <h2>Bienvenido a H&amp;B Racing</h2>
-        <p>Sistema de gestión de repuestos profesional.</p>
-      </div>
-    </ion-content>
-  `,
-  styles: [`
-    .welcome-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 80%;
-      text-align: center;
-      ion-icon { font-size: 80px; margin-bottom: 20px; }
-      h2 { font-weight: 800; color: #ffffff; }
-      p { color: #94a3b8; }
-    }
-  `],
+  templateUrl: './home.page.html',
+  styleUrls: ['./home.page.scss'],
   standalone: true,
   imports: [IonicModule, CommonModule]
 })
-export class HomePage {}
+export class HomePage {
+  // Mock data for the dashboard visual
+  public weekData = [
+    { label: 'Lun', val: 45 },
+    { label: 'Mar', val: 70 },
+    { label: 'Mie', val: 55 },
+    { label: 'Jue', val: 90 },
+    { label: 'Vie', val: 80 },
+    { label: 'Sab', val: 100 },
+    { label: 'Dom', val: 30 }
+  ];
+
+  public recentTx = [
+    { customer: 'Juan Perez', time: 'Hace 5 min', amount: 150.00, status: 'success' },
+    { customer: 'Marina Solis', time: 'Hace 15 min', amount: 85.50, status: 'success' },
+    { customer: 'Taller El Rayo', time: 'Hace 1 hora', amount: 1200.00, status: 'pending' },
+    { customer: 'Carlos Ruiz', time: 'Hace 2 horas', amount: 45.00, status: 'success' }
+  ];
+
+  constructor() {}
+}
