@@ -1,3 +1,11 @@
+/**
+ * Ionic Variables
+ * ----------------------------------------------------------------------------
+ * Importar las variables de tema antes que el núcleo de Ionic para asegurar
+ * que las personalizaciones se apliquen correctamente.
+ */
+@import "./theme/variables.scss";
+
 /*
  * App Global CSS
  * ----------------------------------------------------------------------------
