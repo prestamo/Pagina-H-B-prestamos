@@ -1,9 +1,11 @@
 .login-content {
-  --background: radial-gradient(circle at top right, #1e3a8a 0%, #0f172a 100%);
+  --background: transparent !important;
+  background: radial-gradient(circle at top right, #1e3a8a 0%, #060b19 100%) !important;
   display: flex;
   align-items: flex-start;
   justify-content: center;
   padding-top: 12vh;
+  min-height: 100vh;
 }
 
 .login-container {

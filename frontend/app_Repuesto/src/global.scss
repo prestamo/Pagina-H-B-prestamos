@@ -42,8 +42,3 @@
   opacity: 1 !important;
   visibility: visible !important;
 }
-
-// Background for the overall app to avoid black screen if bootstrap is slow
-ion-app {
-  background: var(--ion-background-color, #ffffff);
-}
