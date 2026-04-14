@@ -37,21 +37,17 @@ export class HomePage {
   constructor(private menuCtrl: MenuController) {}
 
   ngOnInit() {
-    // Escuchar eventos del menú para sincronizar el icono
-    const menu = this.menuCtrl.get('main');
-    
-    // Simplificado: usar observables del MenuController si están disponibles o promesas
-    // En este caso, usaremos el estado del evento para mayor fidelidad
+    this.syncMenuState();
   }
 
-  async toggleMenu() {
-    const isOpen = await this.menuCtrl.isOpen('main');
-    if (isOpen) {
-      await this.menuCtrl.close('main');
-      this.isMenuOpen = false;
-    } else {
-      await this.menuCtrl.open('main');
-      this.isMenuOpen = true;
+  async syncMenuState() {
+    const menu = await this.menuCtrl.get('main');
+    if (menu) {
+      menu.addEventListener('ionWillOpen', () => { this.isMenuOpen = true; });
+      menu.addEventListener('ionWillClose', () => { this.isMenuOpen = false; });
+      
+      // Initialize state
+      this.isMenuOpen = await this.menuCtrl.isOpen('main');
     }
   }
 

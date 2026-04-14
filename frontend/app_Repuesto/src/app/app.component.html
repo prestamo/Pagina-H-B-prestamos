@@ -1,6 +1,6 @@
 <ion-app>
   <ion-split-pane contentId="main-content" [when]="'lg'">
-    <ion-menu contentId="main-content" type="overlay" menuId="main" *ngIf="(authService.currentUser$ | async) && router.url !== '/login'">
+    <ion-menu contentId="main-content" type="overlay" menuId="main" [disabled]="!(authService.currentUser$ | async) || router.url === '/login'">
       <ion-header class="ion-no-border sidebar-header">
         <ion-toolbar color="transparent" class="ion-no-padding">
           <div class="profile-container">

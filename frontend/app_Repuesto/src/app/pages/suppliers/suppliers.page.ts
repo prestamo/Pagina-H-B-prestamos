@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, MenuController } from '@ionic/angular';
 import { ToastController, AlertController } from '@ionic/angular/standalone';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { environment } from '../../../environments/environment';
+
+
 import { addIcons } from 'ionicons';
 import { 
   briefcaseOutline, locationOutline, callOutline, mailOutline, 
@@ -20,9 +22,17 @@ import { UiService } from '../../services/ui.service';
     <ion-header class="ion-no-border">
       <ion-toolbar class="main-toolbar">
         <ion-buttons slot="start">
-          <ion-menu-button color="light"></ion-menu-button>
+          <ion-menu-toggle menu="main">
+            <div class="custom-burger" [class.menu-open]="isMenuOpen">
+              <span class="bar line-1"></span>
+              <span class="bar line-2"></span>
+              <span class="bar line-3"></span>
+              <div class="special-event-glow"></div>
+            </div>
+          </ion-menu-toggle>
         </ion-buttons>
         <ion-title>Cartera de Proveedores</ion-title>
+
         <ion-buttons slot="end">
           <ion-button (click)="openModal()" class="add-btn">
             <ion-icon name="add-outline" slot="start"></ion-icon>
@@ -245,12 +255,16 @@ export class SuppliersPage implements OnInit {
     nombre: '', direccion: '', telefono: '', email: ''
   };
 
+  isMenuOpen = false;
+
   constructor(
     private http: HttpClient,
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
-    private uiService: UiService
+    private uiService: UiService,
+    private menuCtrl: MenuController
   ) {
+
     addIcons({ 
       briefcaseOutline, locationOutline, callOutline, mailOutline, 
       searchOutline, addOutline, createOutline, trashOutline, 
@@ -260,7 +274,18 @@ export class SuppliersPage implements OnInit {
 
   ngOnInit() {
     this.loadSuppliers();
+    this.syncMenuState();
   }
+
+  async syncMenuState() {
+    const menu = await this.menuCtrl.get('main');
+    if (menu) {
+      menu.addEventListener('ionWillOpen', () => { this.isMenuOpen = true; });
+      menu.addEventListener('ionWillClose', () => { this.isMenuOpen = false; });
+      this.isMenuOpen = await this.menuCtrl.isOpen('main');
+    }
+  }
+
 
   loadSuppliers() {
     this.http.get(`${environment.apiUrl}/proveedores`).subscribe((res: any) => {

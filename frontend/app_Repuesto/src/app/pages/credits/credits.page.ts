@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, MenuController } from '@ionic/angular';
+
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { addIcons } from 'ionicons';
@@ -12,11 +13,19 @@ import { cardOutline, timeOutline, alertCircleOutline, checkmarkCircleOutline } 
     <ion-header class="ion-no-border">
       <ion-toolbar class="main-toolbar">
         <ion-buttons slot="start">
-          <ion-menu-button color="light"></ion-menu-button>
+          <ion-menu-toggle menu="main">
+            <div class="custom-burger" [class.menu-open]="isMenuOpen">
+              <span class="bar line-1"></span>
+              <span class="bar line-2"></span>
+              <span class="bar line-3"></span>
+              <div class="special-event-glow"></div>
+            </div>
+          </ion-menu-toggle>
         </ion-buttons>
         <ion-title>Cuentas por Cobrar</ion-title>
       </ion-toolbar>
     </ion-header>
+
 
     <ion-content [fullscreen]="true">
       <div class="page-container">
@@ -99,18 +108,38 @@ export class CreditsPage implements OnInit {
   credits: any[] = [];
   totalAdeudado: number = 0;
   vencidosCount: number = 0;
+  isMenuOpen = false;
 
-  constructor(private http: HttpClient) {
+
+  constructor(
+    private http: HttpClient,
+    private menuCtrl: MenuController
+  ) {
     addIcons({ cardOutline, timeOutline, alertCircleOutline, checkmarkCircleOutline });
   }
 
   ngOnInit() {
+    this.loadCredits();
+    this.syncMenuState();
+  }
+
+  async syncMenuState() {
+    const menu = await this.menuCtrl.get('main');
+    if (menu) {
+      menu.addEventListener('ionWillOpen', () => { this.isMenuOpen = true; });
+      menu.addEventListener('ionWillClose', () => { this.isMenuOpen = false; });
+      this.isMenuOpen = await this.menuCtrl.isOpen('main');
+    }
+  }
+
+  loadCredits() {
     this.http.get(`${environment.apiUrl}/creditos`).subscribe((res: any) => {
       this.credits = res;
       this.totalAdeudado = this.credits.reduce((acc, c) => acc + c.monto_adeudado, 0);
       this.vencidosCount = this.credits.filter(c => c.estado === 'Vencido').length;
     });
   }
+
 
   getStatusColor(status: string) {
     switch(status.toLowerCase()) {

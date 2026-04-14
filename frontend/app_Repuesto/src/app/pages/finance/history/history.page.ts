@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, MenuController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { addIcons } from 'ionicons';
+import { Subscription } from 'rxjs';
+
+
 import { 
   documentTextOutline, searchOutline, downloadOutline, 
   filterOutline, calendarOutline, chevronForwardOutline,
@@ -17,15 +20,25 @@ import {
     <ion-header class="ion-no-border">
       <ion-toolbar class="main-toolbar">
         <ion-buttons slot="start">
-          <ion-menu-button color="light"></ion-menu-button>
+          <ion-menu-toggle menu="main">
+            <div class="custom-burger" [class.menu-open]="isMenuOpen">
+              <span class="bar line-1"></span>
+              <span class="bar line-2"></span>
+              <span class="bar line-3"></span>
+              <div class="special-event-glow"></div>
+            </div>
+          </ion-menu-toggle>
         </ion-buttons>
-        <ion-title>Historial de Cajas</ion-title>
+        <ion-title class="hide-mobile">Historial de Cajas</ion-title>
+        <ion-title class="show-mobile">Cajas</ion-title>
         <ion-buttons slot="end">
+
           <ion-button fill="solid" color="success" class="export-btn">
             <ion-icon name="download-outline" slot="start"></ion-icon>
-            Excel
+            <span class="hide-mobile">Excel</span>
           </ion-button>
         </ion-buttons>
+
       </ion-toolbar>
 
       <div class="filter-panel">
@@ -43,7 +56,52 @@ import {
 
     <ion-content [fullscreen]="true">
       <div class="table-container">
-        <div class="modern-table">
+        
+        <!-- MOBILE CARDS VIEW -->
+        <div class="mobile-cards show-mobile">
+          <div *ngFor="let h of history" class="history-card">
+            <div class="card-header">
+              <div class="date-info">
+                <h3>{{ h.fecha | date:'dd/MM/yy' }}</h3>
+                <span>{{ h.fecha | date:'HH:mm' }}</span>
+              </div>
+              <ion-badge [color]="h.estado_cierre === 'OK' ? 'success' : 'danger'">
+                {{ h.estado_cierre }}
+              </ion-badge>
+            </div>
+            
+            <div class="card-grid">
+              <div class="grid-item">
+                <span class="label">SISTEMA</span>
+                <span class="value">$ {{ h.total_sistema | number:'1.2-2' }}</span>
+              </div>
+              <div class="grid-item">
+                <span class="label">CONTADO</span>
+                <span class="value">$ {{ h.efectivo_contado | number:'1.2-2' }}</span>
+              </div>
+              <div class="grid-item" [class.neg]="h.diferencia < 0">
+                <span class="label">DIFERENCIA</span>
+                <span class="value">$ {{ h.diferencia | number:'1.2-2' }}</span>
+              </div>
+            </div>
+
+            <div class="card-footer">
+              <div class="method-split">
+                <span>EF: $ {{ h.ventas_efectivo | number:'1.2-2' }}</span>
+                <span>TJ: $ {{ h.ventas_tarjeta | number:'1.2-2' }}</span>
+                <span>TR: $ {{ h.ventas_transferencia | number:'1.2-2' }}</span>
+              </div>
+              <ion-button fill="clear" size="small">
+                <ion-icon name="eye-outline"></ion-icon>
+              </ion-button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- DESKTOP TABLE VIEW -->
+        <div class="modern-table hide-mobile">
+
           <div class="table-header">
             <div class="h-col">Fecha</div>
             <div class="h-col text-right">Fondo Ini.</div>
@@ -98,13 +156,46 @@ import {
   styles: [`
     .main-toolbar { --background: #1a1a2e; --color: white; }
     
+    .show-mobile { display: none; }
+    .hide-mobile { display: block; }
+
+    /* --- MODERN SANDWICH MENU --- */
+    /* Handled Globally in global.scss */
+
     .filter-panel {
-      background: #1a1a2e;
-      padding: 15px 30px;
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
+      background: #1a1a2e; padding: 15px 30px; display: flex;
+      align-items: center; gap: 20px; border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    @media (max-width: 991px) {
+
+      .show-mobile { display: block; }
+      .hide-mobile { display: none !important; }
+      
+      .filter-panel { flex-direction: column; padding: 15px; gap: 10px; }
+      .filter-group { width: 100%; justify-content: center; }
+      .search-btn { width: 100%; }
+      .table-container { padding: 15px; }
+
+      .history-card {
+        background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px; padding: 20px; margin-bottom: 15px;
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;
+          .date-info h3 { margin: 0; color: white; font-size: 18px; }
+          .date-info span { color: #64748b; font-size: 12px; }
+        }
+        .card-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px;
+          .grid-item { display: flex; flex-direction: column; gap: 4px;
+            .label { font-size: 9px; color: #64748b; font-weight: 800; }
+            .value { font-size: 13px; color: white; font-weight: 700; }
+            &.neg .value { color: #ef4444; }
+          }
+        }
+        .card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px;
+          .method-split { display: flex; gap: 8px; font-size: 9px; color: #94a3b8; font-weight: 700; }
+          ion-button { --color: #94a3b8; }
+        }
+      }
     }
 
     .export-btn { --border-radius: 12px; font-weight: 800; }
@@ -124,7 +215,7 @@ import {
 
     .search-btn { --background: #e94560; --border-radius: 12px; height: 45px; width: 50px; }
 
-    .table-container { padding: 30px; background: #0f172a; height: 100%; }
+    .table-container { padding: 30px; background: #0f172a; height: 100%; min-height: 100vh; }
 
     .modern-table {
       background: rgba(30, 41, 59, 0.3);
@@ -181,6 +272,7 @@ import {
       p { color: #64748b; font-weight: 600; }
     }
   `],
+
   standalone: true,
   imports: [IonicModule, CommonModule, FormsModule]
 })
@@ -188,8 +280,13 @@ export class CashHistoryPage implements OnInit {
   history: any[] = [];
   startDate: string = '';
   endDate: string = '';
+  isMenuOpen: boolean = false;
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private menuCtrl: MenuController
+  ) {
+
     addIcons({ 
       documentTextOutline, searchOutline, downloadOutline, 
       filterOutline, calendarOutline, chevronForwardOutline,
@@ -199,9 +296,20 @@ export class CashHistoryPage implements OnInit {
 
   ngOnInit() {
     this.loadHistory();
+    this.syncMenuState();
+  }
+
+  async syncMenuState() {
+    const menu = await this.menuCtrl.get('main');
+    if (menu) {
+      menu.addEventListener('ionWillOpen', () => { this.isMenuOpen = true; });
+      menu.addEventListener('ionWillClose', () => { this.isMenuOpen = false; });
+      this.isMenuOpen = await this.menuCtrl.isOpen('main');
+    }
   }
 
   loadHistory() {
+
     let url = `${environment.apiUrl}/cash/history`;
     if (this.startDate && this.endDate) {
       url += `?start_date=${this.startDate}&end_date=${this.endDate}`;

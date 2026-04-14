@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, MenuController } from '@ionic/angular';
 import { ToastController, AlertController } from '@ionic/angular/standalone';
+
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { environment } from '../../../../environments/environment';
@@ -21,9 +22,17 @@ import { UiService } from '../../../services/ui.service';
     <ion-header class="ion-no-border no-print">
       <ion-toolbar class="main-toolbar">
         <ion-buttons slot="start">
-          <ion-menu-button color="light"></ion-menu-button>
+          <ion-menu-toggle menu="main">
+            <div class="custom-burger" [class.menu-open]="isMenuOpen">
+              <span class="bar line-1"></span>
+              <span class="bar line-2"></span>
+              <span class="bar line-3"></span>
+              <div class="special-event-glow"></div>
+            </div>
+          </ion-menu-toggle>
         </ion-buttons>
         <ion-title>Gestión de Inventario</ion-title>
+
         <ion-buttons slot="end">
           <ion-button (click)="openModal()" class="add-btn-header">
             <ion-icon name="add-circle-outline" slot="start"></ion-icon>
@@ -479,19 +488,23 @@ export class ProductsPage implements OnInit {
   searchTerm: string = '';
   selectedSupplier: number = 0;
   lowStockOnly: boolean = false;
-
   stats = { totalSKU: 0, totalStock: 0, lowStock: 0 };
 
   isModalOpen = false;
+
+  isMenuOpen = false;
   currentProduct: any = {};
+
 
   constructor(
     private http: HttpClient, 
     private toastCtrl: ToastController,
     private alertCtrl: AlertController,
     private validationService: ValidationService,
-    private uiService: UiService
+    private uiService: UiService,
+    private menuCtrl: MenuController
   ) {
+
     addIcons({ 
       searchOutline, filterOutline, alertCircleOutline, cubeOutline, 
       businessOutline, warningOutline, addCircleOutline, createOutline, 
@@ -501,7 +514,18 @@ export class ProductsPage implements OnInit {
 
   ngOnInit() {
     this.loadData();
+    this.syncMenuState();
   }
+
+  async syncMenuState() {
+    const menu = await this.menuCtrl.get('main');
+    if (menu) {
+      menu.addEventListener('ionWillOpen', () => { this.isMenuOpen = true; });
+      menu.addEventListener('ionWillClose', () => { this.isMenuOpen = false; });
+      this.isMenuOpen = await this.menuCtrl.isOpen('main');
+    }
+  }
+
 
   loadData() {
     this.http.get(`${environment.apiUrl}/productos`).subscribe({
