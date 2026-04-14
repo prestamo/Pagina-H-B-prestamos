@@ -1,6 +1,6 @@
 <ion-app>
   <ion-split-pane contentId="main-content" [when]="'lg'">
-    <ion-menu contentId="main-content" type="overlay" *ngIf="authService.currentUser$ | async">
+    <ion-menu contentId="main-content" menuId="main-menu" [disabled]="!(authService.currentUser$ | async)">
       <div class="sidebar-wrapper">
         <div class="sidebar-header">
           <div class="profile-container">
