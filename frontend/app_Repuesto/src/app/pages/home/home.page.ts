@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, MenuController } from '@ionic/angular';
+import { Subscription } from 'rxjs';
+
 
 @Component({
   selector: 'app-home',
@@ -28,5 +29,29 @@ export class HomePage {
     { customer: 'Carlos Ruiz', time: 'Hace 2 horas', amount: 45.00, status: 'success' }
   ];
 
-  constructor() {}
+  public isMenuOpen: boolean = false;
+  private menuSub!: Subscription;
+
+  constructor(private menuCtrl: MenuController) {}
+
+  ngOnInit() {
+    // Escuchar eventos del menú para sincronizar el icono
+    const menu = this.menuCtrl.get('main');
+    
+    // Simplificado: usar observables del MenuController si están disponibles o promesas
+    // En este caso, usaremos el estado del evento para mayor fidelidad
+  }
+
+  async toggleMenu() {
+    const isOpen = await this.menuCtrl.isOpen('main');
+    if (isOpen) {
+      await this.menuCtrl.close('main');
+      this.isMenuOpen = false;
+    } else {
+      await this.menuCtrl.open('main');
+      this.isMenuOpen = true;
+    }
+  }
+
+
 }

@@ -24,9 +24,18 @@ import { PrintingService } from '../../services/printing.service';
     <ion-header class="ion-no-border">
       <ion-toolbar class="main-toolbar">
         <ion-buttons slot="start">
-          <ion-menu-button color="light"></ion-menu-button>
+          <div 
+            class="custom-burger" 
+            [class.menu-open]="isMenuOpen"
+            (click)="toggleMenu()">
+            <span class="bar line-1"></span>
+            <span class="bar line-2"></span>
+            <span class="bar line-3"></span>
+            <div class="special-event-glow"></div>
+          </div>
         </ion-buttons>
         <ion-title>Terminal Punto de Venta</ion-title>
+
       </ion-toolbar>
 
       <!-- PANEL DE ACCIÓN RÁPIDA (TOP CENTER) -->
@@ -277,6 +286,69 @@ import { PrintingService } from '../../services/printing.service';
   styles: [`
     .main-toolbar { --background: #1a1a2e; --color: white; }
 
+    /* --- MODERN SANDWICH MENU --- */
+    .custom-burger {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      margin-left: 10px;
+      overflow: visible;
+
+      .bar {
+        width: 18px;
+        height: 2px;
+        background: #e94560;
+        border-radius: 4px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        transform-origin: center;
+        box-shadow: 0 0 10px rgba(233, 69, 96, 0.3);
+      }
+
+      .special-event-glow {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: radial-gradient(circle, #e94560 0%, transparent 70%);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+        transition: all 0.6s ease;
+        z-index: -1;
+        filter: blur(15px);
+      }
+
+      &:hover {
+        background: rgba(233, 69, 96, 0.1);
+        border-color: rgba(233, 69, 96, 0.3);
+        .bar { background: #ff4d6d; box-shadow: 0 0 15px rgba(255, 77, 109, 0.6); }
+        .special-event-glow { width: 70px; height: 70px; opacity: 0.2; }
+      }
+
+      &:active .special-event-glow { width: 100px; height: 100px; opacity: 0.4; transition: all 0.1s ease; }
+
+      &.menu-open {
+        background: rgba(239, 68, 68, 0.1);
+        border-color: rgba(239, 68, 68, 0.2);
+        .bar { background: #ef4444; box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); }
+        .line-1 { transform: translateY(7px) rotate(45deg); }
+        .line-2 { opacity: 0; transform: translateX(-20px); }
+        .line-3 { transform: translateY(-7px) rotate(-45deg); }
+        .special-event-glow { background: radial-gradient(circle, #ef4444 0%, transparent 70%); }
+      }
+    }
+
     .mini-status-badge {
       display: flex; align-items: center; gap: 10px; padding: 6px 12px; border-radius: 12px; cursor: pointer;
       transition: all 0.2s ease; margin-left: auto;
@@ -526,6 +598,8 @@ export class SalesPage implements OnInit {
   amountReceived: number = 0;
   changeAmount: number = 0;
   isMobileView: string = 'cart';
+  isMenuOpen: boolean = false;
+
 
   constructor(
     private http: HttpClient,
@@ -535,8 +609,10 @@ export class SalesPage implements OnInit {
     private alertCtrl: AlertController,
     private uiService: UiService,
     private router: Router,
-    private printingService: PrintingService
+    private printingService: PrintingService,
+    private menuCtrl: MenuController
   ) {
+
     addIcons({ 
       cartOutline, addOutline, removeOutline, trashOutline, 
       searchOutline, personOutline, documentTextOutline, 
@@ -729,4 +805,16 @@ export class SalesPage implements OnInit {
       this.changeAmount = 0;
     }
   }
+
+  async toggleMenu() {
+    const isOpen = await this.menuCtrl.isOpen('main');
+    if (isOpen) {
+      await this.menuCtrl.close('main');
+      this.isMenuOpen = false;
+    } else {
+      await this.menuCtrl.open('main');
+      this.isMenuOpen = true;
+    }
+  }
 }
+

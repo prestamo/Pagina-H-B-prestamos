@@ -1,8 +1,17 @@
 <ion-header [translucent]="true" class="ion-no-border">
   <ion-toolbar class="dashboard-toolbar">
     <ion-buttons slot="start">
-      <ion-menu-button color="primary"></ion-menu-button>
+      <div 
+        class="custom-burger" 
+        [class.menu-open]="isMenuOpen"
+        (click)="toggleMenu()">
+        <span class="bar line-1"></span>
+        <span class="bar line-2"></span>
+        <span class="bar line-3"></span>
+        <div class="special-event-glow"></div>
+      </div>
     </ion-buttons>
+
     <ion-title>Executive Overview</ion-title>
     <ion-buttons slot="end">
       <ion-button fill="clear">
