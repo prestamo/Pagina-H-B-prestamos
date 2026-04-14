@@ -1,5 +1,5 @@
-ion-menu::part(container) {
-  background: linear-gradient(135deg, #1a1c2c 0%, #421958 100%);
+ion-menu {
+  --background: linear-gradient(135deg, #1a1c2c 0%, #421958 100%);
 }
 
 .sidebar-content {
