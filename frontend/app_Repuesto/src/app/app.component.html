@@ -1,8 +1,8 @@
 <ion-app>
   <ion-split-pane contentId="main-content" [when]="'lg'">
-    <ion-menu contentId="main-content" menuId="main-menu" [disabled]="!(authService.currentUser$ | async)">
-      <div class="sidebar-wrapper">
-        <div class="sidebar-header">
+    <ion-menu contentId="main-content" menuId="main">
+      <ion-header class="ion-no-border sidebar-header">
+        <ion-toolbar color="transparent" class="ion-no-padding">
           <div class="profile-container">
             <div class="avatar">
               <i class="fa-solid fa-user"></i>
@@ -12,32 +12,32 @@
               <span class="db-info"><i class="fa-solid fa-database"></i> {{ dbName }}</span>
             </div>
           </div>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="sidebar-content">
+        <div class="menu-list">
+          <ion-list lines="none" class="ion-no-padding">
+            <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages">
+              <ion-item 
+                [routerLink]="[p.url]" 
+                routerDirection="root" 
+                [class.active-item]="router.url === p.url">
+                <ion-icon slot="start" [name]="p.icon"></ion-icon>
+                <ion-label>{{ p.title }}</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+          </ion-list>
         </div>
+      </ion-content>
 
-        <ion-content>
-          <div class="menu-list">
-            <ion-list lines="none">
-              <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages">
-                <ion-item 
-                  [routerLink]="[p.url]" 
-                  routerDirection="root" 
-                  [class.active-item]="router.url === p.url">
-                  <ion-icon slot="start" [name]="p.icon"></ion-icon>
-                  <ion-label>{{ p.title }}</ion-label>
-                </ion-item>
-              </ion-menu-toggle>
-            </ion-list>
-          </div>
-        </ion-content>
-
-        <ion-footer class="ion-no-border sidebar-footer">
-          <div class="logout-container">
-            <button class="logout-icon-btn" (click)="logout()" title="Cerrar Sesión">
-              <i class="fa-solid fa-power-off"></i>
-            </button>
-          </div>
-        </ion-footer>
-      </div>
+      <ion-footer class="ion-no-border sidebar-footer">
+        <div class="logout-container">
+          <button class="logout-icon-btn" (click)="logout()" title="Cerrar Sesión">
+            <i class="fa-solid fa-power-off"></i>
+          </button>
+        </div>
+      </ion-footer>
     </ion-menu>
 
     <div class="ion-page" id="main-content">
