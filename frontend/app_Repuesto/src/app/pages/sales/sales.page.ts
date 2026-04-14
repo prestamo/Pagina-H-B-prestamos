@@ -35,13 +35,12 @@ import { PrintingService } from '../../services/printing.service';
           <div class="action-item search-box">
             <ion-icon name="barcode-outline"></ion-icon>
             <ion-input 
-              placeholder="Escribe para buscar y agregar producto..." 
+              placeholder="Escribe para buscar..." 
               [(ngModel)]="productSearch" 
               (ionInput)="filterProducts()"
               class="quick-input">
             </ion-input>
             
-            <!-- DROPDOWN DE RESULTADOS RÁPIDOS -->
             <div class="quick-results" *ngIf="productSearch && filteredProducts.length > 0">
               <div *ngFor="let p of filteredProducts | slice:0:5" class="result-row" (click)="addProduct(p)">
                 <div class="res-info">
@@ -53,42 +52,46 @@ import { PrintingService } from '../../services/printing.service';
             </div>
           </div>
 
-          <div class="divider-v"></div>
+          <div class="divider-v hide-mobile"></div>
 
-          <div class="action-item discount-box">
+          <div class="action-item discount-box hide-mobile">
             <ion-icon name="pricetagOutline"></ion-icon>
             <ion-label>Desc. %</ion-label>
-            <ion-input 
-              type="number" 
-              [(ngModel)]="discountPercent" 
-              (ionChange)="applyDiscount()" 
-              max="20" min="0" 
-              placeholder="0"
-              class="quick-input discount-val">
-            </ion-input>
+            <ion-input type="number" [(ngModel)]="discountPercent" (ionChange)="applyDiscount()" placeholder="0" class="quick-input discount-val"></ion-input>
           </div>
 
           <ion-button (click)="isProductModalOpen = true" class="browse-btn">
             <ion-icon name="search-outline"></ion-icon>
-            Catálogo
+            <span class="hide-mobile">Catálogo</span>
           </ion-button>
 
-          <!-- INDICADOR DE CAJA RE-UBICADO -->
-          <div class="mini-status-badge" [class.active]="hasActiveSession" [class.closed]="!hasActiveSession" [routerLink]="!hasActiveSession ? '/finance/opening' : null">
+          <div class="mini-status-badge hide-mobile" [class.active]="hasActiveSession" [class.closed]="!hasActiveSession" [routerLink]="!hasActiveSession ? '/finance/opening' : null">
             <ion-icon [name]="hasActiveSession ? 'checkmark-circle-outline' : 'lock-closed-outline'"></ion-icon>
             <div class="badge-text">
-              <span class="status-label">{{ hasActiveSession ? 'CAJA ACTIVA' : 'CAJA CERRADA' }}</span>
-              <span class="status-action" *ngIf="!hasActiveSession">Abrir ahora</span>
+              <span class="status-label">{{ hasActiveSession ? 'ACTIVA' : 'OFF' }}</span>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- MOBILE SEGMENT SELECTOR -->
+      <div class="mobile-switcher show-mobile">
+        <ion-segment [(ngModel)]="isMobileView" mode="md">
+          <ion-segment-button value="cart">
+            <ion-label>Carrito ({{ cart.length }})</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="summary">
+            <ion-label>Cobro</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </div>
     </ion-header>
 
+
     <ion-content [fullscreen]="true">
-      <div class="pos-container">
+      <div class="pos-container" [class.mobile-view-summary]="isMobileView === 'summary'">
         <!-- SECCIÓN IZQUIERDA: CARRITO -->
-        <div class="cart-section">
+        <div class="cart-section" [class.hide-on-mobile]="isMobileView === 'summary'">
           <div class="section-header">
             <h3><ion-icon name="cart-outline"></ion-icon> Detalle de Venta</h3>
             <ion-button fill="clear" color="danger" (click)="clearCart()" *ngIf="cart.length > 0">
@@ -327,6 +330,51 @@ import { PrintingService } from '../../services/printing.service';
 
     .pos-container { display: flex; height: 100%; width: 100%; background: #0f3460; }
 
+    /* MOBILE RESPONSIVE TWEAKS */
+    .show-mobile { display: none; }
+    
+    @media (max-width: 991px) {
+      .hide-mobile { display: none !important; }
+      .show-mobile { display: block; }
+      
+      .pos-container { flex-direction: column; }
+      
+      .cart-section, .summary-section { 
+        width: 100% !important; 
+        flex: none !important; 
+      }
+
+      .mobile-view-summary .cart-section { display: none; }
+      .pos-container:not(.mobile-view-summary) .summary-section { display: none; }
+
+      .action-panel-container { padding: 10px; }
+      .action-panel { gap: 5px; padding: 5px 10px; }
+      
+      .mobile-switcher {
+        background: #1a1a2e;
+        padding: 0 10px 10px 10px;
+        ion-segment {
+          --background: #16213e;
+          ion-segment-button {
+            --color: #94a3b8;
+            --color-checked: #e94560;
+            --indicator-color: #e94560;
+          }
+        }
+      }
+
+      .summary-section { box-shadow: none; padding: 20px; }
+      .final-total .value { font-size: 32px !important; }
+      
+      .cart-card { 
+        flex-direction: column; 
+        align-items: flex-start; 
+        gap: 10px;
+        .item-controls { justify-content: flex-start; width: 100%; }
+        .item-total { text-align: left; }
+      }
+    }
+
     /* CARRITO */
     .cart-section {
       flex: 3; display: flex; flex-direction: column; padding: 25px; 
@@ -477,6 +525,7 @@ export class SalesPage implements OnInit {
   
   amountReceived: number = 0;
   changeAmount: number = 0;
+  isMobileView: string = 'cart';
 
   constructor(
     private http: HttpClient,

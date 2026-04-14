@@ -1,21 +1,22 @@
-/**
- * Ionic Variables
- * ----------------------------------------------------------------------------
- * Importar las variables de tema antes que el núcleo de Ionic para asegurar
- * que las personalizaciones se apliquen correctamente.
- */
 @import "./theme/variables.scss";
 
-/*
- * App Global CSS
- * ----------------------------------------------------------------------------
- * Put style rules here that you want to apply globally. These styles are for
- * the entire app and not just one component. Additionally, this file can be
- * used as an entry point to import other CSS/Sass files to be included in the
- * output CSS.
- * For more information on global stylesheets, visit the documentation:
- * https://ionicframework.com/docs/layout/global-stylesheets
- */
+/* --- RESPONSIVE MIXINS --- */
+$mobile: 768px;
+$small-mobile: 480px;
+
+@mixin mobile {
+  @media (max-width: #{$mobile}) { @content; }
+}
+
+@mixin small-mobile {
+  @media (max-width: #{$small-mobile}) { @content; }
+}
+
+/* --- UTILITIES --- */
+.hide-mobile {
+  @include mobile { display: none !important; }
+}
+
 
 /* Core CSS required for Ionic components to work properly */
 @import "@ionic/angular/css/ionic.bundle.css";
@@ -54,12 +55,20 @@
   justify-content: center;
   padding-top: 12vh;
   min-height: 100vh;
+
+  @include mobile {
+    padding-top: 5vh;
+  }
 }
 
 .login-container {
   width: 100%;
   max-width: 450px;
   margin: auto;
+  
+  @include mobile {
+    max-width: 90% !important;
+  }
 }
 
 .login-card {
@@ -72,6 +81,11 @@
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
   position: relative;
   overflow: hidden;
+
+  @include small-mobile {
+    padding: 30px 20px;
+    border-radius: 24px;
+  }
 }
 
 .settings-trigger {
@@ -89,11 +103,19 @@
   text-align: center;
   margin-bottom: 40px;
 
+  @include small-mobile {
+    margin-bottom: 25px;
+  }
+
   .app-logo {
     font-size: 64px;
     color: #3b82f6;
     margin-bottom: 15px;
     filter: drop-shadow(0 0 15px rgba(59, 130, 246, 0.5));
+
+    @include small-mobile {
+      font-size: 48px;
+    }
   }
 
   h1 {
@@ -102,6 +124,10 @@
     font-weight: 800;
     margin: 0;
     letter-spacing: -1px;
+
+    @include small-mobile {
+      font-size: 24px;
+    }
   }
 
   p {
