@@ -205,7 +205,25 @@ import { PrintingService } from '../../services/printing.service';
               <span class="value">$ {{ totals.total | number:'1.2-2' }}</span>
             </div>
 
-            <ion-button expand="block" class="complete-btn" (click)="processSale()" [disabled]="cart.length === 0">
+            <!-- NUEVA SECCIÓN DE COBRO -->
+            <div class="payment-input-group">
+              <div class="pay-field received">
+                <span class="label">ENTREGADO</span>
+                <ion-input 
+                  type="number" 
+                  [(ngModel)]="amountReceived" 
+                  (ionInput)="calculateChange()"
+                  placeholder="0.00"
+                  class="amount-field">
+                </ion-input>
+              </div>
+              <div class="pay-field change" [class.has-change]="changeAmount > 0">
+                <span class="label">CAMBIO</span>
+                <span class="value">$ {{ changeAmount | number:'1.2-2' }}</span>
+              </div>
+            </div>
+
+            <ion-button expand="block" class="complete-btn" (click)="processSale()" [disabled]="cart.length === 0 || (paymentMethod === 'EFECTIVO' && amountReceived < totals.total)">
               <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
               REGISTRAR VENTA
             </ion-button>
@@ -376,6 +394,26 @@ import { PrintingService } from '../../services/printing.service';
         .value { color: #ffffff; font-weight: 900; font-size: 42px; text-shadow: 0 0 20px rgba(233, 69, 96, 0.3); }
       }
       .complete-btn { --background: linear-gradient(135deg, #e94560 0%, #891a2b 100%); --border-radius: 16px; height: 65px; font-weight: 900; font-size: 20px; margin: 0; box-shadow: 0 10px 20px rgba(233, 69, 96, 0.3); }
+      
+      &.disabled { opacity: 0.5; }
+    }
+
+    /* ESTILOS NUEVOS PARA COBRO */
+    .payment-input-group {
+      display: flex; gap: 15px; margin-bottom: 5px;
+      .pay-field {
+        flex: 1; background: rgba(0,0,0,0.2); padding: 12px; border-radius: 16px;
+        display: flex; flex-direction: column; gap: 4px; border: 1px solid rgba(255,255,255,0.05);
+        .label { font-size: 9px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 1px; }
+        .amount-field { --padding-start: 0; --padding-end: 0; --color: #ffffff; font-size: 18px; font-weight: 800; height: 30px; }
+        .value { font-size: 18px; font-weight: 800; color: #94a3b8; }
+        
+        &.received { border-color: rgba(233, 69, 96, 0.3); }
+        &.change.has-change { 
+          background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3);
+          .value { color: #10b981; }
+        }
+      }
     }
 
     .shortcut-info { padding: 15px; font-size: 12px; color: #64748b; background: rgba(255,255,255,0.02); border-radius: 12px; text-align: center;
@@ -436,6 +474,9 @@ export class SalesPage implements OnInit {
   productSearch: string = '';
   isFiscal: boolean = false;
   businessInfo: any = {};
+  
+  amountReceived: number = 0;
+  changeAmount: number = 0;
 
   constructor(
     private http: HttpClient,
@@ -459,7 +500,10 @@ export class SalesPage implements OnInit {
   ngOnInit() {
     this.loadData();
     this.salesService.cart$.subscribe(c => this.cart = c);
-    this.salesService.totals$.subscribe(t => this.totals = t);
+    this.salesService.totals$.subscribe(t => {
+      this.totals = t;
+      this.calculateChange();
+    });
     this.salesService.isFiscal$.subscribe(f => this.isFiscal = f);
     this.loadBusinessInfo();
   }
@@ -574,8 +618,8 @@ export class SalesPage implements OnInit {
       itbis: this.totals.itbis,
       total_con_descuento: this.totals.total,
       descuento: this.totals.discount,
-      monto_pagado: this.totals.total,
-      cambio: 0,
+      monto_pagado: this.amountReceived || this.totals.total,
+      cambio: this.changeAmount,
       metodo_pago: this.paymentMethod,
       items: this.cart.map(i => ({
         cod_producto: i.cod_producto,
@@ -594,6 +638,8 @@ export class SalesPage implements OnInit {
         loader.dismiss();
         this.showSuccess(res.numero_factura, facturaData);
         this.clearCart();
+        this.amountReceived = 0;
+        this.changeAmount = 0;
         this.loadData();
       },
       error: (err) => {
@@ -625,5 +671,13 @@ export class SalesPage implements OnInit {
   async showToast(msg: string, color: string = 'success') {
     const toast = await this.toastCtrl.create({ message: msg, duration: 2000, color, position: 'bottom' });
     toast.present();
+  }
+
+  calculateChange() {
+    if (this.amountReceived > 0 && this.totals.total > 0) {
+      this.changeAmount = Math.max(0, this.amountReceived - this.totals.total);
+    } else {
+      this.changeAmount = 0;
+    }
   }
 }

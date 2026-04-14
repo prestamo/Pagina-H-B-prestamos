@@ -28,44 +28,38 @@
         <div class="connection-badge" (click)="openSettings()">
           <div class="conn-indicator"></div>
           <div class="conn-text">
-            <span class="instance">{{ connectionInfo?.instance || 'Local Mode' }}</span>
-            <span class="db">{{ connectionInfo?.database || 'Syncing...' }}</span>
+            <span class="instance">{{ connectionInfo.instance || 'Modo Local' }}</span>
+            <span class="db">{{ connectionInfo.database || 'Conectando...' }}</span>
           </div>
         </div>
       </div>
 
       <form (ngSubmit)="onLogin()" #loginForm="ngForm">
-        <div class="input-group">
-          <ion-item lines="none" class="custom-input" [class.input-error]="userError">
-            <ion-icon name="person-outline" slot="start"></ion-icon>
-            <ion-input
-              name="usuario"
-              type="text"
-              placeholder="Nombre de Usuario"
-              [(ngModel)]="credentials.usuario"
-              required
-              (ionInput)="userError = false"
-            ></ion-input>
-          </ion-item>
-          <span class="error-text" *ngIf="userError">Campo requerido</span>
+        <div class="input-field" [class.error]="userError">
+          <ion-icon name="person-outline"></ion-icon>
+          <ion-input
+            name="usuario"
+            type="text"
+            placeholder="Usuario"
+            [(ngModel)]="credentials.usuario"
+            required
+            (ionInput)="userError = false"
+          ></ion-input>
         </div>
 
-        <div class="input-group">
-          <ion-item lines="none" class="custom-input" [class.input-error]="passError">
-            <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
-            <ion-input
-              name="password"
-              [type]="showPassword ? 'text' : 'password'"
-              placeholder="Contraseña"
-              [(ngModel)]="credentials.password"
-              required
-              (ionInput)="passError = false"
-            ></ion-input>
-            <ion-button slot="end" fill="clear" (click)="showPassword = !showPassword">
-              <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
-            </ion-button>
-          </ion-item>
-          <span class="error-text" *ngIf="passError">Campo requerido</span>
+        <div class="input-field" [class.error]="passError">
+          <ion-icon name="lock-closed-outline"></ion-icon>
+          <ion-input
+            name="password"
+            [type]="showPassword ? 'text' : 'password'"
+            placeholder="Contraseña"
+            [(ngModel)]="credentials.password"
+            required
+            (ionInput)="passError = false"
+          ></ion-input>
+          <button type="button" class="toggle-pass" (click)="showPassword = !showPassword">
+            <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+          </button>
         </div>
 
         <ion-button expand="block" type="submit" class="login-button" [disabled]="loading">

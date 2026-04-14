@@ -42,7 +42,6 @@
     background: linear-gradient(45deg, #1e40af, #3b82f6);
     top: -10%;
     right: -10%;
-    animation-duration: 25s;
   }
 
   .sphere-2 {
@@ -51,7 +50,6 @@
     background: linear-gradient(45deg, #7c3aed, #2563eb);
     bottom: -10%;
     left: -10%;
-    animation-duration: 18s;
     animation-delay: -5s;
   }
 
@@ -61,7 +59,6 @@
     background: linear-gradient(45deg, #1d4ed8, #0e7490);
     top: 30%;
     left: 20%;
-    animation-duration: 30s;
     animation-delay: -10s;
     opacity: 0.2;
   }
@@ -69,8 +66,8 @@
 
 @keyframes float {
   0% { transform: translate(0, 0) scale(1) rotate(0deg); }
-  50% { transform: translate(50px, 100px) scale(1.1) rotate(10deg); }
-  100% { transform: translate(-30px, -50px) scale(0.9) rotate(-10deg); }
+  50% { transform: translate(30px, 60px) scale(1.05) rotate(5deg); }
+  100% { transform: translate(-20px, -30px) scale(0.95) rotate(-5deg); }
 }
 
 // --- PREMIUM LOGIN CARD ---
@@ -84,168 +81,152 @@
 
 .login-card {
   width: 100%;
-  max-width: 440px;
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 36px;
-  padding: 48px;
-  box-shadow: 
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 20px 25px -5px rgba(0, 0, 0, 0.2),
-    inset 0 0 20px rgba(255, 255, 255, 0.02);
+  max-width: 400px; // Reducido como pidió el usuario
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(50px) saturate(180%);
+  -webkit-backdrop-filter: blur(50px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 30px;
+  padding: 40px 32px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
   position: relative;
   z-index: 10;
 }
 
-// --- HEADINGS & HEADER ---
+.settings-trigger {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  
+  ion-button {
+    --color: rgba(255, 255, 255, 0.3);
+    &:hover { --color: white; }
+  }
+}
+
 .login-header {
   text-align: center;
-  margin-bottom: 48px;
+  margin-bottom: 35px;
 
   .app-logo {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
     background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
-    border-radius: 22px;
-    margin-bottom: 24px;
-    font-size: 40px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    font-size: 35px;
     color: white;
-    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4);
-    
-    i { filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
+    box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
   }
 
   h1 {
     color: white;
-    font-size: 34px;
+    font-size: 28px;
     font-weight: 800;
     margin: 0;
-    letter-spacing: -1.5px;
-    background: linear-gradient(to bottom, #ffffff 0%, #94a3b8 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    letter-spacing: -1px;
   }
 
   p {
-    color: #64748b;
-    font-size: 15px;
-    margin-top: 8px;
-    font-weight: 500;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 14px;
+    margin-top: 5px;
   }
 }
 
-// --- INPUT FIELDS ---
-.input-group {
-  margin-bottom: 24px;
+// --- LIGHTER INPUT FIELDS ---
+.input-field {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 5px 15px;
+  margin-bottom: 18px;
+  transition: all 0.3s ease;
 
-  .custom-input {
-    --background: rgba(255, 255, 255, 0.04);
-    --border-radius: 18px;
-    --padding-start: 18px;
-    --padding-end: 18px;
+  ion-icon {
+    font-size: 20px;
+    color: rgba(255, 255, 255, 0.3);
+    margin-right: 12px;
+  }
+
+  ion-input {
     --color: white;
-    --highlight-height: 0;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    height: 60px;
+    --placeholder-color: rgba(255, 255, 255, 0.3);
+    --placeholder-opacity: 1;
+    font-size: 15px;
+    flex: 1;
+  }
+
+  .toggle-pass {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    &:hover { color: white; }
+  }
+
+  &:focus-within {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #3b82f6;
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.15);
     
-    ion-icon { 
-      color: #475569; 
-      font-size: 22px; 
-      transition: color 0.3s ease;
-    }
+    ion-icon { color: #3b82f6; }
+  }
 
-    &.focused {
-      border-color: #3b82f6;
-      background: rgba(59, 130, 246, 0.08);
-      box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
-      
-      ion-icon { color: #3b82f6; }
-    }
-
-    &.input-error {
-      border-color: #ef4444;
-      background: rgba(239, 68, 68, 0.08);
-    }
+  &.error {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.05);
   }
 }
 
-// --- BUTTONS ---
 .login-button {
   --background: #2563eb;
   --background-hover: #3b82f6;
-  --background-activated: #1d4ed8;
-  --border-radius: 18px;
-  --box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
-  height: 60px;
+  --border-radius: 12px;
+  height: 54px;
   font-weight: 700;
-  font-size: 17px;
-  margin-top: 32px;
-  transition: all 0.3s ease;
-
-  &::part(native) {
-    background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
-  }
-
-  &:hover {
-    transform: translateY(-2px);
-    --box-shadow: 0 15px 30px rgba(37, 99, 235, 0.5);
-  }
+  font-size: 16px;
+  margin-top: 25px;
+  --box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
 }
 
-// --- FOOTER ---
-.login-footer {
-  text-align: center;
-  margin-top: 48px;
-  opacity: 0.6;
-  
-  p {
-    font-size: 12px;
-    color: #94a3b8;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-weight: 700;
-  }
-}
-
-// --- CONNECTION BADGE ---
 .connection-badge {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 10px 20px;
+  padding: 8px 16px;
   border-radius: 100px;
-  margin-top: 24px;
+  margin-top: 15px;
   cursor: pointer;
-  transition: all 0.3s ease;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.08);
-    transform: translateY(-1px);
-    border-color: rgba(255, 255, 255, 0.2);
-  }
+  border: 1px solid rgba(255, 255, 255, 0.05);
 
   .conn-indicator {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
     background: #10b981;
     border-radius: 50%;
-    box-shadow: 0 0 10px #10b981;
+    box-shadow: 0 0 8px #10b981;
   }
 
   .conn-text {
     display: flex;
     flex-direction: column;
     text-align: left;
-    
-    .instance { color: #e2e8f0; font-size: 10px; font-weight: 800; text-transform: uppercase; opacity: 0.7; }
-    .db { color: #3b82f6; font-size: 12px; font-weight: 700; }
+    .instance { color: rgba(255, 255, 255, 0.4); font-size: 9px; text-transform: uppercase; font-weight: 700; }
+    .db { color: #3b82f6; font-size: 11px; font-weight: 700; }
   }
+}
+
+.login-footer {
+  text-align: center;
+  margin-top: 35px;
+  p { font-size: 11px; color: rgba(255, 255, 255, 0.2); letter-spacing: 1px; }
 }

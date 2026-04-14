@@ -7,6 +7,7 @@ import {
   IonList, IonButtons, IonLabel 
 } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
+import { ToastController } from '@ionic/angular';
 import { AuthService } from '../../services/auth.service';
 import { UiService } from '../../services/ui.service';
 import { addIcons } from 'ionicons';
@@ -44,6 +45,11 @@ export class LoginPage {
   userError = false;
   passError = false;
 
+  connectionInfo = {
+    instance: 'YERY-PEREZ',
+    database: 'BDRepuesto'
+  };
+
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -59,11 +65,24 @@ export class LoginPage {
     // Cargar ajustes guardados
     this.serverInstance = this.authService.selectedServerValue;
     this.dbName = this.authService.selectedDbValue;
+    this.updateConnectionInfo();
+  }
+
+  openSettings() {
+    this.isSettingsModalOpen = true;
+  }
+
+  updateConnectionInfo() {
+    this.connectionInfo = {
+      instance: this.serverInstance,
+      database: this.dbName
+    };
   }
 
   saveSettings() {
     this.authService.setServer(this.serverInstance);
     this.authService.setDatabase(this.dbName);
+    this.updateConnectionInfo();
     this.isSettingsModalOpen = false;
     this.showToast('Configuraciones de conexión guardadas');
   }

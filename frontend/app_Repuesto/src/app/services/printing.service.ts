@@ -102,6 +102,14 @@ export class PrintingService {
               <td class="label">TOTAL:</td>
               <td class="val">$ ${factura.total_con_descuento.toFixed(2)}</td>
             </tr>
+            <tr style="border-top: 1px solid #000;">
+              <td class="label">PAGADO:</td>
+              <td class="val">$ ${factura.monto_pagado.toFixed(2)}</td>
+            </tr>
+            <tr>
+              <td class="label">CAMBIO:</td>
+              <td class="val">$ ${factura.cambio.toFixed(2)}</td>
+            </tr>
           </table>
 
           <div class="divider"></div>

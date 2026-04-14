@@ -3,70 +3,42 @@
     <ion-menu contentId="main-content" type="overlay" *ngIf="authService.currentUser$ | async">
       <div class="sidebar-wrapper">
         <div class="sidebar-header">
-          <div class="status-dot"></div>
           <div class="profile-container">
             <div class="avatar">
-              <i class="fa-solid fa-user-tie"></i>
+              <i class="fa-solid fa-user"></i>
             </div>
             <div class="profile-info">
-              <h2>{{ (authService.currentUser$ | async)?.usuario }}</h2>
-              <span class="role">Administrator</span>
+              <h2>{{ (authService.currentUser$ | async)?.usuario || 'Usuario' }}</h2>
+              <span class="db-info"><i class="fa-solid fa-database"></i> {{ dbName }}</span>
             </div>
           </div>
         </div>
 
-        <ion-content class="menu-content" forceOverscroll="false">
-          <div class="nav-section">
-            <p class="section-label">Management</p>
-            <div 
-              *ngFor="let p of appPages" 
-              class="nav-item"
-              [class.active]="activeSubMenu === p"
-              (click)="handlePageClick($event, p)">
-              <div class="nav-icon">
-                <ion-icon [name]="p.icon"></ion-icon>
-              </div>
-              <div class="nav-text">
-                <span class="nav-title">{{ p.title }}</span>
-                <span class="nav-desc">{{ p.description }}</span>
-              </div>
-              <div class="nav-arrow" *ngIf="p.subPages">
-                <i class="fa-solid fa-chevron-right"></i>
-              </div>
-            </div>
+        <ion-content>
+          <div class="menu-list">
+            <ion-list lines="none">
+              <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages">
+                <ion-item 
+                  [routerLink]="[p.url]" 
+                  routerDirection="root" 
+                  [class.active-item]="router.url === p.url">
+                  <ion-icon slot="start" [name]="p.icon"></ion-icon>
+                  <ion-label>{{ p.title }}</ion-label>
+                </ion-item>
+              </ion-menu-toggle>
+            </ion-list>
           </div>
         </ion-content>
 
-        <div class="sidebar-footer">
-          <div class="logout-btn" (click)="logout()">
-            <i class="fa-solid fa-power-off"></i>
-            <span>Desconectarse</span>
+        <ion-footer class="ion-no-border sidebar-footer">
+          <div class="logout-container">
+            <button class="logout-icon-btn" (click)="logout()" title="Cerrar Sesión">
+              <i class="fa-solid fa-power-off"></i>
+            </button>
           </div>
-        </div>
+        </ion-footer>
       </div>
     </ion-menu>
-
-    <!-- SUB-MENÚ FLOTANTE (BURBUJAS) -->
-    <div 
-      class="floating-menu" 
-      *ngIf="activeSubMenu" 
-      [style.top.px]="subMenuPos.top"
-      [style.left.px]="subMenuPos.left"
-      (click)="$event.stopPropagation()">
-      <div class="floating-header">
-        <ion-icon [name]="activeSubMenu.icon"></ion-icon>
-        <span>{{ activeSubMenu.title }}</span>
-      </div>
-      <div class="floating-options">
-        <button 
-          *ngFor="let sub of activeSubMenu.subPages" 
-          (click)="navigateTo(sub.url)"
-          class="sub-option-btn">
-          <ion-icon [name]="sub.icon"></ion-icon>
-          <span class="sub-label">{{ sub.title }}</span>
-        </button>
-      </div>
-    </div>
 
     <div class="ion-page" id="main-content">
       <ion-router-outlet></ion-router-outlet>
