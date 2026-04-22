@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs';
   standalone: true,
   imports: [IonicModule, CommonModule]
 })
-export class HomePage {
+export class HomePage implements OnInit {
   // Mock data for the dashboard visual
   public weekData = [
     { label: 'Lun', val: 45 },
