@@ -75,7 +75,7 @@
                 <form id="solicitudForm" class="space-y-10 pb-20">
                     <!-- Segmento 0: Datos del Préstamo (Encabezado) -->
                     <div class="bg-white p-8 rounded-[2rem] shadow-xl border border-slate-100 border-t-8 border-t-slate-800">
-                        <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
+                        <div class="grid grid-cols-1 md:grid-cols-6 gap-6">
                             <div>
                                 <label class="block text-[10px] font-black uppercase mb-2 text-slate-400 tracking-widest">Tipo de Préstamo</label>
                                 <select id="tipoPrestamo" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-black text-brand outline-none focus:ring-2 focus:ring-brand">
@@ -87,7 +87,7 @@
                             </div>
                             <div>
                                 <label class="block text-[10px] font-black uppercase mb-2 text-slate-400 tracking-widest">Fecha de Solicitud</label>
-                                <input type="date" id="fechaSolicitud" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold" value="${new Date().toISOString().split('T')[0]}">
+                                <input type="date" id="fechaSolicitud" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold">
                             </div>
                             <div>
                                 <label class="block text-[10px] font-black uppercase mb-2 text-slate-400 tracking-widest">Monto Solicitado RD$</label>
@@ -101,25 +101,44 @@
                                 <label class="block text-[10px] font-black uppercase mb-2 text-slate-400 tracking-widest">Cuota Estimada RD$</label>
                                 <input type="text" id="cuotaPrestamo" class="mask-currency w-full p-5 bg-slate-50 border-2 border-slate-100 rounded-[2rem] font-black text-2xl text-prime focus:border-brand outline-none shadow-inner" placeholder="0.00">
                             </div>
+                            <div>
+                                <label class="block text-[10px] font-black uppercase mb-2 text-slate-400 tracking-widest">Evaluador</label>
+                                <input type="text" id="evaluador" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold outline-none focus:ring-2 focus:ring-brand" placeholder="Ej: jose.grullat" value="jose.grullat">
+                            </div>
                         </div>
                     </div>
 
                     <!-- Segmento 1: Datos del Solicitante -->
                     <div class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-xl border border-slate-100">
-                        <div class="flex items-center gap-4 mb-10 border-b border-slate-50 pb-6">
-                            <div class="w-12 h-12 bg-prime rounded-2xl flex items-center justify-center text-white text-xl shadow-lg">
-                                <i class="fas fa-user"></i>
+                        <div class="flex items-center justify-between gap-4 mb-10 border-b border-slate-50 pb-6">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-prime rounded-2xl flex items-center justify-center text-white text-xl shadow-lg">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-black text-slate-800 uppercase tracking-tighter">Datos del Solicitante</h3>
+                                    <p class="text-xs font-bold text-slate-400 uppercase italic">Información personal y laboral</p>
+                                </div>
                             </div>
-                            <div>
-                                <h3 class="text-xl font-black text-slate-800 uppercase tracking-tighter">Datos del Solicitante</h3>
-                                <p class="text-xs font-bold text-slate-400 uppercase italic">Información personal y laboral</p>
+                            <!-- Foto del Solicitante (JCE) -->
+                            <div class="relative w-20 h-20 bg-slate-50 border-2 border-slate-100 rounded-2xl overflow-hidden flex items-center justify-center shadow-md">
+                                <img id="solicitanteFoto" src="" class="hidden w-full h-full object-cover">
+                                <div id="solicitanteFotoPlaceholder" class="text-slate-300 text-3xl">
+                                    <i class="fas fa-user"></i>
+                                </div>
                             </div>
                         </div>
+                        <input type="hidden" id="fotoUrlSol" value="">
 
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
                             <div class="space-y-2 lg:col-span-1">
                                 <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Identificador (Cédula)</label>
-                                <input type="text" id="identificador" class="mask-cedula w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-[1.5rem] font-bold text-prime focus:border-brand focus:ring-4 focus:ring-brand/10 transition-all outline-none" placeholder="000-0000000-0">
+                                <div class="flex gap-2">
+                                    <input type="text" id="identificador" class="mask-cedula flex-1 p-4 bg-slate-50 border-2 border-slate-100 rounded-[1.5rem] font-bold text-prime focus:border-brand focus:ring-4 focus:ring-brand/10 transition-all outline-none" placeholder="000-0000000-0">
+                                    <button type="button" id="buscarJceBtn" class="px-5 bg-brand text-white rounded-[1.5rem] font-black text-xs uppercase tracking-widest hover:bg-blue-600 transition-all active:scale-95 flex items-center justify-center gap-2">
+                                        <i class="fas fa-search"></i> <span>JCE</span>
+                                    </button>
+                                </div>
                             </div>
                             <div class="space-y-2 lg:col-span-1">
                                 <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Nombres</label>
@@ -180,6 +199,28 @@
                                     <option>No</option>
                                     <option>Si</option>
                                 </select>
+                            </div>
+
+                            <div class="space-y-2 lg:col-span-3">
+                                <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Rol / Relación Solicitante</label>
+                                <div class="flex flex-wrap gap-6 p-4 bg-slate-50 rounded-xl border border-slate-200">
+                                    <label class="flex items-center gap-2 font-bold text-xs cursor-pointer text-prime">
+                                        <input type="checkbox" id="chkClienteSol" class="rounded text-brand focus:ring-brand w-4 h-4" checked>
+                                        CLIENTE
+                                    </label>
+                                    <label class="flex items-center gap-2 font-bold text-xs cursor-pointer text-prime">
+                                        <input type="checkbox" id="chkEmpleadoSol" class="rounded text-brand focus:ring-brand w-4 h-4">
+                                        EMPLEADO
+                                    </label>
+                                    <label class="flex items-center gap-2 font-bold text-xs cursor-pointer text-prime">
+                                        <input type="checkbox" id="chkFuncionarioSol" class="rounded text-brand focus:ring-brand w-4 h-4">
+                                        FUNCIONARIO
+                                    </label>
+                                    <label class="flex items-center gap-2 font-bold text-xs cursor-pointer text-prime">
+                                        <input type="checkbox" id="chkAccionistaSol" class="rounded text-brand focus:ring-brand w-4 h-4">
+                                        ACCIONISTA
+                                    </label>
+                                </div>
                             </div>
 
                             <div class="space-y-2 lg:col-span-1">
@@ -397,17 +438,36 @@
                     <div id="sectionGarante" class="hidden space-y-10 mt-10">
                         <div class="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-xl border border-slate-100 border-l-8 border-l-amber-500">
                              <!-- Copy of Solicitante but with id suffix Garante -->
-                             <div class="flex items-center gap-4 mb-10 border-b border-slate-50 pb-6">
-                                <div class="w-12 h-12 bg-amber-500 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg">
-                                    <i class="fas fa-user-shield"></i>
+                             <div class="flex items-center justify-between gap-4 mb-10 border-b border-slate-50 pb-6">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 bg-amber-500 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg">
+                                        <i class="fas fa-user-shield"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xl font-black text-slate-800 uppercase tracking-tighter">Datos del Garante</h3>
+                                        <p class="text-xs font-bold text-slate-400 uppercase italic">Información del fiador solidario</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h3 class="text-xl font-black text-slate-800 uppercase tracking-tighter">Datos del Garante</h3>
-                                    <p class="text-xs font-bold text-slate-400 uppercase italic">Información del fiador solidario</p>
+                                <!-- Foto del Garante (JCE) -->
+                                <div class="relative w-16 h-16 bg-slate-50 border-2 border-slate-100 rounded-2xl overflow-hidden flex items-center justify-center shadow-md">
+                                    <img id="garanteFoto" src="" class="hidden w-full h-full object-cover">
+                                    <div id="garanteFotoPlaceholder" class="text-slate-300 text-2xl">
+                                        <i class="fas fa-user"></i>
+                                    </div>
                                 </div>
                             </div>
+                            <input type="hidden" id="fotoUrlGar" value="">
+                            
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
-                                <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 tracking-widest ml-1">Cédula Garante</label><input type="text" id="identificadorGar" class="mask-cedula w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold"></div>
+                                <div class="space-y-2">
+                                    <label class="block text-[10px] font-bold text-slate-400 tracking-widest ml-1">Cédula Garante</label>
+                                    <div class="flex gap-2">
+                                        <input type="text" id="identificadorGar" class="mask-cedula flex-1 p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold">
+                                        <button type="button" id="buscarJceGarBtn" class="px-4 bg-brand text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-blue-600 transition-all active:scale-95 flex items-center justify-center gap-2">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
                                 <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 tracking-widest ml-1">Nombres</label><input type="text" id="nombresGar" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold"></div>
                                 <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 tracking-widest ml-1">Apellidos</label><input type="text" id="apellidosGar" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold"></div>
                                 
@@ -433,6 +493,28 @@
                                 <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 tracking-widest ml-1">Otros Ingresos RD$</label><input type="text" id="otrosIngresosGar" class="mask-currency w-full p-3 bg-slate-50 rounded-xl border border-slate-200"></div>
                                 <div class="space-y-2"><label class="block text-[10px] font-bold text-slate-400 tracking-widest ml-1">Casa (Propia/Alq)</label><input type="text" id="tipoCasaGar" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200"></div>
                                 <div class="space-y-2 lg:col-span-2"><label class="block text-[10px] font-bold text-slate-400 tracking-widest ml-1">Destino del Crédito</label><input type="text" id="destinoGar" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200"></div>
+
+                                <div class="space-y-2 lg:col-span-3">
+                                    <label class="block text-[10px] font-bold uppercase text-slate-400 tracking-widest ml-1">Rol / Relación Garante</label>
+                                    <div class="flex flex-wrap gap-6 p-4 bg-slate-50 rounded-xl border border-slate-200">
+                                        <label class="flex items-center gap-2 font-bold text-xs cursor-pointer text-prime">
+                                            <input type="checkbox" id="chkClienteGar" class="rounded text-brand focus:ring-brand w-4 h-4">
+                                            CLIENTE
+                                        </label>
+                                        <label class="flex items-center gap-2 font-bold text-xs cursor-pointer text-prime">
+                                            <input type="checkbox" id="chkEmpleadoGar" class="rounded text-brand focus:ring-brand w-4 h-4" checked>
+                                            EMPLEADO
+                                        </label>
+                                        <label class="flex items-center gap-2 font-bold text-xs cursor-pointer text-prime">
+                                            <input type="checkbox" id="chkFuncionarioGar" class="rounded text-brand focus:ring-brand w-4 h-4">
+                                            FUNCIONARIO
+                                        </label>
+                                        <label class="flex items-center gap-2 font-bold text-xs cursor-pointer text-prime">
+                                            <input type="checkbox" id="chkAccionistaGar" class="rounded text-brand focus:ring-brand w-4 h-4">
+                                            ACCIONISTA
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 

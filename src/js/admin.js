@@ -2144,6 +2144,122 @@ async function initFooterModule() {
     loadFooterData();
 }
 
+// --- FUNCIONES AUXILIARES JCE ---
+/**
+ * Parsea el formato de fecha de la JCE ("M/D/YYYY h:mm:ss AM/PM" o ISO) a "YYYY-MM-DD".
+ */
+function parseJCEDate(jceDate) {
+    if (!jceDate) return '';
+    if (jceDate.includes('T') || /^\d{4}-\d{2}-\d{2}$/.test(jceDate)) {
+        return jceDate.split('T')[0];
+    }
+    const match = jceDate.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+    if (match) {
+        const month = String(match[1]).padStart(2, '0');
+        const day = String(match[2]).padStart(2, '0');
+        const year = match[3];
+        return `${year}-${month}-${day}`;
+    }
+    return '';
+}
+
+/**
+ * Obtiene el base URL del servidor local de la JCE probando puertos 3001, 8082 o ngrok.
+ */
+async function getJCEBaseUrl() {
+    let baseUrl = 'https://edging-rarity-routing.ngrok-free.dev';
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 600);
+            const check = await fetch('http://localhost:3001/api/health', { signal: controller.signal });
+            if (check.ok) {
+                baseUrl = 'http://localhost:3001';
+                clearTimeout(timeoutId);
+                return baseUrl;
+            }
+            clearTimeout(timeoutId);
+        } catch (e) {
+            // Try next port
+        }
+        
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 600);
+            const check = await fetch('http://localhost:8082/api/health', { signal: controller.signal });
+            if (check.ok) {
+                baseUrl = 'http://localhost:8082';
+                clearTimeout(timeoutId);
+                return baseUrl;
+            }
+            clearTimeout(timeoutId);
+        } catch (e2) {
+            // Keep default ngrok
+        }
+    }
+    return baseUrl;
+}
+
+/**
+ * Obtiene la foto del ciudadano en base64 desde la caché de la base de datos del servidor JCE local.
+ */
+async function getPhotoLocal(cedula) {
+    const cleanCedula = String(cedula).replace(/\D/g, '');
+    if (!cleanCedula) return null;
+    
+    try {
+        const baseUrl = await getJCEBaseUrl();
+        const res = await fetch(`${baseUrl}/api/v1/cedula-queries/query`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ cedula: cleanCedula })
+        });
+        if (res.ok) {
+            const json = await res.json();
+            if (json.success && json.data && json.data.result && json.data.result.fotoUrl) {
+                return json.data.result.fotoUrl;
+            }
+        }
+    } catch (err) {
+        console.error('Error al traer la foto local:', err);
+    }
+    return null;
+}
+
+/**
+ * Consulta la API de la JCE para traer los datos de un ciudadano por su cédula.
+ */
+async function consultarJCE(cedula) {
+    const cleanCedula = cedula.replace(/[^0-9]/g, '');
+    if (cleanCedula.length !== 11) {
+        throw new Error('La cédula debe tener exactamente 11 dígitos.');
+    }
+
+    const baseUrl = await getJCEBaseUrl();
+    const apiUrl = `${baseUrl}/api/v1/cedula-queries/query`;
+    const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true'
+        },
+        body: JSON.stringify({ cedula: cleanCedula })
+    });
+
+    if (!response.ok) {
+        throw new Error(`Error en el servidor JCE: Código ${response.status}`);
+    }
+
+    const resData = await response.json();
+    if (resData.success && resData.data && resData.data.result) {
+        return resData.data.result;
+    } else {
+        throw new Error(resData.message || 'No se encontró información para la cédula ingresada.');
+    }
+}
+
 // --- MÓDULO DE SOLICITUDES ---
 async function initSolicitudesModule() {
     const form = document.getElementById('solicitudForm');
@@ -2151,6 +2267,162 @@ async function initSolicitudesModule() {
     const refTableBody = document.getElementById('referenciasTableBody');
     const solicitudNoEl = document.getElementById('solicitudNo');
     const tipoPrestamoSelect = document.getElementById('tipoPrestamo');
+    
+    // Establecer fecha actual por defecto en fechaSolicitud (usando zona horaria local)
+    const fechaSolicitudInput = document.getElementById('fechaSolicitud');
+    if (fechaSolicitudInput) {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        fechaSolicitudInput.value = `${yyyy}-${mm}-${dd}`;
+    }
+
+    // --- INTEGRACIÓN CON LA API DE LA JCE ---
+    const setupJceLookup = (btnId, inputCedulaId, prefix) => {
+        const btn = document.getElementById(btnId);
+        const inputCedula = document.getElementById(inputCedulaId);
+        
+        if (!btn || !inputCedula) return;
+        
+        btn.addEventListener('click', async () => {
+            const cedula = inputCedula.value;
+            if (!cedula.replace(/\D/g, '')) {
+                alert('Por favor, ingrese un número de cédula.');
+                return;
+            }
+            
+            btn.disabled = true;
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-circle-notch animate-spin"></i>';
+            
+            try {
+                const result = await consultarJCE(cedula);
+                if (result) {
+                    // Llenar campos nombres y apellidos
+                    const nombresField = document.getElementById(`nombres${prefix}`);
+                    const apellidosField = document.getElementById(`apellidos${prefix}`);
+                    
+                    if (nombresField) nombresField.value = result.nombres || '';
+                    if (apellidosField) {
+                        apellidosField.value = `${result.apellido1 || ''} ${result.apellido2 || ''}`.trim();
+                    }
+                    
+                    // Fecha de nacimiento
+                    const fechaNacField = document.getElementById(`fechaNacimiento${prefix}`);
+                    if (fechaNacField && result.fechaNacimiento) {
+                        const parsedDate = parseJCEDate(result.fechaNacimiento);
+                        fechaNacField.value = parsedDate;
+                        
+                        // Si es el solicitante o garante principal, disparar cambio para autocalcular edad
+                        fechaNacField.dispatchEvent(new Event('change'));
+                    }
+                    
+                    // Sexo (solo para el Solicitante, ya que el garante no tiene input select para sexo en el HTML)
+                    const sexoField = document.getElementById(`sexo${prefix}`);
+                    if (sexoField && result.sexo) {
+                        const s = result.sexo.trim().toUpperCase();
+                        sexoField.value = s.startsWith('F') ? 'F' : 'M';
+                    }
+                    
+                    // Estado civil (solo para el solicitante o garante)
+                    const estadoCivilField = document.getElementById(`estadoCivil${prefix}`);
+                    const ecRaw = result.estadoCivil || result.estado_civil || result.EstadoCivil || result.estadocivil || result.estadoCivilDescripcion || result.idEstadoCivil || "";
+                    if (estadoCivilField && ecRaw) {
+                        const ec = String(ecRaw).trim().toLowerCase();
+                        let selectedValue = "";
+                        
+                        if (ec.includes('solter') || ec === 's' || ec === '1') {
+                            selectedValue = "Soltero/a";
+                        } else if (ec.includes('casad') || ec === 'c' || ec === '2') {
+                            selectedValue = "Casado/a";
+                        } else if (ec.includes('divorc') || ec === 'd' || ec === '3') {
+                            selectedValue = "Divorciado/a";
+                        } else if (ec.includes('libre') || ec.includes('union') || ec === 'u' || ec === '4' || ec.includes('soltero c') || ec.includes('soltera c')) {
+                            selectedValue = "Unión Libre";
+                        } else if (ec.includes('viud') || ec === 'v') {
+                            selectedValue = "Soltero/a";
+                        }
+                        
+                        if (selectedValue) {
+                            estadoCivilField.value = selectedValue;
+                        } else {
+                            if (estadoCivilField.tagName === 'INPUT') {
+                                estadoCivilField.value = String(ecRaw).charAt(0).toUpperCase() + String(ecRaw).slice(1).toLowerCase();
+                            }
+                        }
+                        
+                        // Disparar cambio para que se muestre/oculte el cónyuge dinámicamente
+                        estadoCivilField.dispatchEvent(new Event('change'));
+                    }
+                    
+                    // Dirección
+                    const direccionField = document.getElementById(`direccion${prefix}`);
+                    if (direccionField) {
+                        direccionField.value = result.direccion || result.dirección || 
+                                               [result.lugarNacimiento].filter(Boolean).join(', ') || '';
+                    }
+                    
+                    // Sector y Ciudad
+                    const sectorField = document.getElementById(`sector${prefix}`);
+                    const ciudadField = document.getElementById(`ciudad${prefix}`);
+                    
+                    let sectorVal = result.sector || result.barrio || result.paraje || "";
+                    let ciudadVal = result.ciudad || result.municipio || result.provincia || "";
+                    
+                    const fullDir = result.direccion || result.dirección || "";
+                    if (fullDir && (!sectorVal || !ciudadVal)) {
+                        const parts = fullDir.split(',').map(p => p.trim());
+                        if (parts.length >= 3) {
+                            if (!sectorVal) sectorVal = parts[parts.length - 2];
+                            if (!ciudadVal) ciudadVal = parts[parts.length - 1];
+                        } else if (parts.length === 2) {
+                            if (!ciudadVal) ciudadVal = parts[1];
+                        }
+                    }
+                    
+                    if (!ciudadVal && result.lugarNacimiento) {
+                        const birthParts = result.lugarNacimiento.split(',').map(p => p.trim());
+                        ciudadVal = birthParts[birthParts.length - 1];
+                    }
+                    
+                    if (sectorField && sectorVal) {
+                        sectorField.value = sectorVal.toUpperCase();
+                    }
+                    if (ciudadField && ciudadVal) {
+                        ciudadField.value = ciudadVal.toUpperCase();
+                    }
+                    
+                    // Foto
+                    const fotoUrlInput = document.getElementById(`fotoUrl${prefix}`);
+                    const fotoImg = document.getElementById(`${prefix === 'Sol' ? 'solicitanteFoto' : 'garanteFoto'}`);
+                    const fotoPlaceholder = document.getElementById(`${prefix === 'Sol' ? 'solicitanteFotoPlaceholder' : 'garanteFotoPlaceholder'}`);
+                    
+                    if (fotoUrlInput) fotoUrlInput.value = result.fotoUrl || '';
+                    if (fotoImg && result.fotoUrl) {
+                        fotoImg.src = result.fotoUrl;
+                        fotoImg.classList.remove('hidden');
+                        if (fotoPlaceholder) fotoPlaceholder.classList.add('hidden');
+                    } else if (fotoImg) {
+                        fotoImg.src = '';
+                        fotoImg.classList.add('hidden');
+                        if (fotoPlaceholder) fotoPlaceholder.classList.remove('hidden');
+                    }
+                    
+                    alert('¡Datos de la cédula cargados correctamente desde la JCE!');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Error al consultar cédula en JCE: ' + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalHTML;
+            }
+        });
+    };
+    
+    setupJceLookup('buscarJceBtn', 'identificador', 'Sol');
+    setupJceLookup('buscarJceGarBtn', 'identificadorGar', 'Gar');
     
     // Secciones condicionales
     const secGar = document.getElementById('sectionGarante');
@@ -2317,10 +2589,12 @@ async function initSolicitudesModule() {
             const fullData = {
                 tipoPrestamo: type,
                 fechaSolicitud: document.getElementById('fechaSolicitud').value,
+                evaluador: document.getElementById('evaluador') ? document.getElementById('evaluador').value : 'jose.grullat',
                 solicitante: {
                     nombres: document.getElementById('nombresSol').value,
                     apellidos: document.getElementById('apellidosSol').value,
                     identificador: cedula,
+                    fotoUrl: document.getElementById('fotoUrlSol').value,
                     apodo: document.getElementById('apodoSol').value,
                     estadoCivil: document.getElementById('estadoCivilSol').value,
                     fechaNacimiento: document.getElementById('fechaNacimientoSol').value,
@@ -2343,12 +2617,17 @@ async function initSolicitudesModule() {
                     ingresos: document.getElementById('ingresosSol').value,
                     otrosIngresos: document.getElementById('otrosIngresosSol').value,
                     tipoCasa: document.getElementById('tipoCasaSol').value,
-                    destino: document.getElementById('destinoCredito').value
+                    destino: document.getElementById('destinoCredito').value,
+                    chkCliente: document.getElementById('chkClienteSol') ? document.getElementById('chkClienteSol').checked : true,
+                    chkEmpleado: document.getElementById('chkEmpleadoSol') ? document.getElementById('chkEmpleadoSol').checked : false,
+                    chkFuncionario: document.getElementById('chkFuncionarioSol') ? document.getElementById('chkFuncionarioSol').checked : false,
+                    chkAccionista: document.getElementById('chkAccionistaSol') ? document.getElementById('chkAccionistaSol').checked : false
                 },
                 conyuge: {
                     nombres: document.getElementById('nombresCon').value,
                     apellidos: document.getElementById('apellidosCon').value,
                     fechaNacimiento: document.getElementById('fechaNacimientoCon').value,
+                    edad: document.getElementById('edadCon').value,
                     apodo: document.getElementById('apodoCon').value,
                     estadoCivil: document.getElementById('estadoCivilCon').value,
                     telefono: document.getElementById('telefonoCon').value,
@@ -2370,6 +2649,7 @@ async function initSolicitudesModule() {
                     identificador: document.getElementById('identificadorGar').value,
                     nombres: document.getElementById('nombresGar').value,
                     apellidos: document.getElementById('apellidosGar').value,
+                    fotoUrl: document.getElementById('fotoUrlGar').value,
                     apodo: document.getElementById('apodoGar').value,
                     estadoCivil: document.getElementById('estadoCivilGar').value,
                     fechaNacimiento: document.getElementById('fechaNacimientoGar').value,
@@ -2389,6 +2669,10 @@ async function initSolicitudesModule() {
                     otrosIngresos: document.getElementById('otrosIngresosGar').value,
                     tipoCasa: document.getElementById('tipoCasaGar').value,
                     destino: document.getElementById('destinoGar').value,
+                    chkCliente: document.getElementById('chkClienteGar') ? document.getElementById('chkClienteGar').checked : false,
+                    chkEmpleado: document.getElementById('chkEmpleadoGar') ? document.getElementById('chkEmpleadoGar').checked : true,
+                    chkFuncionario: document.getElementById('chkFuncionarioGar') ? document.getElementById('chkFuncionarioGar').checked : false,
+                    chkAccionista: document.getElementById('chkAccionistaGar') ? document.getElementById('chkAccionistaGar').checked : false,
                     conyuge: {
                         nombres: document.getElementById('nombresConGar').value,
                         apellidos: document.getElementById('apellidosConGar').value,
@@ -2512,9 +2796,11 @@ async function initClientesModule() {
                         ${new Date(c.created_at).toLocaleDateString()}
                     </td>
                     <td class="p-6 text-right">
-                        <button onclick="alert('Detalles del cliente: ' + String('${c.id}'))" class="p-3 bg-slate-100 hover:bg-brand hover:text-white rounded-xl transition-all">
-                            <i class="fas fa-eye"></i>
-                        </button>
+                        <div class="flex justify-end gap-1.5">
+                            <button onclick="window.openLatestSolicitudForCliente('${c.id}', 'cliente_garante')" class="px-2.5 py-1 bg-sky-50 text-sky-600 rounded-lg text-[10px] font-black border border-sky-100 hover:bg-sky-600 hover:text-white transition-all uppercase tracking-tighter" title="Cliente y Garantía">Cli + Gar</button>
+                            <button onclick="window.openLatestSolicitudForCliente('${c.id}', 'cliente_conyuge')" class="px-2.5 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-black border border-emerald-100 hover:bg-emerald-600 hover:text-white transition-all uppercase tracking-tighter" title="Datos Cliente y Cónyuge">Dat Cli</button>
+                            <button onclick="window.openLatestSolicitudForCliente('${c.id}', 'garante_conyuge')" class="px-2.5 py-1 bg-indigo-50 text-indigo-600 rounded-lg text-[10px] font-black border border-indigo-100 hover:bg-indigo-600 hover:text-white transition-all uppercase tracking-tighter" title="Datos Garante y Cónyuge">Dat Gar</button>
+                        </div>
                     </td>
                 </tr>
             `).join('');
@@ -2605,16 +2891,16 @@ async function initSolicitudesListModule() {
                             </span>
                         </td>
                         <td class="p-6 text-right">
-                            <div class="flex justify-end gap-2">
-                                <button onclick="window.printSolicitud('${s.id}')" class="p-3 bg-slate-100 text-slate-500 hover:bg-brand hover:text-white rounded-xl transition-all shadow-sm" title="Imprimir Formulario">
+                            <div class="flex justify-end gap-1.5 items-center">
+                                <button onclick="window.printSolicitud('${s.id}')" class="p-2.5 bg-slate-100 text-slate-500 hover:bg-brand hover:text-white rounded-xl transition-all shadow-sm" title="Imprimir Formulario Directo">
                                     <i class="fas fa-print"></i>
                                 </button>
-                                <button onclick="window.exportToWord('${s.id}')" class="p-3 bg-slate-100 text-slate-500 hover:bg-emerald-600 hover:text-white rounded-xl transition-all shadow-sm" title="Descargar Word">
+                                <button onclick="window.exportToWord('${s.id}')" class="p-2.5 bg-slate-100 text-slate-500 hover:bg-emerald-600 hover:text-white rounded-xl transition-all shadow-sm" title="Descargar Word">
                                     <i class="fas fa-file-word"></i>
                                 </button>
-                                <button onclick="alert('Ver detalles de ${String(s.id).split('-')[0]}')" class="p-3 bg-slate-100 text-slate-500 hover:bg-slate-800 hover:text-white rounded-xl transition-all shadow-sm">
-                                    <i class="fas fa-eye"></i>
-                                </button>
+                                <button onclick="window.openSolicitudRetro('${s.id}', 'cliente_garante', false)" class="px-2 py-1.5 bg-sky-50 text-sky-600 rounded-lg text-[9px] font-black border border-sky-100 hover:bg-sky-600 hover:text-white transition-all uppercase tracking-tighter" title="Cliente y Garantía">Cli + Gar</button>
+                                <button onclick="window.openSolicitudRetro('${s.id}', 'cliente_conyuge', false)" class="px-2 py-1.5 bg-emerald-50 text-emerald-600 rounded-lg text-[9px] font-black border border-emerald-100 hover:bg-emerald-600 hover:text-white transition-all uppercase tracking-tighter" title="Datos Cliente y Cónyuge">Dat Cli</button>
+                                <button onclick="window.openSolicitudRetro('${s.id}', 'garante_conyuge', false)" class="px-2 py-1.5 bg-indigo-50 text-indigo-600 rounded-lg text-[9px] font-black border border-indigo-100 hover:bg-indigo-600 hover:text-white transition-all uppercase tracking-tighter" title="Datos Garante y Cónyuge">Dat Gar</button>
                             </div>
                         </td>
                     </tr>
@@ -2644,7 +2930,25 @@ async function initSolicitudesListModule() {
 /**
  * --- SISTEMA DE IMPRESIÓN DE ALTA FIDELIDAD ---
  */
+window.openLatestSolicitudForCliente = async (clientId, mode = 'cliente_garante') => {
+    const { data: apps, error } = await supabase.from('loan_applications')
+        .select('id')
+        .eq('client_id', clientId)
+        .order('created_at', { ascending: false })
+        .limit(1);
+    
+    if (error || !apps || apps.length === 0) {
+        alert('Este cliente no tiene solicitudes de préstamo registradas.');
+        return;
+    }
+    window.openSolicitudRetro(apps[0].id, mode, false);
+};
+
 window.printSolicitud = async (id) => {
+    window.openSolicitudRetro(id, 'cliente_garante', true);
+};
+
+window.openSolicitudRetro = async (id, mode = 'cliente_garante', autoPrint = false) => {
     const { data: s, error } = await supabase.from('loan_applications')
         .select('*, clients(*)')
         .eq('id', id)
@@ -2664,223 +2968,949 @@ window.printSolicitud = async (id) => {
     const veh = d.garantiaVehiculo || {};
     const hipo = d.garantiaHipotecaria || {};
     const gar = d.garante || {};
-    const conGar = d.conyugeGarante || {};
+    const conGar = d.conyugeGarante || (d.garante ? d.garante.conyuge : null) || {};
 
-    let type = s.loan_type;
-    if (!type && s.data && s.data.tipoPrestamo) type = s.data.tipoPrestamo;
-    if (!type) type = 'personal';
+    const type = s.loan_type || 'personal';
 
-    const renderSolicitante = () => `
-        <div class="section-label">DATOS DE SOLICITANTE</div>
-        <div class="two-columns">
-            <div class="column">
-                <div class="data-item"><span class="label">IDENTIFICADOR:</span> <span class="val">${sol.identificador || ''}</span></div>
-                <div class="data-item"><span class="label">NOMBRES:</span> <span class="val">${sol.nombres || ''}</span></div>
-                <div class="data-item"><span class="label">APELLIDOS:</span> <span class="val">${sol.apellidos || ''}</span></div>
-                <div class="data-item"><span class="label">SECTOR:</span> <span class="val">${sol.sector || ''}</span></div>
-                <div class="data-item"><span class="label">CIUDAD:</span> <span class="val">${sol.ciudad || ''}</span></div>
-                <div class="data-item"><span class="label">DIRECCION:</span> <span class="val">${sol.direccion || ''}</span></div>
-                <div class="data-item"><span class="label">OCUPACIONES:</span> <span class="val">${sol.ocupaciones || ''}</span></div>
-                <div class="data-item"><span class="label">LUGAR DE TRABAJO:</span> <span class="val">${sol.trabajo || ''}</span></div>
-                <div class="data-item"><span class="label">CARGO:</span> <span class="val">${sol.cargo || ''}</span></div>
-                <div class="data-item"><span class="label">DIRECCION:</span> <span class="val">${sol.direccionTrabajo || ''}</span></div>
-                <div class="data-item"><span class="label">SUPERIOR:</span> <span class="val">${sol.superior || ''}</span></div>
-                <div class="data-item"><span class="label">CASA PROPIA/ALQ:</span> <span class="val">${sol.tipoCasa || ''}</span></div>
-                <div class="data-item"><span class="label">DESTINO CREDITO:</span> <span class="val">${sol.destino || ''}</span></div>
+    // Calculate dates
+    const fechaInicio = s.created_at ? new Date(s.created_at).toLocaleDateString('es-DO') : new Date().toLocaleDateString('es-DO');
+    const fechaFinal = s.created_at ? new Date(new Date(s.created_at).setMonth(new Date(s.created_at).getMonth() + (s.tiempo || 18))).toLocaleDateString('es-DO') : '---';
+    const fechaPago = s.created_at ? new Date(new Date(s.created_at).setMonth(new Date(s.created_at).getMonth() + 1)).toLocaleDateString('es-DO') : '---';
+    const fechaImpresion = new Date().toLocaleDateString('es-DO');
+    const horaImpresion = new Date().toLocaleTimeString('es-DO', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+    // Remove existing modal if any
+    const existingModal = document.getElementById('retro-modal-container');
+    if (existingModal) existingModal.remove();
+
+    // Create modal element
+    const modalDiv = document.createElement('div');
+    modalDiv.id = 'retro-modal-container';
+
+    // Helper to render card row for a person
+    const renderRow = (title, person, roleType) => {
+        if (!person || (!person.nombres && !person.identificador)) {
+            return `
+            <div class="cards-row">
+                <div class="content-card" style="grid-column: span 2;">
+                    <div class="card-header">${title}</div>
+                    <div class="card-body" style="justify-content: center; align-items: center; height: 150px; background-color: #f7fbfb;">
+                        <div style="text-align: center; color: #689c9c;">
+                            <i class="fas fa-folder-open" style="font-size: 32px; margin-bottom: 8px; color: #4c7a7a;"></i>
+                            <p style="font-size: 11px; font-weight: bold; margin: 0; text-transform: uppercase; letter-spacing: 0.05em;">NO TIENE REGISTRADO</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="column">
-                <div class="data-item"><span class="label">APODO:</span> <span class="val">${sol.apodo || ''}</span></div>
-                <div class="data-item"><span class="label">ESTADO CIVIL:</span> <span class="val">${sol.estadoCivil || ''}</span></div>
-                <div class="data-item"><span class="label">FECHA DE NACIMIENTO:</span> <span class="val">${sol.fechaNacimiento || ''}</span></div>
-                <div class="data-item"><span class="label">TELEFONO:</span> <span class="val">${sol.telefono || ''}</span></div>
-                <div class="data-item"><span class="label">EDAD:</span> <span class="val">${sol.edad || ''}</span></div>
-                <div class="data-item"><span class="label">DEPENDIENTE:</span> <span class="val">${sol.dependientes || ''}</span></div>
-                <div class="data-item"><span class="label">SEXO:</span> <span class="val">${sol.sexo || ''}</span></div>
-                <div class="data-item"><span class="label">PROFESION:</span> <span class="val">${sol.profesion || ''}</span></div>
-                <div class="data-item"><span class="label">VEHICULO:</span> <span class="val">${sol.vehiculo || ''}</span></div>
-                <div class="data-item"><span class="label">TEL. TRABAJO:</span> <span class="val">${sol.telTrabajo || ''}</span></div>
-                <div class="data-item"><span class="label">TIEMPO TRABAJO:</span> <span class="val">${sol.tiempoTrabajo || ''}</span></div>
-                <div class="data-item"><span class="label">INGRESOS:</span> <span class="val">${sol.ingresos || ''}</span></div>
-                <div class="data-item"><span class="label">OTROS INGRESOS:</span> <span class="val">${sol.otrosIngresos || ''}</span></div>
+            `;
+        }
+
+        let photoHtml = '';
+        if (person.fotoUrl && (person.fotoUrl.startsWith('data:') || person.fotoUrl.startsWith('http'))) {
+            photoHtml = `<img src="${person.fotoUrl}">`;
+        } else {
+            photoHtml = `
+                <img src="${person.fotoUrl || ''}" data-cedula="${person.identificador || ''}" style="${person.fotoUrl ? 'display:block;' : 'display:none;'}">
+                <i class="fas fa-user photo-placeholder" style="${person.fotoUrl ? 'display:none;' : 'display:block;'}"></i>
+            `;
+        }
+
+        const isCliente = person.chkCliente === true || (person.chkCliente === undefined && roleType === 'cliente');
+        const isEmpleado = person.chkEmpleado === true || (person.chkEmpleado === undefined && roleType === 'garante');
+        const isFuncionario = person.chkFuncionario === true;
+        const isAccionista = person.chkAccionista === true;
+
+        let checkboxesHtml = `
+            <span class="chk-box ${isCliente ? 'checked' : 'unchecked'}">CLIENTE</span>
+            <span class="chk-box ${isEmpleado ? 'checked' : 'unchecked'}">EMPLEADO</span>
+            <span class="chk-box ${isFuncionario ? 'checked' : 'unchecked'}">FUNCIONARIO</span>
+            <span class="chk-box ${isAccionista ? 'checked' : 'unchecked'}">ACCIONISTA</span>
+        `;
+
+        const firstAddressPart = person.direccion ? person.direccion.split(',')[0] : '---';
+
+        return `
+        <div class="cards-row">
+            <!-- Datos Personales -->
+            <div class="content-card">
+                <div class="card-header">${title}</div>
+                <div class="card-body">
+                    <div class="photo-frame">
+                        ${photoHtml}
+                    </div>
+                    <div class="card-data-grid">
+                        <span class="card-data-label">Cedula:</span>
+                        <span class="card-data-val" style="font-weight:bold;">${person.identificador || '---'}</span>
+                        
+                        <span class="card-data-label">Nombres:</span>
+                        <span class="card-data-val" style="font-weight:bold; font-size: 12px; color: #1e3a3a;">${person.nombres || '---'}</span>
+                        
+                        <span class="card-data-val" style="font-weight:bold; font-size: 12px; color: #1e3a3a;">${person.apellidos || '---'}</span>
+                        
+                        <span class="card-data-label">Apodo:</span>
+                        <span class="card-data-val">${person.apodo || '---'}</span>
+                        
+                        <span class="card-data-label">Direccion:</span>
+                        <span class="card-data-val" style="font-size:10.5px;">${person.direccion || '---'} ${person.sector ? ', ' + person.sector : ''}</span>
+                        
+                        <div class="card-data-inline">
+                            <div class="card-data-inline-item">
+                                <span class="card-data-inline-label">Edad:</span>
+                                <span>${person.edad || '---'} Años</span>
+                            </div>
+                            <div class="card-data-inline-item">
+                                <span class="card-data-inline-label">Celular:</span>
+                                <span>${person.telefono || '---'}</span>
+                            </div>
+                            <div class="card-data-inline-item">
+                                <span class="card-data-inline-label">Trabajo:</span>
+                                <span>${person.telTrabajo || '---'}</span>
+                            </div>
+                        </div>
+
+                        <div class="checkboxes-line">
+                            ${checkboxesHtml}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lugar de Residencia -->
+            <div class="content-card">
+                <div class="card-header">Lugar de Residencia</div>
+                <div class="card-body" style="padding: 10px 15px;">
+                    <div class="card-data-grid">
+                        <span class="card-data-label">Pais:</span>
+                        <span class="card-data-val">REPUBLICA DOMINICANA</span>
+                        
+                        <span class="card-data-label">Provincia:</span>
+                        <span class="card-data-val">${person.ciudad || '---'}</span>
+                        
+                        <span class="card-data-label">Municipio:</span>
+                        <span class="card-data-val">${person.sector || '---'}</span>
+                        
+                        <span class="card-data-label">Ciudad:</span>
+                        <span class="card-data-val">${person.ciudad || '---'}</span>
+                        
+                        <span class="card-data-label">Sector:</span>
+                        <span class="card-data-val">${firstAddressPart}</span>
+                        
+                        <span class="card-data-label">Zona:</span>
+                        <span class="card-data-val">---</span>
+                    </div>
+                </div>
             </div>
         </div>
-    `;
+        `;
+    };
 
-    const renderConyuge = (c) => `
-        <div class="two-columns">
-            <div class="column">
-                <div class="data-item"><span class="label">NOMBRES:</span> <span class="val">${c.nombres || ''}</span></div>
-                <div class="data-item"><span class="label">APELLIDOS:</span> <span class="val">${c.apellidos || ''}</span></div>
-                <div class="data-item"><span class="label">FECHA DE NACIMIENTO:</span> <span class="val">${c.fechaNacimiento || ''}</span></div>
-                <div class="data-item"><span class="label">APODO:</span> <span class="val">${c.apodo || ''}</span></div>
-                <div class="data-item"><span class="label">ESTADO CIVIL:</span> <span class="val">${c.estadoCivil || ''}</span></div>
-                <div class="data-item"><span class="label">TELEFONO:</span> <span class="val">${c.telefono || ''}</span></div>
-                <div class="data-item"><span class="label">OCUPACION:</span> <span class="val">${c.ocupacion || ''}</span></div>
-            </div>
-            <div class="column">
-                <div class="data-item"><span class="label">LUGAR DE TRABAJO:</span> <span class="val">${c.trabajo || ''}</span></div>
-                <div class="data-item"><span class="label">SECTOR:</span> <span class="val">${c.sector || ''}</span></div>
-                <div class="data-item"><span class="label">DIRECCION:</span> <span class="val">${c.direccion || ''}</span></div>
-                <div class="data-item"><span class="label">SUPERIOR:</span> <span class="val">${c.superior || ''}</span></div>
-                <div class="data-item"><span class="label">TEL. TRABAJO:</span> <span class="val">${c.telTrabajo || ''}</span></div>
-                <div class="data-item"><span class="label">TIEMPO TRABAJO:</span> <span class="val">${c.tiempoTrabajo || ''}</span></div>
-                <div class="data-item"><span class="label">INGRESOS:</span> <span class="val">${c.ingresos || ''}</span></div>
-            </div>
-        </div>
-    `;
+    let row1Html = '';
+    let row2Html = '';
 
-    const renderVehiculo = () => `
-        <div class="section-label">DATOS DE GARANTIA</div>
-        <div class="two-columns">
-            <div class="column">
-                <div class="data-item"><span class="label">RAZON SOCIAL:</span> <span class="val">${veh.razonSocial || ''}</span></div>
-                <div class="data-item"><span class="label">PLACA Y REG:</span> <span class="val">${veh.placa || ''}</span></div>
-                <div class="data-item"><span class="label">FECHA EXP:</span> <span class="val">${veh.fechaExpedicion || ''}</span></div>
-                <div class="data-item"><span class="label">CHASIS:</span> <span class="val">${veh.chasis || ''}</span></div>
-                <div class="data-item"><span class="label">ESTATUS VEHICULO:</span> <span class="val">${veh.estatus || ''}</span></div>
-                <div class="data-item"><span class="label">TIPO EMISION:</span> <span class="val">${veh.emision || ''}</span></div>
-                <div class="data-item"><span class="label">MATRICULA:</span> <span class="val">${veh.matricula || ''}</span></div>
-                <div class="data-item"><span class="label">FUERZA MOTRIZ:</span> <span class="val">${veh.fuerza || ''}</span></div>
-                <div class="data-item"><span class="label">CILINDROS:</span> <span class="val">${veh.cilindros || ''}</span></div>
-                <div class="data-item"><span class="label">CEDULA/RNC:</span> <span class="val">${veh.identificador || ''}</span></div>
-            </div>
-            <div class="column">
-                <div class="data-item"><span class="label">TIPO:</span> <span class="val">${veh.tipo || ''}</span></div>
-                <div class="data-item"><span class="label">MARCA:</span> <span class="val">${veh.marca || ''}</span></div>
-                <div class="data-item"><span class="label">MODELO:</span> <span class="val">${veh.modelo || ''}</span></div>
-                <div class="data-item"><span class="label">AÑO FABRICACION:</span> <span class="val">${veh.anio || ''}</span></div>
-                <div class="data-item"><span class="label">COLOR:</span> <span class="val">${veh.color || ''}</span></div>
-                <div class="data-item"><span class="label">MOTOR/SERIE:</span> <span class="val">${veh.motorSerie || ''}</span></div>
-                <div class="data-item"><span class="label">PASAJERO:</span> <span class="val">${veh.pasajeros || ''}</span></div>
-                <div class="data-item"><span class="label">CAP CARGA:</span> <span class="val">${veh.capCarga || ''}</span></div>
-                <div class="data-item"><span class="label">NO. PUERTAS:</span> <span class="val">${veh.puertas || ''}</span></div>
-            </div>
-        </div>
-    `;
-
-    const renderHipotecario = () => `
-        <div class="section-label">DATOS DE GARANTIA</div>
-        <div class="two-columns">
-            <div class="column">
-                <div class="data-item"><span class="label">PROPIETARIO:</span> <span class="val">${hipo.propietario || ''}</span></div>
-                <div class="data-item"><span class="label">CEDULA/RNC:</span> <span class="val">${hipo.cedulaRNC || ''}</span></div>
-                <div class="data-item"><span class="label">FECHA EXP:</span> <span class="val">${hipo.fechaExpedicion || ''}</span></div>
-            </div>
-            <div class="column">
-               <div class="data-item"><span class="label">TIPO INMUEBLE:</span> <span class="val">${hipo.tipoInmueble || ''}</span></div>
-               <div class="data-item"><span class="label">VALOR:</span> <span class="val">${hipo.valorAproximado || ''}</span></div>
-            </div>
-        </div>
-    `;
-
-    let dynamicSections = renderSolicitante();
-    dynamicSections += `<div class="section-label">DATOS DEL CONYUGE</div>` + renderConyuge(con);
-
-    if (type === 'vehiculo') {
-        dynamicSections += renderVehiculo();
-    } else if (type === 'hipotecario') {
-         dynamicSections += renderHipotecario();
-    } else if (type === 'garante') {
-         dynamicSections += `<div class="section-label">DATOS DEL GARANTE</div>` + renderConyuge(gar);
-         dynamicSections += `<div class="section-label">DATOS DEL CONYUGE DEL GARANTE</div>` + renderConyuge(conGar);
+    if (mode === 'cliente_garante') {
+        row1Html = renderRow('Datos del Cliente', sol, 'cliente');
+        row2Html = renderRow('Datos del Co-Deudor (Garante)', gar, 'garante');
+    } else if (mode === 'cliente_conyuge') {
+        row1Html = renderRow('Datos del Cliente', sol, 'cliente');
+        row2Html = renderRow('Datos del Cónyuge', con, 'conyuge');
+    } else if (mode === 'garante_conyuge') {
+        row1Html = renderRow('Datos del Garante', gar, 'garante');
+        row2Html = renderRow('Datos del Cónyuge del Garante', conGar, 'conyuge');
     }
 
-    const printWindow = window.open('', '_blank');
-    
-    // Customization: Arial 12pt, normal weights for fields, bold ONLY for .section-label
     const html = `
     <!DOCTYPE html>
     <html lang="es">
     <head>
         <meta charset="UTF-8">
-        <title>Solicitud - ${s.id}</title>
+        <title>Solicitud de Préstamo - ${s.id.split('-')[0].toUpperCase()}</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
         <style>
-            @page { size: portrait; margin: 5mm 10mm; }
-            body { font-family: 'Arial', sans-serif; font-size: 11pt; color: #000; line-height: 1.15; margin: 0; padding: 0; }
-            .container { width: 100%; max-width: 800px; margin: auto; padding: 5px 10px; }
+            @page {
+                size: landscape;
+                margin: 5mm;
+            }
+            * {
+                box-sizing: border-box;
+            }
+            body {
+                font-family: Tahoma, 'Segoe UI', Geneva, sans-serif;
+                font-size: 11px;
+                color: #0c2b2b;
+                margin: 0;
+                padding: 0;
+            }
+            #retro-modal-container {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background-color: rgba(15, 23, 42, 0.65);
+                z-index: 999999;
+                overflow-y: auto;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 20px 10px;
+                backdrop-filter: blur(4px);
+                box-sizing: border-box;
+            }
+            .action-bar {
+                background-color: #1e293b;
+                color: white;
+                padding: 10px 20px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                width: 100%;
+                max-width: 1300px;
+                border-radius: 12px 12px 0 0;
+                box-sizing: border-box;
+            }
+            .action-bar h2 {
+                margin: 0;
+                font-size: 13px;
+                font-weight: 800;
+                letter-spacing: 0.05em;
+                text-transform: uppercase;
+            }
+            .action-bar .btn {
+                background-color: #4c7a7a;
+                color: white;
+                border: none;
+                padding: 6px 14px;
+                font-size: 11px;
+                font-weight: bold;
+                border-radius: 4px;
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                transition: all 0.2s;
+                text-decoration: none;
+            }
+            .action-bar .btn:hover {
+                background-color: #689c9c;
+            }
+            .action-bar .btn-danger {
+                background-color: #ef4444;
+            }
+            .action-bar .btn-danger:hover {
+                background-color: #dc2626;
+            }
             
-            /* Header Image 4 Style */
-            .header-top { display: flex; justify-content: flex-start; margin-bottom: 25px; }
-            .logo-left { width: 35%; text-align: center; }
-            .logo-left img { max-width: 130px; height: auto; display: block; margin: 0 auto; }
-            .rnc-center { font-weight: normal; font-size: 11pt; margin-top: 5px; }
-            
-            .meta-right { width: 60%; font-size: 11pt; margin-top: 5px; padding-left: 10px; }
-            .meta-item { display: flex; margin-bottom: 2px; justify-content: flex-start; }
-            .meta-label { text-align: left; width: 180px; }
-            .meta-value { font-weight: normal; text-align: left; }
+            .screen-wrapper {
+                padding: 15px;
+                width: 100%;
+                max-width: 1300px;
+                margin: 0 auto;
+                background-color: #f0f7f7;
+                border-radius: 0 0 12px 12px;
+                box-sizing: border-box;
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            }
 
-            /* Sections: ONLY THIS IS BOLD */
-            .section-label { font-weight: bold; margin-top: 10px; margin-bottom: 5px; font-size: 11pt; text-transform: uppercase; border-bottom: 1px solid #000; padding-bottom: 2px; }
-            
-            .two-columns { display: flex; width: 100%; }
-            .column { flex: 1; display: flex; flex-direction: column; }
-            
-            .data-item { display: flex; margin-bottom: 2px; padding: 0; }
-            .label { font-weight: normal; width: 170px; text-transform: uppercase; }
-            .val { font-weight: normal; flex: 1; }
+            /* Retro System Border & Frame */
+            .system-frame {
+                border: 3px double #4c7a7a;
+                background-color: #fff;
+                padding: 15px;
+                border-radius: 6px;
+                box-shadow: 0 0 15px rgba(0,0,0,0.05);
+            }
 
-            /* References Table Style */
-            .ref-grid { margin-top: 5px; font-size: 11pt; }
-            .ref-header { display: flex; font-weight: normal; margin-bottom: 3px; border-bottom: 1px solid #ccc; padding-bottom: 2px;}
-            .ref-row { display: flex; margin-bottom: 2px; }
-            .ref-col { flex: 1; }
+            /* 1. Header Layout */
+            .system-header {
+                display: flex;
+                justify-content: space-between;
+                background-color: #b8d3d3;
+                border: 2px solid #4c7a7a;
+                padding: 12px;
+                margin-bottom: 8px;
+                border-radius: 4px;
+            }
+            .header-left {
+                width: 50%;
+            }
+            .system-title {
+                font-size: 16px;
+                font-weight: bold;
+                color: #2b5252;
+                margin: 0 0 5px 0;
+                letter-spacing: 0.02em;
+            }
+            .header-info-grid {
+                display: grid;
+                grid-template-columns: auto 1fr;
+                column-gap: 12px;
+                row-gap: 2px;
+            }
+            .header-info-label {
+                font-weight: bold;
+                color: #2b5252;
+            }
+            .header-info-val {
+                color: #333;
+            }
+            
+            .header-right {
+                width: 45%;
+                text-align: right;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+            }
+            .risk-grid {
+                display: grid;
+                grid-template-columns: auto auto;
+                column-gap: 15px;
+                row-gap: 2px;
+                text-align: left;
+                margin-bottom: 6px;
+            }
+            .risk-label {
+                font-weight: bold;
+                color: #2b5252;
+            }
+            .risk-val {
+                color: #008000;
+                font-weight: bold;
+            }
+            .print-time {
+                font-size: 10px;
+                color: #555;
+                margin-top: auto;
+            }
 
-            /* Signature */
-            .sig-area { margin-top: 40px; text-align: center; display: flex; justify-content: ${type === 'garante' ? 'space-around' : 'center'}; }
-            .sig-line { width: 250px; border-top: 1px solid #000; padding-top: 5px; font-weight: normal; text-transform: uppercase; font-size: 11pt; }
-            .legal-disclaimer { margin-top: 20px; font-size: 8.5pt; color: #444; text-align: center; padding: 0 40px; line-height: 1.1; }
+            /* 2. Menu Navigation Simulator */
+            .nav-menu-bar {
+                background-color: #4c7a7a;
+                color: white;
+                padding: 6px 12px;
+                font-weight: bold;
+                display: flex;
+                gap: 20px;
+                margin-bottom: 8px;
+                border-radius: 4px;
+            }
+            .nav-item {
+                cursor: pointer;
+            }
+            .nav-item:hover {
+                text-decoration: underline;
+                color: #e0eeee;
+            }
+
+            /* 3. Breadcrumb / Title block */
+            .breadcrumb-bar {
+                background-color: #e0eeee;
+                border: 1px solid #689c9c;
+                padding: 6px 12px;
+                font-weight: bold;
+                font-size: 11px;
+                color: #2b5252;
+                margin-bottom: 12px;
+                border-radius: 4px;
+            }
+
+            /* Tabs Style */
+            .retro-tab-btn {
+                background: #c9e2e2;
+                border: 1.5px solid #4c7a7a;
+                border-bottom: none;
+                padding: 6px 14px;
+                font-weight: bold;
+                font-size: 10.5px;
+                cursor: pointer;
+                color: #2b5252;
+                border-radius: 4px 4px 0 0;
+                transition: background-color 0.2s;
+            }
+            .retro-tab-btn.active {
+                background: #ffffff;
+                border-bottom: 2px solid #ffffff;
+                color: #0c2b2b;
+                z-index: 10;
+            }
+            .retro-tab-btn:hover:not(.active) {
+                background: #dbeef5;
+            }
+
+            /* Main Layout Grid */
+            .main-grid {
+                display: grid;
+                grid-template-columns: 280px 1fr;
+                gap: 12px;
+            }
+
+            /* 4. Left Sidebar Details Panel */
+            .sidebar-panel {
+                border: 2px solid #4c7a7a;
+                background-color: #f0f7f7;
+                display: flex;
+                flex-direction: column;
+                border-radius: 4px;
+                overflow: hidden;
+                font-size: 10px;
+            }
+            .panel-header {
+                background-color: #4c7a7a;
+                color: white;
+                padding: 4px 8px;
+                font-weight: bold;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                font-size: 10px;
+            }
+            .card-header {
+                background-color: #b8d3d3;
+                color: #2b5252;
+                border-bottom: 2px solid #4c7a7a;
+                padding: 5px 10px;
+                font-weight: bold;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                font-size: 11px;
+            }
+            .sidebar-rows {
+                padding: 4px 6px;
+                flex-grow: 1;
+            }
+            .sidebar-row {
+                display: flex;
+                justify-content: space-between;
+                padding: 2px 0;
+                border-bottom: 1px dashed #b8d3d3;
+            }
+            .sidebar-row:last-child {
+                border-bottom: none;
+            }
+            .sidebar-label {
+                font-weight: bold;
+                color: #2b5252;
+            }
+            .sidebar-val {
+                text-align: right;
+                font-weight: bold;
+                color: #111;
+            }
+            .sidebar-val.highlight-red {
+                color: #a90000;
+                font-weight: bold;
+            }
+
+            .sidebar-footer-boxes {
+                padding: 8px;
+                border-top: 1px solid #4c7a7a;
+                background-color: #e5efef;
+            }
+            .footer-input-row {
+                display: flex;
+                align-items: center;
+                margin-bottom: 6px;
+            }
+            .footer-input-label {
+                width: 60px;
+                font-weight: bold;
+                color: #2b5252;
+            }
+            .footer-input-box {
+                flex-grow: 1;
+                border: 1px solid #689c9c;
+                background-color: white;
+                padding: 2px 5px;
+                font-size: 11px;
+                font-family: inherit;
+                height: 19px;
+            }
+            .footer-buttons {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 4px;
+                margin-top: 8px;
+            }
+            .retro-btn {
+                background: #e0eeee;
+                border: 1px solid #4c7a7a;
+                border-bottom: 2px solid #2b5252;
+                border-right: 2px solid #2b5252;
+                padding: 4px 6px;
+                text-align: center;
+                font-weight: bold;
+                font-size: 10px;
+                cursor: pointer;
+                color: #0c2b2b;
+                border-radius: 3px;
+            }
+            .retro-btn:active {
+                border: 1px solid #2b5252;
+                border-top: 2px solid #2b5252;
+                border-left: 2px solid #2b5252;
+                background: #c9e2e2;
+            }
+
+            .sidebar-cargos-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 10px;
+                font-size: 10px;
+            }
+            .sidebar-cargos-table th {
+                background-color: #4c7a7a;
+                color: white;
+                font-weight: bold;
+                text-align: left;
+                padding: 4px 6px;
+                border: 1px solid #4c7a7a;
+            }
+            .sidebar-cargos-table td {
+                padding: 4px 6px;
+                border: 1px solid #b8d3d3;
+                background-color: white;
+            }
+
+            /* 5. Right Cards Container */
+            .workspace-panel {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+            .cards-row {
+                display: grid;
+                grid-template-columns: 1.5fr 1fr;
+                gap: 12px;
+            }
+            .content-card {
+                border: 2px solid #4c7a7a;
+                background-color: #f0f7f7;
+                border-radius: 4px;
+                overflow: hidden;
+            }
+            .card-body {
+                padding: 10px;
+                display: flex;
+                gap: 12px;
+            }
+            .photo-frame {
+                width: 110px;
+                height: 130px;
+                border: 2px solid #4c7a7a;
+                background-color: #e5efef;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                overflow: hidden;
+                flex-shrink: 0;
+                border-radius: 4px;
+            }
+            .photo-frame img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+            .photo-placeholder {
+                color: #689c9c;
+                font-size: 28px;
+            }
+            .card-data-grid {
+                flex-grow: 1;
+                display: grid;
+                grid-template-columns: auto 1fr;
+                column-gap: 10px;
+                row-gap: 3.5px;
+                align-content: start;
+            }
+            .card-data-label {
+                font-weight: bold;
+                color: #2b5252;
+                text-transform: uppercase;
+                font-size: 10.5px;
+            }
+            .card-data-val {
+                color: #111;
+                border-bottom: 1.5px solid #b8d3d3;
+                padding-bottom: 2px;
+                font-weight: bold;
+            }
+            .card-data-inline {
+                grid-column: 1 / span 2;
+                display: flex;
+                flex-wrap: wrap;
+                column-gap: 15px;
+                row-gap: 2px;
+                background-color: #e4f0f0;
+                padding: 4px 8px;
+                border: 1.5px dashed #4c7a7a;
+                margin-top: 6px;
+                border-radius: 4px;
+            }
+            .card-data-inline-item {
+                display: flex;
+                gap: 4px;
+            }
+            .card-data-inline-label {
+                font-weight: bold;
+                color: #2b5252;
+            }
+            
+            /* Custom styled Checkboxes */
+            .checkboxes-line {
+                grid-column: 1 / span 2;
+                display: flex;
+                gap: 18px;
+                margin-top: 8px;
+                padding: 6px 0 0 0;
+                border-top: 1px solid #b8d3d3;
+            }
+            .chk-box {
+                display: inline-flex;
+                align-items: center;
+                font-size: 10px;
+                font-weight: bold;
+                color: #0c2b2b;
+            }
+            .chk-box.checked::before {
+                content: "✔";
+                display: inline-flex;
+                justify-content: center;
+                align-items: center;
+                width: 13px;
+                height: 13px;
+                border: 1.5px solid #4c7a7a;
+                background-color: #4c7a7a;
+                color: white;
+                margin-right: 6px;
+                border-radius: 2px;
+                font-size: 10px;
+            }
+            .chk-box.unchecked::before {
+                content: "";
+                display: inline-block;
+                width: 13px;
+                height: 13px;
+                border: 1.5px solid #4c7a7a;
+                background-color: white;
+                margin-right: 6px;
+                border-radius: 2px;
+            }
+
+            /* Print modifications */
+            @media print {
+                body > :not(#retro-modal-container) {
+                    display: none !important;
+                }
+                #retro-modal-container {
+                    position: absolute !important;
+                    left: 0 !important;
+                    top: 0 !important;
+                    width: 100% !important;
+                    height: auto !important;
+                    background: transparent !important;
+                    padding: 0 !important;
+                    overflow: visible !important;
+                }
+                .no-print {
+                    display: none !important;
+                }
+                .screen-wrapper {
+                    padding: 0 !important;
+                    max-width: 100% !important;
+                    margin: 0 !important;
+                    box-shadow: none !important;
+                    background-color: transparent !important;
+                }
+                .system-frame {
+                    border: none !important;
+                    box-shadow: none !important;
+                    padding: 0 !important;
+                }
+            }
         </style>
     </head>
-    <body onload="setTimeout(() => { window.print(); window.close(); }, 1200);">
-        <div class="container">
-            <div class="header-top">
-                <div class="logo-left">
-                    <img src="${portalLogo}">
-                    <div class="rnc-center">1-33-34406-8</div>
-                </div>
-                <div class="meta-right">
-                    <div class="meta-item"><span class="meta-label">SOLICITUD NO:</span> <span class="meta-value">${String(s.id).split('-')[0].toUpperCase()}</span></div>
-                    <div class="meta-item"><span class="meta-label">FECHA DE SOLICITUD:</span> <span class="meta-value">${new Date(s.created_at).toLocaleDateString()}</span></div>
-                    <div class="meta-item"><span class="meta-label">MONTO SOLICITADO RD$:</span> <span class="meta-value">${Number(s.monto).toLocaleString()}</span></div>
-                    <div class="meta-item"><span class="meta-label">TIEMPO:</span> <span class="meta-value">${s.tiempo} MESES</span></div>
-                    <div class="meta-item"><span class="meta-label">CUOTA:</span> <span class="meta-value">RD$ ${Number(d.cuota || 0).toLocaleString()}</span></div>
-                </div>
-            </div>
-
-            ${dynamicSections}
-
-            <div class="section-label">REFERENCIA SONSE</div>
-            <div class="ref-grid">
-                <div class="ref-header">
-                    <div class="ref-col" style="flex:1.5">NOMBRES</div>
-                    <div class="ref-col">TELEFONO</div>
-                    <div class="ref-col" style="flex:1.5">DIRECCION</div>
-                </div>
-                ${(d.referencias || []).slice(0, 3).map(r => `
-                    <div class="ref-row">
-                        <div class="ref-col" style="flex:1.5">${r.nombre || ''}</div>
-                        <div class="ref-col">${r.telefono || ''}</div>
-                        <div class="ref-col" style="flex:1.5">${r.direccion || ''}</div>
-                    </div>
-                `).join('')}
-            </div>
-
-            <div class="sig-area">
-                <div class="sig-line">FIRMA DEUDOR</div>
-                ${type === 'garante' ? '<div class="sig-line">FIRMA FIADOR</div>' : ''}
-            </div>
-
-            <div class="legal-disclaimer">
-                El cliente autoriza a la empresa a consultar su información en los buros de crédito por la presente doy constancia de haber leído esta solicitud y que las contestaciones dadas por mí son ciertas y correctas en fe de la cual firmo.
+    <body>
+        <div class="action-bar no-print">
+            <h2>DETALLES DE LA SOLICITUD DE CRÉDITO</h2>
+            <div style="display: flex; gap: 8px;">
+                <button id="modal-print-btn" class="btn"><i class="fas fa-print"></i> Imprimir Expediente</button>
+                <button id="modal-close-btn" class="btn btn-danger"><i class="fas fa-times"></i> Cerrar Ventana</button>
             </div>
         </div>
+
+        <div class="screen-wrapper">
+            <div class="system-frame">
+                <!-- System Header -->
+                <div class="system-header">
+                    <div class="header-left">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                            <img src="${portalLogo}" style="height: 32px; width: 32px; object-fit: cover; border-radius: 6px; border: 1.5px solid #4d7a7a;">
+                            <h1 class="system-title" style="margin: 0; font-size: 16px; font-weight: bold;">B&H PRÉSTAMOS</h1>
+                        </div>
+                        <div class="header-info-grid">
+                            <span class="header-info-label">Tipo de Oficina :</span>
+                            <span class="header-info-val">AGENCIA</span>
+                            <span class="header-info-label">RNC :</span>
+                            <span class="header-info-val">1-04-00068-4</span>
+                            <span class="header-info-label">Teléfono :</span>
+                            <span class="header-info-val">809-574-1142</span>
+                            <span class="header-info-label">Trabajando en :</span>
+                            <span class="header-info-val">${fechaInicio}</span>
+                        </div>
+                    </div>
+                    <div class="header-right">
+                        <div class="risk-grid">
+                            <span class="risk-label">Usuario :</span>
+                            <span style="color:#333; font-weight:bold;">ADMINISTRADOR</span>
+                            <span class="risk-label">Riesgo :</span>
+                            <span class="risk-val">en Línea</span>
+                            <span class="risk-label">Padrón :</span>
+                            <span class="risk-val">en Línea</span>
+                            <span class="risk-label">Contabilidad :</span>
+                            <span class="risk-val">en Línea</span>
+                        </div>
+                        <div class="print-time">
+                            ${fechaImpresion} ${horaImpresion}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulado Menu Navigation -->
+                <div class="nav-menu-bar">
+                    <span class="nav-item">Inicio</span>
+                    <span class="nav-item">Evaluación</span>
+                    <span class="nav-item" style="border-bottom: 2px solid white;">Préstamos</span>
+                    <span class="nav-item">Gerencia</span>
+                    <span class="nav-item">Enc. Agencia</span>
+                    <span class="nav-item" id="modal-exit-item">Salir</span>
+                </div>
+
+                <!-- Breadcrumb Title -->
+                <div class="breadcrumb-bar">
+                    CONSULTA :: Estatus del Prestamos
+                </div>
+
+                <!-- Tabs for View Mode -->
+                <div class="no-print" style="display: flex; gap: 4px; margin-bottom: -1px; padding-left: 2px; position: relative; z-index: 5;">
+                    <button class="retro-tab-btn ${mode === 'cliente_garante' ? 'active' : ''}" onclick="window.openSolicitudRetro('${id}', 'cliente_garante', false)">Cliente y Co-Deudor</button>
+                    <button class="retro-tab-btn ${mode === 'cliente_conyuge' ? 'active' : ''}" onclick="window.openSolicitudRetro('${id}', 'cliente_conyuge', false)">Cliente y Cónyuge</button>
+                    <button class="retro-tab-btn ${mode === 'garante_conyuge' ? 'active' : ''}" onclick="window.openSolicitudRetro('${id}', 'garante_conyuge', false)">Garante y Cónyuge</button>
+                </div>
+
+                <!-- Main Layout -->
+                <div class="main-grid" style="border-top: 1.5px solid #4c7a7a; padding-top: 10px;">
+                    <!-- Left Sidebar -->
+                    <div class="sidebar-panel">
+                        <div class="panel-header">Datos del Prestamo</div>
+                        <div class="sidebar-rows">
+                            <div class="sidebar-row">
+                                <span class="sidebar-label">Prestamo No :</span>
+                                <span class="sidebar-val highlight-red">250-00000${s.id.split('-')[0].slice(0, 5).toUpperCase()}</span>
+                            </div>
+                            <div class="sidebar-row">
+                                <span class="sidebar-label">Solicitud No :</span>
+                                <span class="sidebar-val highlight-red">250-00000${s.id.split('-')[0].slice(0, 5).toUpperCase()}</span>
+                            </div>
+                            <div class="sidebar-row">
+                                <span class="sidebar-label">a Pagar :</span>
+                                <span class="sidebar-val">Mensual</span>
+                            </div>
+                            <div class="sidebar-row">
+                                <span class="sidebar-label">Debe Pagar el :</span>
+                                <span class="sidebar-val">${fechaPago}</span>
+                            </div>
+                            <div class="sidebar-row">
+                                <span class="sidebar-label">Cuotas de :</span>
+                                <span class="sidebar-val">RD$ ${Number(s.cuota || d.cuota || 0).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                            </div>
+                            <div class="sidebar-row">
+                                <span class="sidebar-label">Interes :</span>
+                                <span class="sidebar-val">2.25</span>
+                            </div>
+                            <div class="sidebar-row">
+                                <span class="sidebar-label">Plazo :</span>
+                                <span class="sidebar-val">${s.tiempo || 18}</span>
+                            </div>
+                            <div class="sidebar-row">
+                                <span class="sidebar-label">Ultimo Pago :</span>
+                                <span class="sidebar-val">---</span>
+                            </div>
+                            <div class="sidebar-row">
+                                <span class="sidebar-label">Monto :</span>
+                                <span class="sidebar-val highlight-red">RD$ ${Number(s.monto || 0).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                            </div>
+                            <div class="sidebar-row">
+                                <span class="sidebar-label">Balance :</span>
+                                <span class="sidebar-val highlight-red">RD$ ${s.status === 'Completado' ? '0.00' : Number(s.monto || 0).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                            </div>
+                            <div class="sidebar-row">
+                                <span class="sidebar-label">Interés Pagado :</span>
+                                <span class="sidebar-val">RD$ 0.00</span>
+                            </div>
+                            <div class="sidebar-row">
+                                <span class="sidebar-label">Estatus :</span>
+                                <span class="sidebar-val" style="font-weight:bold; color: ${s.status === 'Aprobado' ? '#008000' : s.status === 'Rechazado' ? '#a90000' : '#d97706'}">${s.status || 'Pendiente'}</span>
+                            </div>
+                            <div class="sidebar-row">
+                                <span class="sidebar-label">Evaluador :</span>
+                                <span class="sidebar-val">${d.evaluador || s.evaluador || 'jose.grullat'}</span>
+                            </div>
+                            <div class="sidebar-row">
+                                <span class="sidebar-label">Fecha Inicio :</span>
+                                <span class="sidebar-val">${fechaInicio}</span>
+                            </div>
+                            <div class="sidebar-row">
+                                <span class="sidebar-label">Fecha Final :</span>
+                                <span class="sidebar-val">${fechaFinal}</span>
+                            </div>
+                            <div class="sidebar-row">
+                                <span class="sidebar-label">Transferido al :</span>
+                                <span class="sidebar-val">0</span>
+                            </div>
+                            <div class="sidebar-row">
+                                <span class="sidebar-label">Tipo Garantia :</span>
+                                <span class="sidebar-val" style="font-size:9.5px; font-weight:bold;">${type === 'garante' ? 'PERSONAL CON DEUDOR' : type === 'vehiculo' ? 'GARANTÍA VEHÍCULO' : type === 'hipotecario' ? 'GARANTÍA HIPOTECARIA' : 'PERSONAL'}</span>
+                            </div>
+                            <div class="sidebar-row">
+                                <span class="sidebar-label">Tipo según SIB :</span>
+                                <span class="sidebar-val">Comercial</span>
+                            </div>
+                        </div>
+
+                        <div class="sidebar-footer-boxes">
+                            <div class="footer-input-row">
+                                <span class="footer-input-label">Fecha :</span>
+                                <input type="text" class="footer-input-box" value="${fechaImpresion}" readonly>
+                            </div>
+                            <div class="footer-input-row">
+                                <span class="footer-input-label">Monto :</span>
+                                <input type="text" class="footer-input-box" value="" placeholder="---">
+                            </div>
+                            <div class="footer-buttons">
+                                <div class="retro-btn" onclick="alert('Consulta de comportamiento del deudor')">Comportamiento</div>
+                                <div class="retro-btn" onclick="alert('Retornar solicitud a estado anterior')">Retornar</div>
+                                <div class="retro-btn" onclick="alert('Distribuir cargos')">Distribuir</div>
+                            </div>
+
+                            <table class="sidebar-cargos-table">
+                                <thead>
+                                    <tr>
+                                        <th>Descripcion</th>
+                                        <th>aCobrar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Capital Atrasado</td>
+                                        <td style="text-align:right; font-weight:bold;">0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Interés Acumulado</td>
+                                        <td style="text-align:right; font-weight:bold;">0.00</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div style="margin-top: 10px; border-top: 1.5px solid #4c7a7a; padding-top: 8px;">
+                                <span class="sidebar-label" style="display:block; margin-bottom: 4px; font-weight:bold; color:#2b5252;">Detalle / Nota:</span>
+                                <div style="display: flex; gap: 4px;">
+                                    <input type="text" id="retro-detalle-nota" class="footer-input-box" style="flex-grow: 1; height: 22px; font-size: 10px; padding: 2px 4px; border: 1px solid #4c7a7a;" value="${d.detallesNota || ''}" placeholder="Escribir cualquier detalle...">
+                                    <button id="retro-save-nota-btn" class="retro-btn" style="padding: 2px 6px; height: 22px; font-size: 9px; line-height: 1;">Guardar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Main Workspace -->
+                    <div class="workspace-panel">
+                        ${row1Html}
+                        ${row2Html}
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </body>
     </html>
     `;
-    
-    printWindow.document.write(html);
-    printWindow.document.close();
+
+    modalDiv.innerHTML = html;
+    document.body.appendChild(modalDiv);
+
+    // Wire action buttons
+    const closeBtn = modalDiv.querySelector('.action-bar #modal-close-btn');
+    const exitItem = modalDiv.querySelector('#modal-exit-item');
+    const printBtn = modalDiv.querySelector('.action-bar #modal-print-btn');
+
+    const closeModal = () => modalDiv.remove();
+
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (exitItem) exitItem.addEventListener('click', closeModal);
+    if (printBtn) printBtn.addEventListener('click', () => window.print());
+
+    // Guardar detalles/nota in Supabase JSONB data
+    const saveNotaBtn = modalDiv.querySelector('#retro-save-nota-btn');
+    if (saveNotaBtn) {
+        saveNotaBtn.addEventListener('click', async () => {
+            const noteInput = modalDiv.querySelector('#retro-detalle-nota');
+            const noteVal = noteInput ? noteInput.value : '';
+            saveNotaBtn.disabled = true;
+            saveNotaBtn.textContent = '...';
+            try {
+                const { data: latestApp, error: fetchErr } = await supabase
+                    .from('loan_applications')
+                    .select('data')
+                    .eq('id', id)
+                    .single();
+
+                if (fetchErr) throw fetchErr;
+
+                const updatedData = {
+                    ...(latestApp.data || {}),
+                    detallesNota: noteVal
+                };
+
+                const { error: updateErr } = await supabase
+                    .from('loan_applications')
+                    .update({ data: updatedData })
+                    .eq('id', id);
+
+                if (updateErr) throw updateErr;
+                alert('¡Detalle / Nota guardada correctamente!');
+            } catch (err) {
+                console.error(err);
+                alert('Error al guardar la nota: ' + err.message);
+            } finally {
+                saveNotaBtn.disabled = false;
+                saveNotaBtn.textContent = 'Guardar';
+            }
+        });
+    }
+
+    // Asynchronously load photos from local JCE query cache if not stored in Supabase
+    const imgsToLoad = modalDiv.querySelectorAll('img[data-cedula]');
+    imgsToLoad.forEach(async (img) => {
+        const ced = img.dataset.cedula;
+        if (ced && !img.src.startsWith('data:')) {
+            const localPhoto = await getPhotoLocal(ced);
+            if (localPhoto) {
+                img.src = localPhoto;
+                img.style.display = 'block';
+                const frame = img.closest('.photo-frame');
+                if (frame) {
+                    const placeholder = frame.querySelector('.photo-placeholder');
+                    if (placeholder) placeholder.style.display = 'none';
+                }
+            }
+        }
+    });
+
+    if (autoPrint) {
+        setTimeout(() => {
+            window.print();
+            closeModal();
+        }, 1000);
+    }
 };
 
 window.exportToWord = async (id) => {
@@ -2899,7 +3929,7 @@ window.exportToWord = async (id) => {
     const veh = d.garantiaVehiculo || {};
     const hipo = d.garantiaHipotecaria || {};
     const gar = d.garante || {};
-    const conGar = d.conyugeGarante || {};
+    const conGar = d.conyugeGarante || (d.garante ? d.garante.conyuge : null) || {};
 
     let type = s.loan_type;
     if (!type && s.data && s.data.tipoPrestamo) type = s.data.tipoPrestamo;
@@ -2935,8 +3965,8 @@ window.exportToWord = async (id) => {
 
     const conFields1 = [
         {l:'NOMBRES',k:'nombres'},{l:'APELLIDOS',k:'apellidos'},{l:'FECHA NAC.',k:'fechaNacimiento'},
-        {l:'APODO',k:'apodo'},{l:'ESTADO CIVIL',k:'estadoCivil'},{l:'TELEFONO',k:'telefono'},
-        {l:'OCUPACION',k:'ocupacion'}
+        {l:'EDAD',k:'edad'},{l:'APODO',k:'apodo'},{l:'ESTADO CIVIL',k:'estadoCivil'},
+        {l:'TELEFONO',k:'telefono'},{l:'OCUPACION',k:'ocupacion'}
     ];
     const conFields2 = [
         {l:'LUGAR TRABAJO',k:'trabajo'},{l:'SECTOR',k:'sector'},{l:'DIRECCION',k:'direccion'},
