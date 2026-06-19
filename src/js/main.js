@@ -1,7 +1,10 @@
 import { supabase, getBanners, getCarouselImages } from './supabase.js';
 import { renderAdvancedPromo } from './promoRenderer.js';
+import { initClientApplication } from './clientApplication.js';
 // B&H Main Logic - Modern ESM
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize public client application (Supabase, JCE lookup, dynamic forms logic)
+    initClientApplication();
     // Mobile Menu Toggle Premium
     const menuBtn = document.getElementById('menuBtn');
     const mobileMenu = document.getElementById('mobileMenu');
@@ -86,6 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         if (pageMap[lang]) window.location.href = pageMap[lang];
     });
+
+
 
     // Cargar contenido dinámico si estamos en el index
     if (document.getElementById('cuotas-title-1')) {

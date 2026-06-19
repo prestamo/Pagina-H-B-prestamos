@@ -2169,32 +2169,25 @@ function parseJCEDate(jceDate) {
 async function getJCEBaseUrl() {
     let baseUrl = 'https://edging-rarity-routing.ngrok-free.dev';
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 600);
-            const check = await fetch('http://localhost:3001/api/health', { signal: controller.signal });
-            if (check.ok) {
-                baseUrl = 'http://localhost:3001';
+        const checks = [
+            { port: 3001, path: '/api/health' },
+            { port: 8082, path: '/api/v1/health' },
+            { port: 8082, path: '/actuator/health' },
+            { port: 8080, path: '/api/v1/health' },
+            { port: 8080, path: '/actuator/health' }
+        ];
+
+        for (const target of checks) {
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 600);
+                const res = await fetch(`http://localhost:${target.port}${target.path}`, { signal: controller.signal });
+                if (res.ok) {
+                    clearTimeout(timeoutId);
+                    return `http://localhost:${target.port}`;
+                }
                 clearTimeout(timeoutId);
-                return baseUrl;
-            }
-            clearTimeout(timeoutId);
-        } catch (e) {
-            // Try next port
-        }
-        
-        try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 600);
-            const check = await fetch('http://localhost:8082/api/health', { signal: controller.signal });
-            if (check.ok) {
-                baseUrl = 'http://localhost:8082';
-                clearTimeout(timeoutId);
-                return baseUrl;
-            }
-            clearTimeout(timeoutId);
-        } catch (e2) {
-            // Keep default ngrok
+            } catch (err) {}
         }
     }
     return baseUrl;
@@ -2529,7 +2522,6 @@ async function initSolicitudesModule() {
     setupAgeValidation('fechaNacimientoCon', 'edadCon');
     setupAgeValidation('fechaNacimientoGar', 'edadGar');
     setupAgeValidation('fechaNacimientoConGar', 'edadConGar');
-
     // --- VISIBILIDAD DINÁMICA: CÓNYUGE ---
     const estadoCivilSol = document.getElementById('estadoCivilSol');
     const secConyuge = document.getElementById('sectionConyuge');
@@ -2545,6 +2537,21 @@ async function initSolicitudesModule() {
 
     estadoCivilSol?.addEventListener('change', toggleConyuge);
     toggleConyuge(); // Estado inicial
+
+    const estadoCivilGar = document.getElementById('estadoCivilGar');
+    const secConyugeGar = document.getElementById('sectionConyugeGar');
+
+    const toggleConyugeGar = () => {
+        const val = estadoCivilGar?.value.toLowerCase() || '';
+        if (val.includes('casado') || val.includes('libre')) {
+            secConyugeGar?.classList.remove('hidden');
+        } else {
+            secConyugeGar?.classList.add('hidden');
+        }
+    };
+
+    estadoCivilGar?.addEventListener('change', toggleConyugeGar);
+    toggleConyugeGar(); // Estado inicial
 
     // Filas iniciales
     if (refTableBody) {
