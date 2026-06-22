@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Form Logic - Robust with multiple possible IDs
-    const submitBtn = document.getElementById('botonEnviar') || document.getElementById('submitButton');
+    const submitBtn = document.getElementById('botonEnviar') || document.getElementById('submitButton') || document.getElementById('saveSolicitudBtn');
     const termsCheck = document.getElementById('small') || document.getElementById('terms');
     
     termsCheck?.addEventListener('change', () => {

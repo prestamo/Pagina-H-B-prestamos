@@ -300,8 +300,7 @@ function setupSubmit(form, saveBtn, tipoPrestamoSelect, fechaSolicitudInput) {
             }
             await fetch('/', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams(formData).toString()
+                body: formData
             });
         } catch (netlifyErr) {
             console.warn('Netlify submission error (email notification might fail):', netlifyErr);
@@ -518,8 +517,10 @@ function setupSubmit(form, saveBtn, tipoPrestamoSelect, fechaSolicitudInput) {
 }
 
 function hasMinor() {
-    const age = document.getElementById('edadSol')?.value;
-    return age !== '' && Number(age) < 18;
+    const ageStr = document.getElementById('edadSol')?.value;
+    if (!ageStr || ageStr.trim() === '') return true; // Block if age is not calculated
+    const age = Number(ageStr);
+    return age < 18;
 }
 
 function validateRequiredFields() {
@@ -527,6 +528,7 @@ function validateRequiredFields() {
         'identificador',
         'nombresSol',
         'apellidosSol',
+        'fechaNacimientoSol',
         'telefonoSol',
         'montoSolicitado',
         'tiempoPrestamo'
