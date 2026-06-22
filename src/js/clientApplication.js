@@ -533,17 +533,25 @@ function validateRequiredFields() {
         'montoSolicitado',
         'tiempoPrestamo'
     ];
-
+    let isValid = true;
+    let firstMissing = null;
     for (const id of requiredIds) {
         const el = document.getElementById(id);
-        if (!el || !el.value.trim()) {
-            alert('Por favor completa los campos obligatorios.');
-            el?.focus();
-            return false;
+        if (!el || !el.value || el.value.trim() === '') {
+            if (el) {
+                el.classList.add('border-red-500', 'bg-red-50');
+                if (!firstMissing) firstMissing = el;
+            }
+            isValid = false;
+        } else {
+            if (el) el.classList.remove('border-red-500', 'bg-red-50');
         }
     }
-
-    return true;
+    if (firstMissing) {
+        alert('Por favor completa los campos obligatorios.');
+        firstMissing.focus();
+    }
+    return isValid;
 }
 
 async function parseJCEDate(jceDate) {
