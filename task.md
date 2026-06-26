@@ -1,0 +1,14 @@
+- [x] Modificar `src/js/supabase.js`
+  - [x] Implementar la función `renderHeaderSinglePage` para mostrar ambas fotos y los datos del préstamo lado a lado
+  - [x] Reestructurar `renderPersonCard` y `renderSpouseInline` para que ocupen el mínimo espacio posible
+  - [x] Actualizar la distribución de referencias para renderizarlas lado a lado en dos columnas
+  - [x] Ajustar el diseño de firmas y términos legales en paralelo
+  - [x] Eliminar los saltos de página y ajustar los estilos CSS `@media print` para forzar todo en una sola página (A4/Letter)
+- [x] Incrementar el tamaño de fuente en toda la plantilla por 1px (+1px a todas las fuentes)
+- [x] Resolver errores de impresión en la administración:
+  - [x] Corregir bloqueo de ventanas emergentes (Pop-up Blocker) abriendo la ventana de forma síncrona antes del `await`
+  - [x] Evitar que la ventana de impresión se abra dos veces al imprimir/cancelar controlando la ejecución con una bandera (`isPrinted`)
+- [x] Colocar el logo de la empresa en la parte superior derecha de la cabecera compartida del préstamo
+  - [x] Asegurar que el logo use la URL absoluta pública en correos (apuntando al servidor público de GitHub como fallback)
+- [x] Ejecutar compilación y validar errores con `npm run build`
+- [x] Pruebas finales y walkthrough

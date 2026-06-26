@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración de Notificaciones | B&H ADMIN</title>
+    <link rel="icon" href="../assets/img/logob&H.jpeg">
+    <link rel="stylesheet" href="../src/css/input.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+</head>
+<body class="bg-slate-50 font-['Inter',sans-serif] text-slate-900 overflow-x-hidden">
+    <div class="min-h-screen flex flex-col md:flex-row">
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-64 bg-slate-800 text-white flex flex-col shadow-2xl z-50 min-h-screen">
+            <div class="p-6 border-b border-slate-700 flex justify-between items-center md:block">
+                <h1 class="text-xl font-bold tracking-tighter text-brand flex items-center gap-2">
+                    <img src="../assets/img/logob%26H.jpeg" alt="Logo" class="w-8 h-8 rounded-lg shadow-sm object-cover">
+                    <span>B&H <span class="text-white">ADMIN</span></span>
+                </h1>
+                <button class="md:hidden text-slate-300" onclick="document.getElementById('mobileMenu').classList.toggle('hidden')">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+            <nav id="mobileMenu" class="hidden md:flex flex-col flex-1 p-4 space-y-2">
+                <a href="/admin/index.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-chart-line"></i> <span>Dashboard</span>
+                </a>
+                <a href="/admin/banners.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-ad"></i> <span>Banners</span>
+                </a>
+                <a href="/admin/carousel.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-images"></i> <span>Carrusel</span>
+                </a>
+                <a href="/admin/promotions.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-tag"></i> <span>Promociones</span>
+                </a>
+                <a href="/admin/cuotas.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-table-list"></i> <span>Cuotas/Transparencia</span>
+                </a>
+                <a href="/admin/footer.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-shoe-prints rotate-90"></i> <span>Redes y Footer</span>
+                </a>
+                <div class="h-px bg-slate-700 my-2"></div>
+                <a href="/admin/solicitudes_list.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-list-check"></i> <span>Ver Solicitudes</span>
+                </a>
+                <a href="/admin/solicitudes.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-file-circle-plus"></i> <span>Nueva Solicitud</span>
+                </a>
+                <a href="/admin/clientes.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-users"></i> <span>Clientes</span>
+                </a>
+                <a href="/admin/email.html" class="flex items-center gap-3 p-3 rounded-xl bg-brand text-white shadow-lg">
+                    <i class="fas fa-envelope"></i> <span>Notificaciones</span>
+                </a>
+            </nav>
+            <div class="hidden md:block p-4 border-t border-slate-700">
+                <button id="logoutBtn" class="flex items-center gap-3 w-full p-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-all">
+                    <i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto bg-slate-50 p-8">
+            <header class="mb-10 max-w-6xl mx-auto w-full">
+                <h2 class="text-3xl font-black text-prime uppercase tracking-tighter">Notificaciones por Correo</h2>
+                <p class="text-slate-500 font-semibold italic">Configura tu clave de Brevo para recibir avisos de nuevas solicitudes</p>
+            </header>
+
+            <section id="emailConfig" class="max-w-6xl mx-auto">
+                <form id="emailForm" class="bg-white p-6 md:p-10 rounded-[2.5rem] shadow-xl border border-slate-100 mb-12">
+                    <div class="space-y-8 max-w-2xl">
+                        <!-- Notification toggle -->
+                        <div class="flex items-center justify-between bg-slate-50 p-6 rounded-3xl border border-slate-100">
+                            <div>
+                                <h4 class="font-bold text-slate-800">Activar Notificaciones</h4>
+                                <p class="text-xs text-slate-500 font-medium">Habilita o deshabilita el envío automático de correos cuando se reciba una solicitud.</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="emailEnabled" class="sr-only peer" checked>
+                                <div class="w-14 h-8 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-brand"></div>
+                            </label>
+                        </div>
+
+                        <!-- Brevo API Key -->
+                        <div>
+                            <label class="block text-xs font-black uppercase text-slate-500 tracking-wider mb-2">Clave API de Brevo (Sendinblue)</label>
+                            <div class="relative">
+                                <input type="password" id="brevoKey" class="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-4 pr-12 text-sm font-semibold shadow-inner focus:ring-2 focus:ring-brand focus:bg-white outline-none transition-all placeholder:text-slate-400" placeholder="xkeysib-...">
+                                <button type="button" onclick="window.toggleKeyVisibility()" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
+                                    <i id="toggleKeyIcon" class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <p class="text-[10px] text-slate-400 font-semibold mt-1">Generada en brevo.com. Permite el envío de notificaciones automáticas.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Sender Email -->
+                            <div>
+                                <label class="block text-xs font-black uppercase text-slate-500 tracking-wider mb-2">Correo Remitente (Sender)</label>
+                                <input type="email" id="senderEmail" class="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 px-4 text-sm font-semibold shadow-inner focus:ring-2 focus:ring-brand focus:bg-white outline-none transition-all" placeholder="ejemplo@outlook.com">
+                                <p class="text-[10px] text-slate-400 font-semibold mt-1">Debe ser un remitente autorizado en Brevo.</p>
+                            </div>
+
+                            <!-- Sender Name -->
+                            <div>
+                                <label class="block text-xs font-black uppercase text-slate-500 tracking-wider mb-2">Nombre Remitente</label>
+                                <input type="text" id="senderName" class="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 px-4 text-sm font-semibold shadow-inner focus:ring-2 focus:ring-brand focus:bg-white outline-none transition-all" placeholder="B&H Préstamos">
+                            </div>
+                        </div>
+
+                        <!-- Recipient Email -->
+                        <div>
+                            <label class="block text-xs font-black uppercase text-slate-500 tracking-wider mb-2">Correo Destinatario (Donde se reciben las solicitudes)</label>
+                            <input type="email" id="recipientEmail" class="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 px-4 text-sm font-semibold shadow-inner focus:ring-2 focus:ring-brand focus:bg-white outline-none transition-all" placeholder="destinatario@outlook.com">
+                            <p class="text-[10px] text-slate-400 font-semibold mt-1">Aquí es donde llegará el correo cada vez que un cliente llene el formulario.</p>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                            <button type="submit" id="saveEmailBtn" class="flex-1 bg-brand text-white font-black py-4 rounded-2xl hover:bg-cyan-600 transition-all shadow-lg shadow-brand/20 active:scale-95 flex items-center justify-center gap-2">
+                                <i class="fas fa-save text-xl"></i> <span>GUARDAR CONFIGURACIÓN</span>
+                            </button>
+                            <button type="button" id="testEmailBtn" class="bg-slate-800 text-white font-black py-4 px-8 rounded-2xl hover:bg-slate-700 transition-all active:scale-95 flex items-center justify-center gap-2">
+                                <i class="fas fa-paper-plane"></i> <span>ENVIAR CORREO DE PRUEBA</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <!-- Admin Logic -->
+    <script type="module" src="../src/js/admin.js"></script>
+</body>
+</html>

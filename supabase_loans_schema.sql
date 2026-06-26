@@ -32,14 +32,34 @@ CREATE TABLE IF NOT EXISTS loan_applications (
 ALTER TABLE clients ENABLE ROW LEVEL SECURITY;
 ALTER TABLE loan_applications ENABLE ROW LEVEL SECURITY;
 
--- 4. Políticas de Acceso (Solo Autenticados para gestión)
+-- 4. Políticas de Acceso (Gestión para Autenticados y envío público para Anónimos)
+
+-- Políticas para la tabla 'clients'
 DROP POLICY IF EXISTS "Authenticated can manage clients" ON clients;
 CREATE POLICY "Authenticated can manage clients" ON clients 
 FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
+DROP POLICY IF EXISTS "Allow anon to select clients" ON clients;
+CREATE POLICY "Allow anon to select clients" ON clients
+FOR SELECT TO anon USING (true);
+
+DROP POLICY IF EXISTS "Allow anon to insert clients" ON clients;
+CREATE POLICY "Allow anon to insert clients" ON clients
+FOR INSERT TO anon WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow anon to update clients" ON clients;
+CREATE POLICY "Allow anon to update clients" ON clients
+FOR UPDATE TO anon USING (true) WITH CHECK (true);
+
+
+-- Políticas para la tabla 'loan_applications'
 DROP POLICY IF EXISTS "Authenticated can manage applications" ON loan_applications;
 CREATE POLICY "Authenticated can manage applications" ON loan_applications 
 FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow anon to insert applications" ON loan_applications;
+CREATE POLICY "Allow anon to insert applications" ON loan_applications
+FOR INSERT TO anon WITH CHECK (true);
 
 -- 5. Índices para búsqueda rápida
 CREATE INDEX IF NOT EXISTS idx_clients_cedula ON clients(cedula);

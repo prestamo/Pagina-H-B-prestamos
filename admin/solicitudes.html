@@ -50,6 +50,9 @@
                 <a href="/admin/clientes.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
                     <i class="fas fa-users"></i> <span>Clientes</span>
                 </a>
+                <a href="/admin/email.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-700 transition-all text-slate-300">
+                    <i class="fas fa-envelope"></i> <span>Notificaciones</span>
+                </a>
             </nav>
             <div class="hidden md:block p-4 border-t border-slate-700">
                 <button id="logoutBtn" class="flex items-center gap-3 w-full p-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-all">
@@ -75,7 +78,7 @@
                 <form id="solicitudForm" class="space-y-10 pb-20">
                     <!-- Segmento 0: Datos del Préstamo (Encabezado) -->
                     <div class="bg-white p-8 rounded-[2rem] shadow-xl border border-slate-100 border-t-8 border-t-slate-800">
-                        <div class="grid grid-cols-1 md:grid-cols-6 gap-6">
+                        <div class="grid grid-cols-1 md:grid-cols-7 gap-6">
                             <div>
                                 <label class="block text-[10px] font-black uppercase mb-2 text-slate-400 tracking-widest">Tipo de Préstamo</label>
                                 <select id="tipoPrestamo" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-black text-brand outline-none focus:ring-2 focus:ring-brand">
@@ -94,7 +97,16 @@
                                 <input type="text" id="montoSolicitado" class="mask-currency w-full p-5 bg-slate-50 border-2 border-slate-100 rounded-[2rem] font-black text-2xl text-prime focus:border-brand outline-none shadow-inner" placeholder="0.00">
                             </div>
                             <div>
-                                <label class="block text-[10px] font-black uppercase mb-2 text-slate-400 tracking-widest">Tiempo (Meses)</label>
+                                <label class="block text-[10px] font-black uppercase mb-2 text-slate-400 tracking-widest">Frecuencia de Pago</label>
+                                <select id="frecuenciaPago" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-black text-brand outline-none focus:ring-2 focus:ring-brand">
+                                    <option value="mensual" selected>Mensual</option>
+                                    <option value="quincenal">Quincenal</option>
+                                    <option value="semanal">Semanal</option>
+                                    <option value="diario">Diario</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label id="labelTiempoPrestamo" class="block text-[10px] font-black uppercase mb-2 text-slate-400 tracking-widest">Tiempo (Meses)</label>
                                 <input type="number" id="tiempoPrestamo" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold" placeholder="Ej: 12">
                             </div>
                             <div>

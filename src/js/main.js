@@ -291,9 +291,10 @@ async function loadDynamicContent() {
         if (promoSection) {
             const { data: promos } = await window.supabase.from('promotions').select('*').order('created_at', { ascending: false });
             console.log("Promociones cargadas:", promos);
-            if (promos && promos.length > 0) {
+            const filteredPromos = (promos || []).filter(p => !p.title || !p.title.startsWith('CONFIG_'));
+            if (filteredPromos.length > 0) {
                 let htmlOut = '';
-                promos.forEach((promo) => {
+                filteredPromos.forEach((promo) => {
                     let pData = null;
                     try { pData = JSON.parse(promo.description); } catch(e){}
                     

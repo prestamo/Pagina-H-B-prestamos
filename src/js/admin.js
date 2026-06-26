@@ -1,4 +1,4 @@
-import { supabase } from './supabase.js';
+import { supabase, sendBrevoNotification, sendBrevoTestEmail, generateLoanApplicationHtml } from './supabase.js';
 import { getRequiredImageCount, renderAdvancedPromo } from './promoRenderer.js';
 
 // Elementos del DOM
@@ -28,8 +28,14 @@ if (loginForm) {
                 throw error;
             }
 
-            // Exito -> Redirigir al dashboard
-            window.location.href = './index.html';
+            // Exito -> Redirigir al dashboard o a la solicitud a imprimir
+            const urlParams = new URLSearchParams(window.location.search);
+            const printId = urlParams.get('print');
+            if (printId) {
+                window.location.href = './solicitudes_list.html?print=' + printId;
+            } else {
+                window.location.href = './index.html';
+            }
 
         } catch (err) {
             console.error('Error de login:', err.message);
@@ -48,7 +54,7 @@ if (loginForm) {
 export const checkSession = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
-        window.location.href = './login.html';
+        window.location.href = './login.html' + window.location.search;
         return null;
     }
     return session;
@@ -63,7 +69,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Protección de Ruta & Sesión
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) {
-            window.location.href = './login.html';
+            window.location.href = './login.html' + window.location.search;
             return;
         }
 
@@ -106,6 +112,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             initSolicitudesModule();
         } else if (page === 'clientes') {
             initClientesModule();
+        } else if (page === 'email') {
+            initEmailConfigModule();
         } else if (page === 'index' || page === 'dashboard') {
             if (typeof initStats === 'function') initStats();
             else if (typeof initAnalytics === 'function') initAnalytics();
@@ -1151,12 +1159,14 @@ async function initPromotionsModule() {
         promoList.innerHTML = '<p class="text-slate-400 italic font-bold">Autenticando datos de Supabase...</p>';
         const { data: promos } = await supabase.from('promotions').select('*').order('created_at', { ascending: false });
         
-        if (!promos || promos.length === 0) {
+        const filteredPromos = (promos || []).filter(p => !p.title || !p.title.startsWith('CONFIG_'));
+        
+        if (filteredPromos.length === 0) {
             promoList.innerHTML = '<div class="p-8 border-2 border-dashed border-slate-200 rounded-3xl text-center"><p class="text-slate-400 italic">No tienes bloques de promoción. ¡Crea el primero arriba!</p></div>';
             return;
         }
 
-        promoList.innerHTML = promos.map(promo => {
+        promoList.innerHTML = filteredPromos.map(promo => {
             let layoutInfo = "Texto Simple (Clásico)";
             let parsedData = null;
             let bgColor = "#ffffff";
@@ -2271,6 +2281,20 @@ async function initSolicitudesModule() {
         fechaSolicitudInput.value = `${yyyy}-${mm}-${dd}`;
     }
 
+    const frecuenciaPagoSelect = document.getElementById('frecuenciaPago');
+    const labelTiempoPrestamo = document.getElementById('labelTiempoPrestamo');
+    if (frecuenciaPagoSelect && labelTiempoPrestamo) {
+        const updateLabel = () => {
+            const val = frecuenciaPagoSelect.value;
+            if (val === 'diario') labelTiempoPrestamo.textContent = 'Tiempo (Días)';
+            else if (val === 'semanal') labelTiempoPrestamo.textContent = 'Tiempo (Semanas)';
+            else if (val === 'quincenal') labelTiempoPrestamo.textContent = 'Tiempo (Quincenas)';
+            else labelTiempoPrestamo.textContent = 'Tiempo (Meses)';
+        };
+        frecuenciaPagoSelect.addEventListener('change', updateLabel);
+        updateLabel();
+    }
+
     // --- INTEGRACIÓN CON LA API DE LA JCE ---
     const setupJceLookup = (btnId, inputCedulaId, prefix) => {
         const btn = document.getElementById(btnId);
@@ -2596,6 +2620,7 @@ async function initSolicitudesModule() {
             const fullData = {
                 tipoPrestamo: type,
                 fechaSolicitud: document.getElementById('fechaSolicitud').value,
+                frecuenciaPago: document.getElementById('frecuenciaPago') ? document.getElementById('frecuenciaPago').value : 'mensual',
                 evaluador: document.getElementById('evaluador') ? document.getElementById('evaluador').value : 'jose.grullat',
                 solicitante: {
                     nombres: document.getElementById('nombresSol').value,
@@ -2736,24 +2761,59 @@ async function initSolicitudesModule() {
                 };
             }
 
-            // 5. Guardar Solicitud
+            // 5. Guardar o Actualizar Solicitud
             const cleanNum = (str) => parseFloat(String(str).replace(/,/g, '')) || 0;
+            const editId = new URLSearchParams(window.location.search).get('edit');
 
-            const { error: sErr } = await supabase.from('loan_applications').insert([{
-                client_id: clientId,
-                loan_type: type,
-                applicant_name: full_name,
-                applicant_cedula: cedula,
-                monto: cleanNum(document.getElementById('montoSolicitado').value),
-                tiempo: parseInt(document.getElementById('tiempoPrestamo').value) || 0,
-                cuota: cleanNum(document.getElementById('cuotaPrestamo').value),
-                status: 'Pendiente',
-                data: fullData
-            }]);
+            let queryPromise;
+            if (editId) {
+                queryPromise = supabase.from('loan_applications').update({
+                    loan_type: type,
+                    applicant_name: full_name,
+                    applicant_cedula: cedula,
+                    monto: cleanNum(document.getElementById('montoSolicitado').value),
+                    tiempo: parseInt(document.getElementById('tiempoPrestamo').value) || 0,
+                    cuota: cleanNum(document.getElementById('cuotaPrestamo').value),
+                    data: fullData
+                }).eq('id', editId).select();
+            } else {
+                queryPromise = supabase.from('loan_applications').insert([{
+                    client_id: clientId,
+                    loan_type: type,
+                    applicant_name: full_name,
+                    applicant_cedula: cedula,
+                    monto: cleanNum(document.getElementById('montoSolicitado').value),
+                    tiempo: parseInt(document.getElementById('tiempoPrestamo').value) || 0,
+                    cuota: cleanNum(document.getElementById('cuotaPrestamo').value),
+                    status: 'Pendiente',
+                    data: fullData
+                }]).select();
+            }
+
+            const { data: resultData, error: sErr } = await queryPromise;
 
             if (sErr) throw sErr;
-            alert('¡Solicitud guardada con éxito!');
-            window.location.href = 'clientes.html';
+            const insertedId = resultData && resultData[0] ? resultData[0].id : null;
+
+            // Enviar notificación por correo solo para solicitudes nuevas
+            if (!editId) {
+                try {
+                    sendBrevoNotification(
+                        cleanNum(document.getElementById('montoSolicitado').value),
+                        parseInt(document.getElementById('tiempoPrestamo').value) || 0,
+                        cleanNum(document.getElementById('cuotaPrestamo').value),
+                        type,
+                        full_name,
+                        cedula,
+                        { ...fullData, id: insertedId }
+                    );
+                } catch (emailErr) {
+                    console.warn('Error al enviar notificación de correo:', emailErr);
+                }
+            }
+
+            alert(editId ? '¡Solicitud actualizada con éxito!' : '¡Solicitud guardada con éxito!');
+            window.location.href = editId ? 'solicitudes_list.html' : 'clientes.html';
         } catch (err) {
             console.error(err);
             alert('Error al guardar: ' + err.message);
@@ -2762,6 +2822,282 @@ async function initSolicitudesModule() {
             saveBtn.innerHTML = '<i class="fas fa-save text-xl"></i> GUARDAR SOLICITUD';
         }
     });
+
+    // --- LÓGICA DE CARGA EN MODO EDICIÓN ---
+    const loadEditData = async () => {
+        const editId = new URLSearchParams(window.location.search).get('edit');
+        if (!editId) return;
+
+        try {
+            // Cambiar textos del UI a Modo Edición
+            const titleEl = document.querySelector('main header h2');
+            if (titleEl) titleEl.textContent = 'Editar Solicitud de Crédito';
+            const subtitleEl = document.querySelector('main header p');
+            if (subtitleEl) subtitleEl.textContent = 'Edición de expediente crediticio existente';
+
+            const saveBtn = document.getElementById('saveSolicitudBtn');
+            if (saveBtn) {
+                saveBtn.innerHTML = '<i class="fas fa-save text-xl"></i> ACTUALIZAR SOLICITUD';
+            }
+
+            // Consultar datos de la solicitud
+            const { data: s, error } = await supabase
+                .from('loan_applications')
+                .select('*')
+                .eq('id', editId)
+                .maybeSingle();
+
+            if (error) throw error;
+            if (!s) {
+                alert('No se encontró la solicitud especificada.');
+                return;
+            }
+
+            const d = s.data || {};
+            
+            // Solicitud No
+            if (solicitudNoEl) {
+                solicitudNoEl.textContent = String(s.id).split('-')[0].toUpperCase();
+            }
+
+            // Datos Generales
+            if (tipoPrestamoSelect) {
+                tipoPrestamoSelect.value = s.loan_type || d.tipoPrestamo || 'personal';
+                toggleLoanSections(tipoPrestamoSelect.value);
+            }
+            if (frecuenciaPagoSelect) {
+                frecuenciaPagoSelect.value = d.frecuenciaPago || 'mensual';
+                frecuenciaPagoSelect.dispatchEvent(new Event('change'));
+            }
+            const evaluadorInput = document.getElementById('evaluador');
+            if (evaluadorInput) evaluadorInput.value = d.evaluador || 'jose.grullat';
+
+            const montoSolicitadoInput = document.getElementById('montoSolicitado');
+            if (montoSolicitadoInput) montoSolicitadoInput.value = Number(s.monto || 0).toLocaleString();
+            
+            const tiempoPrestamoInput = document.getElementById('tiempoPrestamo');
+            if (tiempoPrestamoInput) tiempoPrestamoInput.value = s.tiempo || '';
+
+            const cuotaPrestamoInput = document.getElementById('cuotaPrestamo');
+            if (cuotaPrestamoInput) cuotaPrestamoInput.value = Number(d.cuota || s.cuota || 0).toLocaleString();
+
+            const fechaSolicitudInput = document.getElementById('fechaSolicitud');
+            if (fechaSolicitudInput) {
+                fechaSolicitudInput.value = d.fechaSolicitud || (s.created_at ? s.created_at.split('T')[0] : '');
+            }
+
+            // 1. Solicitante
+            const sol = d.solicitante || {};
+            const setVal = (id, val) => {
+                const el = document.getElementById(id);
+                if (el) el.value = val || '';
+            };
+            setVal('identificador', s.applicant_cedula || sol.identificador);
+            setVal('nombresSol', sol.nombres);
+            setVal('apellidosSol', sol.apellidos);
+            setVal('fotoUrlSol', sol.fotoUrl);
+            setVal('apodoSol', sol.apodo);
+            setVal('estadoCivilSol', sol.estadoCivil);
+            setVal('fechaNacimientoSol', sol.fechaNacimiento);
+            setVal('telefonoSol', sol.telefono);
+            setVal('edadSol', sol.edad);
+            setVal('dependientesSol', sol.dependientes);
+            setVal('sexoSol', sol.sexo);
+            setVal('profesionSol', sol.profesion);
+            setVal('vehiculoSol', sol.vehiculo);
+            setVal('sectorSol', sol.sector);
+            setVal('ciudadSol', sol.ciudad);
+            setVal('direccionSol', sol.direccion);
+            setVal('ocupacionesSol', sol.ocupaciones);
+            setVal('trabajoSol', sol.trabajo);
+            setVal('cargoSol', sol.cargo);
+            setVal('direccionTrabajoSol', sol.direccionTrabajo);
+            setVal('superiorSol', sol.superior);
+            setVal('telTrabajoSol', sol.telTrabajo);
+            setVal('tiempoTrabajoSol', sol.tiempoTrabajo);
+            setVal('ingresosSol', sol.ingresos);
+            setVal('otrosIngresosSol', sol.otrosIngresos);
+            setVal('tipoCasaSol', sol.tipoCasa);
+            setVal('destinoCredito', sol.destino);
+
+            if (document.getElementById('chkClienteSol')) {
+                document.getElementById('chkClienteSol').checked = sol.chkCliente !== false;
+            }
+            if (document.getElementById('chkEmpleadoSol')) {
+                document.getElementById('chkEmpleadoSol').checked = !!sol.chkEmpleado;
+            }
+            if (document.getElementById('chkFuncionarioSol')) {
+                document.getElementById('chkFuncionarioSol').checked = !!sol.chkFuncionario;
+            }
+            if (document.getElementById('chkAccionistaSol')) {
+                document.getElementById('chkAccionistaSol').checked = !!sol.chkAccionista;
+            }
+
+            // Foto Solicitante Preview
+            const fotoUrlSol = sol.fotoUrl || '';
+            const fotoImgSol = document.getElementById('solicitanteFoto');
+            const fotoPlaceholderSol = document.getElementById('solicitanteFotoPlaceholder');
+            if (fotoImgSol && fotoUrlSol) {
+                fotoImgSol.src = fotoUrlSol;
+                fotoImgSol.classList.remove('hidden');
+                if (fotoPlaceholderSol) fotoPlaceholderSol.classList.add('hidden');
+            }
+
+            // Disparar cambio en estado civil de solicitante para abrir sección cónyuge si procede
+            const estadoCivilSolEl = document.getElementById('estadoCivilSol');
+            if (estadoCivilSolEl) estadoCivilSolEl.dispatchEvent(new Event('change'));
+
+            // 2. Cónyuge
+            const con = d.conyuge || {};
+            setVal('nombresCon', con.nombres);
+            setVal('apellidosCon', con.apellidos);
+            setVal('fechaNacimientoCon', con.fechaNacimiento);
+            setVal('edadCon', con.edad);
+            setVal('apodoCon', con.apodo);
+            setVal('estadoCivilCon', con.estadoCivil);
+            setVal('telefonoCon', con.telefono);
+            setVal('ocupacionCon', con.ocupacion);
+            setVal('trabajoCon', con.trabajo);
+            setVal('sectorCon', con.sector);
+            setVal('direccionCon', con.direccion);
+            setVal('superiorCon', con.superior);
+            setVal('telTrabajoCon', con.telTrabajo);
+            setVal('tiempoTrabajoCon', con.tiempoTrabajo);
+            setVal('ingresosCon', con.ingresos);
+
+            // 3. Referencias
+            if (refTableBody) {
+                refTableBody.innerHTML = '';
+                const referencias = d.referencias || [];
+                if (referencias.length > 0) {
+                    referencias.forEach(ref => {
+                        window.addReferenciaRow(ref);
+                    });
+                } else {
+                    window.addReferenciaRow();
+                    window.addReferenciaRow();
+                }
+            }
+
+            // 4. Garante (si procede)
+            if (d.garante) {
+                const gar = d.garante || {};
+                setVal('identificadorGar', gar.identificador);
+                setVal('nombresGar', gar.nombres);
+                setVal('apellidosGar', gar.apellidos);
+                setVal('fotoUrlGar', gar.fotoUrl);
+                setVal('apodoGar', gar.apodo);
+                setVal('estadoCivilGar', gar.estadoCivil);
+                setVal('fechaNacimientoGar', gar.fechaNacimiento);
+                setVal('edadGar', gar.edad);
+                setVal('telefonoGar', gar.telefono);
+                setVal('sectorGar', gar.sector);
+                setVal('ciudadGar', gar.ciudad);
+                setVal('direccionGar', gar.direccion);
+                setVal('ocupacionesGar', gar.ocupaciones);
+                setVal('trabajoGar', gar.trabajo);
+                setVal('cargoGar', gar.cargo);
+                setVal('direccionTrabajoGar', gar.direccionTrabajo);
+                setVal('superiorGar', gar.superior);
+                setVal('telTrabajoGar', gar.telTrabajo);
+                setVal('tiempoTrabajoGar', gar.tiempoTrabajo);
+                setVal('ingresosGar', gar.ingresos);
+                setVal('otrosIngresosGar', gar.otrosIngresos);
+                setVal('tipoCasaGar', gar.tipoCasa);
+                setVal('destinoGar', gar.destino);
+
+                if (document.getElementById('chkClienteGar')) {
+                    document.getElementById('chkClienteGar').checked = !!gar.chkCliente;
+                }
+                if (document.getElementById('chkEmpleadoGar')) {
+                    document.getElementById('chkEmpleadoGar').checked = gar.chkEmpleado !== false;
+                }
+                if (document.getElementById('chkFuncionarioGar')) {
+                    document.getElementById('chkFuncionarioGar').checked = !!gar.chkFuncionario;
+                }
+                if (document.getElementById('chkAccionistaGar')) {
+                    document.getElementById('chkAccionistaGar').checked = !!gar.chkAccionista;
+                }
+
+                // Foto Garante Preview
+                const fotoUrlGar = gar.fotoUrl || '';
+                const fotoImgGar = document.getElementById('garanteFoto');
+                const fotoPlaceholderGar = document.getElementById('garanteFotoPlaceholder');
+                if (fotoImgGar && fotoUrlGar) {
+                    fotoImgGar.src = fotoUrlGar;
+                    fotoImgGar.classList.remove('hidden');
+                    if (fotoPlaceholderGar) fotoPlaceholderGar.classList.add('hidden');
+                }
+
+                const estadoCivilGarEl = document.getElementById('estadoCivilGar');
+                if (estadoCivilGarEl) estadoCivilGarEl.dispatchEvent(new Event('change'));
+
+                // Cónyuge del garante
+                const conGar = gar.conyuge || {};
+                setVal('nombresConGar', conGar.nombres);
+                setVal('apellidosConGar', conGar.apellidos);
+                setVal('fechaNacimientoConGar', conGar.fechaNacimiento);
+                setVal('edadConGar', conGar.edad);
+                setVal('telefonoConGar', conGar.telefono);
+                setVal('ocupacionConGar', conGar.ocupacion);
+                setVal('trabajoConGar', conGar.trabajo);
+                setVal('sectorConGar', conGar.sector);
+                setVal('direccionConGar', conGar.direccion);
+                setVal('superiorConGar', conGar.superior);
+                setVal('telTrabajoConGar', conGar.telTrabajo);
+                setVal('tiempoTrabajoConGar', conGar.tiempoTrabajo);
+                setVal('ingresosConGar', conGar.ingresos);
+            }
+
+            // 5. Garantía Hipotecaria (si procede)
+            if (d.garantiaHipotecaria) {
+                const hipo = d.garantiaHipotecaria || {};
+                setVal('propHipo', hipo.propietario);
+                setVal('distHipo', hipo.distritoCatastral);
+                setVal('fechaHipo', hipo.fechaExpedicion);
+                setVal('libroHipo', hipo.libro);
+                setVal('folioHipo', hipo.folio);
+                setVal('provHipo', hipo.provincia);
+                setVal('ciudadHipo', hipo.ciudad);
+                setVal('parcelaHipo', hipo.parcela);
+                setVal('areaHipo', hipo.area);
+                setVal('cedulaHipo', hipo.cedulaRNC);
+                setVal('tituloHipo', hipo.certificadoTitulo);
+                setVal('dirHipo', hipo.direccion);
+                setVal('descHipo', hipo.descripcion);
+            }
+
+            // 6. Garantía Vehículo (si procede)
+            if (d.garantiaVehiculo) {
+                const veh = d.garantiaVehiculo || {};
+                setVal('razonVeh', veh.razonSocial);
+                setVal('placaVeh', veh.placa);
+                setVal('fechaVeh', veh.fechaExpedicion);
+                setVal('chasisVeh', veh.chasis);
+                setVal('estatusVeh', veh.estatus);
+                setVal('emisionVeh', veh.emision);
+                setVal('matriculaVeh', veh.matricula);
+                setVal('fuerzaVeh', veh.fuerza);
+                setVal('cilindrosVeh', veh.cilindros);
+                setVal('cedulaPropVeh', veh.cedulaProp);
+                setVal('tipoVeh', veh.tipo);
+                setVal('marcaVeh', veh.marca);
+                setVal('modeloVeh', veh.modelo);
+                setVal('anioVeh', veh.anio);
+                setVal('colorVeh', veh.color);
+                setVal('motorVeh', veh.motorSerie);
+                setVal('pasajerosVeh', veh.pasajeros);
+                setVal('capCargaVeh', veh.capCarga);
+                setVal('puertasVeh', veh.puertas);
+            }
+
+        } catch (err) {
+            console.error('Error al cargar datos en modo edición:', err);
+            alert('Error al cargar la solicitud en modo edición: ' + err.message);
+        }
+    };
+
+    loadEditData();
 }
 
 // --- MÓDULO DE CLIENTES ---
@@ -2804,6 +3140,7 @@ async function initClientesModule() {
                     </td>
                     <td class="p-6 text-right">
                         <div class="flex justify-end gap-1.5">
+                            <button onclick="window.deleteClient('${c.id}')" class="px-2.5 py-1 bg-rose-50 text-rose-600 rounded-lg text-[10px] font-black border border-rose-100 hover:bg-rose-600 hover:text-white transition-all uppercase tracking-tighter" title="Eliminar Cliente">Borrar</button>
                             <button onclick="window.openLatestSolicitudForCliente('${c.id}', 'cliente_garante')" class="px-2.5 py-1 bg-sky-50 text-sky-600 rounded-lg text-[10px] font-black border border-sky-100 hover:bg-sky-600 hover:text-white transition-all uppercase tracking-tighter" title="Cliente y Garantía">Cli + Gar</button>
                             <button onclick="window.openLatestSolicitudForCliente('${c.id}', 'cliente_conyuge')" class="px-2.5 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-black border border-emerald-100 hover:bg-emerald-600 hover:text-white transition-all uppercase tracking-tighter" title="Datos Cliente y Cónyuge">Dat Cli</button>
                             <button onclick="window.openLatestSolicitudForCliente('${c.id}', 'garante_conyuge')" class="px-2.5 py-1 bg-indigo-50 text-indigo-600 rounded-lg text-[10px] font-black border border-indigo-100 hover:bg-indigo-600 hover:text-white transition-all uppercase tracking-tighter" title="Datos Garante y Cónyuge">Dat Gar</button>
@@ -2899,7 +3236,16 @@ async function initSolicitudesListModule() {
                         </td>
                         <td class="p-6 text-right">
                             <div class="flex justify-end gap-1.5 items-center">
-                                <button onclick="window.printSolicitud('${s.id}')" class="p-2.5 bg-slate-100 text-slate-500 hover:bg-brand hover:text-white rounded-xl transition-all shadow-sm" title="Imprimir Formulario Directo">
+                                <button onclick="window.editSolicitud('${s.id}')" class="p-2.5 bg-slate-100 text-slate-500 hover:bg-amber-600 hover:text-white rounded-xl transition-all shadow-sm" title="Editar Solicitud">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button onclick="window.deleteSolicitud('${s.id}')" class="p-2.5 bg-slate-100 text-slate-500 hover:bg-rose-600 hover:text-white rounded-xl transition-all shadow-sm" title="Eliminar Solicitud">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                                <button onclick="window.printEmailTemplate('${s.id}')" class="p-2.5 bg-slate-100 text-slate-500 hover:bg-amber-500 hover:text-white rounded-xl transition-all shadow-sm" title="Imprimir Formato Correo (Organizado)">
+                                    <i class="fas fa-envelope"></i>
+                                </button>
+                                <button onclick="window.printSolicitud('${s.id}')" class="p-2.5 bg-slate-100 text-slate-500 hover:bg-brand hover:text-white rounded-xl transition-all shadow-sm" title="Imprimir Expediente Retro">
                                     <i class="fas fa-print"></i>
                                 </button>
                                 <button onclick="window.exportToWord('${s.id}')" class="p-2.5 bg-slate-100 text-slate-500 hover:bg-emerald-600 hover:text-white rounded-xl transition-all shadow-sm" title="Descargar Word">
@@ -2931,8 +3277,45 @@ async function initSolicitudesListModule() {
         });
     });
 
-    loadSolicitudes();
+    await loadSolicitudes();
+
+    // Comprobar si hay un ID de solicitud a imprimir automáticamente en la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const printId = urlParams.get('print');
+    if (printId) {
+        window.printSolicitud(printId);
+    }
 }
+
+window.editSolicitud = (id) => {
+    window.location.href = `./solicitudes.html?edit=${id}`;
+};
+
+window.deleteSolicitud = async (id) => {
+    if (!confirm('¿Estás seguro de eliminar esta solicitud de préstamo de forma permanente?')) return;
+    try {
+        const { error } = await supabase.from('loan_applications').delete().eq('id', id);
+        if (error) throw error;
+        alert('¡Solicitud eliminada con éxito!');
+        window.location.reload();
+    } catch (err) {
+        console.error(err);
+        alert('Error al eliminar la solicitud: ' + err.message);
+    }
+};
+
+window.deleteClient = async (id) => {
+    if (!confirm('¿Estás seguro de eliminar este cliente? Se eliminarán también todas sus solicitudes de préstamo asociadas de forma permanente.')) return;
+    try {
+        const { error } = await supabase.from('clients').delete().eq('id', id);
+        if (error) throw error;
+        alert('¡Cliente eliminado con éxito!');
+        window.location.reload();
+    } catch (err) {
+        console.error(err);
+        alert('Error al eliminar el cliente: ' + err.message);
+    }
+};
 
 /**
  * --- SISTEMA DE IMPRESIÓN DE ALTA FIDELIDAD ---
@@ -2955,19 +3338,311 @@ window.printSolicitud = async (id) => {
     window.openSolicitudRetro(id, 'cliente_garante', true);
 };
 
-window.openSolicitudRetro = async (id, mode = 'cliente_garante', autoPrint = false) => {
-    const { data: s, error } = await supabase.from('loan_applications')
-        .select('*, clients(*)')
-        .eq('id', id)
-        .single();
-    
-    if (error || !s) {
-        alert('Error al cargar la solicitud');
+window.printEmailTemplate = async (id) => {
+    // Abrir la ventana inmediatamente para evitar que el navegador bloquee la ventana emergente
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+        alert('Por favor permite las ventanas emergentes (pop-ups) para abrir la versión de impresión.');
         return;
+    }
+    
+    // Escribir un mensaje temporal de carga en la nueva ventana
+    printWindow.document.write('<html><head><title>Cargando...</title></head><body style="font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; color: #64748b; background-color: #f1f5f9;"><div><h2 style="font-weight: 600;">Cargando plantilla de impresión...</h2></div></body></html>');
+    printWindow.document.close();
+
+    let s;
+    if (id === 'prueba') {
+        s = {
+            id: 'prueba',
+            loan_type: 'garante',
+            created_at: new Date().toISOString(),
+            tiempo: 12,
+            monto: 150000,
+            cuota: 15000,
+            applicant_name: "GRISMELDY OSKARINA",
+            applicant_cedula: "402-0916423-1",
+            data: {
+                solicitante: {
+                    nombres: "GRISMELDY OSKARINA",
+                    apellidos: "EVANGELISTA DE AMADOR",
+                    apodo: "GRISMELDY",
+                    identificador: "402-0916423-1",
+                    fotoUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=180&fit=crop&q=80",
+                    estadoCivil: "Casado(a)",
+                    fechaNacimiento: "24/11/2001",
+                    telefono: "809-803-1215",
+                    edad: "24",
+                    dependientes: "2",
+                    sexo: "Femenino",
+                    profesion: "Estilista",
+                    vehiculo: "No",
+                    sector: "Sabaneta",
+                    ciudad: "La Vega",
+                    direccion: "Calle Principal No. 55 antes del Colmado Matica",
+                    ocupaciones: "Estilista / Colorista",
+                    trabajo: "Salón de Belleza La Moda",
+                    cargo: "Administradora / Estilista Principal",
+                    direccionTrabajo: "Av. Pedro A. Rivera #12, La Vega",
+                    superior: "Yanna Núñez",
+                    telTrabajo: "809-573-0000",
+                    tiempoTrabajo: "3 Años",
+                    ingresos: "25000",
+                    otrosIngresos: "5000",
+                    tipoCasa: "Alquilada",
+                    destino: "Capital de trabajo para salón",
+                    chkCliente: true,
+                    chkEmpleado: false,
+                    chkFuncionario: false,
+                    chkAccionista: false
+                },
+                conyuge: {
+                    nombres: "WASCAR RAFAEL",
+                    apellidos: "EVANGELISTA PEGUERO",
+                    fechaNacimiento: "15/05/2000",
+                    edad: "25",
+                    apodo: "Wascar",
+                    estadoCivil: "Casado(a)",
+                    telefono: "829-808-5760",
+                    ocupacion: "Mecánico",
+                    trabajo: "Auto Repuestos La Vega",
+                    sector: "Sabaneta",
+                    direccion: "Calle Principal No. 55",
+                    superior: "Juan Pérez",
+                    telTrabajo: "829-555-1234",
+                    tiempoTrabajo: "5 Años",
+                    ingresos: "30000"
+                },
+                garante: {
+                    identificador: "047-0139257-5",
+                    nombres: "WASCAR RAFAEL",
+                    apellidos: "EVANGELISTA PEGUERO",
+                    fotoUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=180&fit=crop&q=80",
+                    apodo: "Wascar",
+                    estadoCivil: "Casado(a)",
+                    fechaNacimiento: "15/05/2000",
+                    edad: "25",
+                    telefono: "829-808-5760",
+                    sector: "Sabaneta",
+                    ciudad: "La Vega",
+                    direccion: "Calle Principal, Villa Paraíso frente a la Agroquímica Morill",
+                    ocupaciones: "Mecánico de Vehículos",
+                    trabajo: "Auto Repuestos La Vega",
+                    cargo: "Técnico Mecánico",
+                    direccionTrabajo: "Av. Pedro Rivera #45, La Vega",
+                    superior: "José Gómez",
+                    telTrabajo: "829-660-8236",
+                    tiempoTrabajo: "5 Años",
+                    ingresos: "30000",
+                    otrosIngresos: "0",
+                    tipoCasa: "Propia",
+                    destino: "Garantía de préstamo personal",
+                    chkCliente: false,
+                    chkEmpleado: true,
+                    chkFuncionario: false,
+                    chkAccionista: false,
+                    conyuge: {
+                        nombres: "GRISMELDY OSKARINA",
+                        apellidos: "EVANGELISTA DE AMADOR",
+                        fechaNacimiento: "24/11/2001",
+                        edad: "24",
+                        apodo: "GRISMELDY",
+                        estadoCivil: "Casado(a)",
+                        telefono: "809-803-1215",
+                        ocupacion: "Estilista",
+                        trabajo: "Salón de Belleza La Moda",
+                        sector: "Sabaneta",
+                        direccion: "Calle Principal No. 55 antes del Colmado Matica",
+                        superior: "Yanna Núñez",
+                        telTrabajo: "809-573-0000",
+                        tiempoTrabajo: "3 Años",
+                        ingresos: "25000"
+                    }
+                }
+            }
+        };
+    } else {
+        try {
+            const { data: realS, error } = await supabase.from('loan_applications')
+                .select('*, clients(*)')
+                .eq('id', id)
+                .single();
+            
+            if (error || !realS) {
+                printWindow.close();
+                alert('Error al cargar la solicitud');
+                return;
+            }
+            s = realS;
+        } catch (err) {
+            printWindow.close();
+            alert('Error de conexión al cargar la solicitud');
+            return;
+        }
+    }
+
+    const d = s.data || {};
+    d.id = s.id || id;
+
+    // Obtener logo de la empresa para la plantilla de impresión
+    try {
+        const { data: iconData } = await supabase.from('site_settings').select('value').eq('key', 'portal_icon').single();
+        if (iconData && iconData.value) {
+            d.portalLogo = iconData.value;
+        }
+    } catch (logoErr) {
+        console.error('Error fetching portal logo for print:', logoErr);
+    }
+
+    const htmlContent = generateLoanApplicationHtml(
+        false, 
+        s.applicant_name, 
+        s.applicant_cedula, 
+        s.loan_type, 
+        s.monto, 
+        s.tiempo, 
+        s.cuota, 
+        d
+    );
+
+    // Escribir el contenido real en la ventana que ya estaba abierta
+    printWindow.document.open();
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
+    
+    // Evitar que la ventana emergente imprima dos veces usando una bandera
+    let isPrinted = false;
+    const triggerPrint = () => {
+        if (isPrinted) return;
+        isPrinted = true;
+        printWindow.print();
+    };
+    
+    printWindow.onload = triggerPrint;
+    // Fallback por si onload no se dispara en algunos motores de navegador
+    setTimeout(triggerPrint, 1500);
+};
+
+window.openSolicitudRetro = async (id, mode = 'cliente_garante', autoPrint = false) => {
+    let s;
+    if (id === 'prueba') {
+        s = {
+            loan_type: 'garante',
+            created_at: new Date().toISOString(),
+            tiempo: 12,
+            data: {
+                solicitante: {
+                    nombres: "GRISMELDY OSKARINA",
+                    apellidos: "EVANGELISTA DE AMADOR",
+                    apodo: "GRISMELDY",
+                    identificador: "402-0916423-1",
+                    fotoUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=180&fit=crop&q=80",
+                    estadoCivil: "Casado(a)",
+                    fechaNacimiento: "24/11/2001",
+                    telefono: "809-803-1215",
+                    edad: "24",
+                    dependientes: "2",
+                    sexo: "Femenino",
+                    profesion: "Estilista",
+                    vehiculo: "No",
+                    sector: "Sabaneta",
+                    ciudad: "La Vega",
+                    direccion: "Calle Principal No. 55 antes del Colmado Matica",
+                    ocupaciones: "Estilista / Colorista",
+                    trabajo: "Salón de Belleza La Moda",
+                    cargo: "Administradora / Estilista Principal",
+                    direccionTrabajo: "Av. Pedro A. Rivera #12, La Vega",
+                    superior: "Yanna Núñez",
+                    telTrabajo: "809-573-0000",
+                    tiempoTrabajo: "3 Años",
+                    ingresos: "25000",
+                    otrosIngresos: "5000",
+                    tipoCasa: "Alquilada",
+                    destino: "Capital de trabajo para salón",
+                    chkCliente: true,
+                    chkEmpleado: false,
+                    chkFuncionario: false,
+                    chkAccionista: false
+                },
+                conyuge: {
+                    nombres: "WASCAR RAFAEL",
+                    apellidos: "EVANGELISTA PEGUERO",
+                    fechaNacimiento: "15/05/2000",
+                    edad: "25",
+                    apodo: "Wascar",
+                    estadoCivil: "Casado(a)",
+                    telefono: "829-808-5760",
+                    ocupacion: "Mecánico",
+                    trabajo: "Auto Repuestos La Vega",
+                    sector: "Sabaneta",
+                    direccion: "Calle Principal No. 55",
+                    superior: "Juan Pérez",
+                    telTrabajo: "829-555-1234",
+                    tiempoTrabajo: "5 Años",
+                    ingresos: "30000"
+                },
+                garante: {
+                    identificador: "047-0139257-5",
+                    nombres: "WASCAR RAFAEL",
+                    apellidos: "EVANGELISTA PEGUERO",
+                    fotoUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=180&fit=crop&q=80",
+                    apodo: "Wascar",
+                    estadoCivil: "Casado(a)",
+                    fechaNacimiento: "15/05/2000",
+                    edad: "25",
+                    telefono: "829-808-5760",
+                    sector: "Sabaneta",
+                    ciudad: "La Vega",
+                    direccion: "Calle Principal, Villa Paraíso frente a la Agroquímica Morill",
+                    ocupaciones: "Mecánico de Vehículos",
+                    trabajo: "Auto Repuestos La Vega",
+                    cargo: "Técnico Mecánico",
+                    direccionTrabajo: "Av. Pedro Rivera #45, La Vega",
+                    superior: "José Gómez",
+                    telTrabajo: "829-660-8236",
+                    tiempoTrabajo: "5 Años",
+                    ingresos: "30000",
+                    otrosIngresos: "0",
+                    tipoCasa: "Propia",
+                    destino: "Garantía de préstamo personal",
+                    chkCliente: false,
+                    chkEmpleado: true,
+                    chkFuncionario: false,
+                    chkAccionista: false,
+                    conyuge: {
+                        nombres: "GRISMELDY OSKARINA",
+                        apellidos: "EVANGELISTA DE AMADOR",
+                        fechaNacimiento: "24/11/2001",
+                        edad: "24",
+                        apodo: "GRISMELDY",
+                        estadoCivil: "Casado(a)",
+                        telefono: "809-803-1215",
+                        ocupacion: "Estilista",
+                        trabajo: "Salón de Belleza La Moda",
+                        sector: "Sabaneta",
+                        direccion: "Calle Principal No. 55 antes del Colmado Matica",
+                        superior: "Yanna Núñez",
+                        telTrabajo: "809-573-0000",
+                        tiempoTrabajo: "3 Años",
+                        ingresos: "25000"
+                    }
+                }
+            }
+        };
+    } else {
+        const { data: realS, error } = await supabase.from('loan_applications')
+            .select('*, clients(*)')
+            .eq('id', id)
+            .single();
+        
+        if (error || !realS) {
+            alert('Error al cargar la solicitud');
+            return;
+        }
+        s = realS;
     }
 
     const { data: iconData } = await supabase.from('site_settings').select('value').eq('key', 'portal_icon').single();
-    const portalLogo = iconData?.value || '../assets/img/logob&H.jpeg';
+    const portalLogo = iconData?.value || 'https://files.catbox.moe/yz89qv.png';
 
     const d = s.data || {};
     const sol = d.solicitante || {};
@@ -2979,10 +3654,30 @@ window.openSolicitudRetro = async (id, mode = 'cliente_garante', autoPrint = fal
 
     const type = s.loan_type || 'personal';
 
-    // Calculate dates
+    // Calculate dates based on frequency
+    const freq = d.frecuenciaPago || 'mensual';
+    const tiempoVal = s.tiempo || 18;
+    
+    let fechaFinalDate = s.created_at ? new Date(s.created_at) : new Date();
+    let fechaPagoDate = s.created_at ? new Date(s.created_at) : new Date();
+    
+    if (freq === 'diario') {
+        fechaFinalDate.setDate(fechaFinalDate.getDate() + tiempoVal);
+        fechaPagoDate.setDate(fechaPagoDate.getDate() + 1);
+    } else if (freq === 'semanal') {
+        fechaFinalDate.setDate(fechaFinalDate.getDate() + (tiempoVal * 7));
+        fechaPagoDate.setDate(fechaPagoDate.getDate() + 7);
+    } else if (freq === 'quincenal') {
+        fechaFinalDate.setDate(fechaFinalDate.getDate() + (tiempoVal * 15));
+        fechaPagoDate.setDate(fechaPagoDate.getDate() + 15);
+    } else { // mensual
+        fechaFinalDate.setMonth(fechaFinalDate.getMonth() + tiempoVal);
+        fechaPagoDate.setMonth(fechaPagoDate.getMonth() + 1);
+    }
+
     const fechaInicio = s.created_at ? new Date(s.created_at).toLocaleDateString('es-DO') : new Date().toLocaleDateString('es-DO');
-    const fechaFinal = s.created_at ? new Date(new Date(s.created_at).setMonth(new Date(s.created_at).getMonth() + (s.tiempo || 18))).toLocaleDateString('es-DO') : '---';
-    const fechaPago = s.created_at ? new Date(new Date(s.created_at).setMonth(new Date(s.created_at).getMonth() + 1)).toLocaleDateString('es-DO') : '---';
+    const fechaFinal = s.created_at ? fechaFinalDate.toLocaleDateString('es-DO') : '---';
+    const fechaPago = s.created_at ? fechaPagoDate.toLocaleDateString('es-DO') : '---';
     const fechaImpresion = new Date().toLocaleDateString('es-DO');
     const horaImpresion = new Date().toLocaleTimeString('es-DO', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
@@ -3640,6 +4335,7 @@ window.openSolicitudRetro = async (id, mode = 'cliente_garante', autoPrint = fal
         <div class="action-bar no-print">
             <h2>DETALLES DE LA SOLICITUD DE CRÉDITO</h2>
             <div style="display: flex; gap: 8px;">
+                <button id="modal-print-email-btn" class="btn" style="background-color: #f59e0b; border-color: #d97706; color: #ffffff;"><i class="fas fa-envelope"></i> Formato Correo (Organizado)</button>
                 <button id="modal-print-btn" class="btn"><i class="fas fa-print"></i> Imprimir Expediente</button>
                 <button id="modal-close-btn" class="btn btn-danger"><i class="fas fa-times"></i> Cerrar Ventana</button>
             </div>
@@ -3720,7 +4416,7 @@ window.openSolicitudRetro = async (id, mode = 'cliente_garante', autoPrint = fal
                             </div>
                             <div class="sidebar-row">
                                 <span class="sidebar-label">a Pagar :</span>
-                                <span class="sidebar-val">Mensual</span>
+                                <span class="sidebar-val">${freq.charAt(0).toUpperCase() + freq.slice(1)}</span>
                             </div>
                             <div class="sidebar-row">
                                 <span class="sidebar-label">Debe Pagar el :</span>
@@ -3736,7 +4432,7 @@ window.openSolicitudRetro = async (id, mode = 'cliente_garante', autoPrint = fal
                             </div>
                             <div class="sidebar-row">
                                 <span class="sidebar-label">Plazo :</span>
-                                <span class="sidebar-val">${s.tiempo || 18}</span>
+                                <span class="sidebar-val">${s.tiempo || 18} ${freq === 'diario' ? 'Días' : freq === 'semanal' ? 'Semanas' : freq === 'quincenal' ? 'Quincenas' : 'Meses'}</span>
                             </div>
                             <div class="sidebar-row">
                                 <span class="sidebar-label">Ultimo Pago :</span>
@@ -3848,12 +4544,14 @@ window.openSolicitudRetro = async (id, mode = 'cliente_garante', autoPrint = fal
     const closeBtn = modalDiv.querySelector('.action-bar #modal-close-btn');
     const exitItem = modalDiv.querySelector('#modal-exit-item');
     const printBtn = modalDiv.querySelector('.action-bar #modal-print-btn');
+    const printEmailBtn = modalDiv.querySelector('.action-bar #modal-print-email-btn');
 
     const closeModal = () => modalDiv.remove();
 
     if (closeBtn) closeBtn.addEventListener('click', closeModal);
     if (exitItem) exitItem.addEventListener('click', closeModal);
     if (printBtn) printBtn.addEventListener('click', () => window.print());
+    if (printEmailBtn) printEmailBtn.addEventListener('click', () => window.printEmailTemplate(id));
 
     // Guardar detalles/nota in Supabase JSONB data
     const saveNotaBtn = modalDiv.querySelector('#retro-save-nota-btn');
@@ -3922,7 +4620,7 @@ window.openSolicitudRetro = async (id, mode = 'cliente_garante', autoPrint = fal
 
 window.exportToWord = async (id) => {
     const { data: iconData } = await supabase.from('site_settings').select('value').eq('key', 'portal_icon').single();
-    const portalLogo = iconData?.value || '';
+    const portalLogo = iconData?.value || 'https://files.catbox.moe/yz89qv.png';
 
     const { data: s, error } = await supabase.from('loan_applications')
         .select('*, clients(*)')
@@ -3931,6 +4629,24 @@ window.exportToWord = async (id) => {
     
     if (error || !s) return;
     const d = s.data || {};
+
+    const freq = d.frecuenciaPago || 'mensual';
+    let freqLabel = 'MESES';
+    let cuotaLabel = 'CUOTA MENSUAL:';
+    if (freq === 'diario') {
+        freqLabel = 'DÍAS';
+        cuotaLabel = 'CUOTA DIARIA:';
+    } else if (freq === 'semanal') {
+        freqLabel = 'SEMANAS';
+        cuotaLabel = 'CUOTA SEMANAL:';
+    } else if (freq === 'quincenal') {
+        freqLabel = 'QUINCENAS';
+        cuotaLabel = 'CUOTA QUINCENAL:';
+    } else {
+        freqLabel = 'MESES';
+        cuotaLabel = 'CUOTA MENSUAL:';
+    }
+
     const sol = d.solicitante || {};
     const con = d.conyuge || {};
     const veh = d.garantiaVehiculo || {};
@@ -4041,8 +4757,8 @@ window.exportToWord = async (id) => {
                         <tr><td width="160"><p style="margin:2px 0;">SOLICITUD NO:</p></td><td><p style="margin:2px 0;">${String(s.id).split('-')[0].toUpperCase()}</p></td></tr>
                         <tr><td><p style="margin:2px 0;">FECHA SOLICITUD:</p></td><td><p style="margin:2px 0;">${new Date(s.created_at).toLocaleDateString()}</p></td></tr>
                         <tr><td><p style="margin:2px 0;">MONTO RD$:</p></td><td><p style="margin:2px 0;">${Number(s.monto).toLocaleString()}</p></td></tr>
-                        <tr><td><p style="margin:2px 0;">TIEMPO:</p></td><td><p style="margin:2px 0;">${s.tiempo} MESES</p></td></tr>
-                        <tr><td><p style="margin:2px 0;">CUOTA:</p></td><td><p style="margin:2px 0;">RD$ ${Number(d.cuota || 0).toLocaleString()}</p></td></tr>
+                        <tr><td><p style="margin:2px 0;">TIEMPO:</p></td><td><p style="margin:2px 0;">${s.tiempo} ${freqLabel}</p></td></tr>
+                        <tr><td><p style="margin:2px 0;">${cuotaLabel.replace(':', '')}:</p></td><td><p style="margin:2px 0;">RD$ ${Number(d.cuota || 0).toLocaleString()}</p></td></tr>
                     </table>
                 </td>
             </tr>
@@ -4076,4 +4792,150 @@ window.exportToWord = async (id) => {
     link.download = `Solicitud_${sol.nombres || 'Expediente'}.doc`;
     link.click();
 };
+
+/**
+ * MÓDULO DE CONFIGURACIÓN DE NOTIFICACIONES POR CORREO (BREVO)
+ */
+async function initEmailConfigModule() {
+    const emailForm = document.getElementById('emailForm');
+    if (!emailForm) return;
+
+    const saveBtn = document.getElementById('saveEmailBtn');
+    const testBtn = document.getElementById('testEmailBtn');
+    const brevoKeyInput = document.getElementById('brevoKey');
+    const senderEmailInput = document.getElementById('senderEmail');
+    const senderNameInput = document.getElementById('senderName');
+    const recipientEmailInput = document.getElementById('recipientEmail');
+    const emailEnabledInput = document.getElementById('emailEnabled');
+    
+    // Toggle de visibilidad de la API Key
+    window.toggleKeyVisibility = () => {
+        const type = brevoKeyInput.type === 'password' ? 'text' : 'password';
+        brevoKeyInput.type = type;
+        const icon = document.getElementById('toggleKeyIcon');
+        if (icon) {
+            icon.className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+        }
+    };
+
+    // Cargar configuración existente
+    const loadConfig = async () => {
+        try {
+            const { data, error } = await supabase
+                .from('promotions')
+                .select('*')
+                .eq('title', 'CONFIG_EMAIL')
+                .maybeSingle();
+
+            if (error) throw error;
+
+            let config = {
+                enabled: true,
+                brevo_key: '',
+                sender_email: 'josegrullat.byhprestamoengeneral@outlook.com',
+                sender_name: 'B&H Préstamos',
+                recipient_email: 'josegrullat.byhprestamoengeneral@outlook.com'
+            };
+
+            if (data && data.description) {
+                const desc = typeof data.description === 'string' ? JSON.parse(data.description) : data.description;
+                config = { ...config, ...desc };
+            }
+
+            brevoKeyInput.value = config.brevo_key || '';
+            senderEmailInput.value = config.sender_email || '';
+            senderNameInput.value = config.sender_name || '';
+            recipientEmailInput.value = config.recipient_email || '';
+            emailEnabledInput.checked = config.enabled;
+
+        } catch (err) {
+            console.error('Error cargando configuración de correo:', err);
+        }
+    };
+
+    await loadConfig();
+
+    // Guardar configuración
+    emailForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<i class="fas fa-circle-notch animate-spin"></i> GUARDANDO...';
+
+        try {
+            const configData = {
+                brevo_key: brevoKeyInput.value.trim(),
+                sender_email: senderEmailInput.value.trim(),
+                sender_name: senderNameInput.value.trim(),
+                recipient_email: recipientEmailInput.value.trim(),
+                enabled: emailEnabledInput.checked
+            };
+
+            const { data: existing } = await supabase
+                .from('promotions')
+                .select('id')
+                .eq('title', 'CONFIG_EMAIL')
+                .maybeSingle();
+
+            const payload = {
+                title: 'CONFIG_EMAIL',
+                description: configData,
+                active: true
+            };
+
+            let saveResult;
+            if (existing) {
+                saveResult = await supabase
+                    .from('promotions')
+                    .update(payload)
+                    .eq('id', existing.id);
+            } else {
+                saveResult = await supabase
+                    .from('promotions')
+                    .insert([payload]);
+            }
+
+            if (saveResult.error) throw saveResult.error;
+
+            alert('¡Configuración de correo guardada con éxito!');
+        } catch (err) {
+            console.error(err);
+            alert('Error al guardar configuración: ' + err.message);
+        } finally {
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = '<i class="fas fa-save text-xl"></i> GUARDAR CONFIGURACIÓN';
+        }
+    });
+
+    // Enviar correo de prueba
+    testBtn?.addEventListener('click', async () => {
+        testBtn.disabled = true;
+        testBtn.innerHTML = '<i class="fas fa-circle-notch animate-spin"></i> ENVIANDO PRUEBA...';
+
+        try {
+            const tempConfig = {
+                brevo_key: brevoKeyInput.value.trim(),
+                sender_email: senderEmailInput.value.trim(),
+                sender_name: senderNameInput.value.trim(),
+                recipient_email: recipientEmailInput.value.trim(),
+                enabled: emailEnabledInput.checked
+            };
+
+            if (!tempConfig.brevo_key) {
+                throw new Error('Debe proveer una clave API de Brevo para realizar la prueba.');
+            }
+            if (!tempConfig.sender_email || !tempConfig.recipient_email) {
+                throw new Error('Debe proveer el correo remitente y destinatario para realizar la prueba.');
+            }
+
+            await sendBrevoTestEmail(tempConfig);
+            alert('¡Correo de prueba enviado con éxito! Revisa la bandeja de entrada del destinatario.');
+        } catch (err) {
+            console.error(err);
+            alert('Error al enviar correo de prueba: ' + err.message);
+        } finally {
+            testBtn.disabled = false;
+            testBtn.innerHTML = '<i class="fas fa-paper-plane"></i> ENVIAR CORREO DE PRUEBA';
+        }
+    });
+}
 

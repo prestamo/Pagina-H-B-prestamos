@@ -58,7 +58,7 @@
 
             <!-- Segmento 0: Datos del Préstamo (Encabezado) -->
             <div class="bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100 border-t-8 border-t-slate-800">
-                <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-6 gap-6">
                     <div>
                         <label class="block text-[10px] font-black uppercase mb-2 text-slate-400 tracking-widest">Tipo de Préstamo</label>
                         <select id="tipoPrestamo" name="tipoPrestamo" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-black text-brand outline-none focus:ring-2 focus:ring-brand">
@@ -77,7 +77,16 @@
                         <input type="text" id="montoSolicitado" name="montoSolicitado" class="mask-currency w-full p-3 bg-slate-50 border-2 border-slate-100 rounded-xl font-black text-xl text-prime focus:border-brand outline-none" placeholder="0.00">
                     </div>
                     <div>
-                        <label class="block text-[10px] font-black uppercase mb-2 text-slate-400 tracking-widest">Tiempo (Meses)</label>
+                        <label class="block text-[10px] font-black uppercase mb-2 text-slate-400 tracking-widest">Frecuencia de Pago</label>
+                        <select id="frecuenciaPago" name="frecuenciaPago" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-black text-brand outline-none focus:ring-2 focus:ring-brand">
+                            <option value="mensual" selected>Mensual</option>
+                            <option value="quincenal">Quincenal</option>
+                            <option value="semanal">Semanal</option>
+                            <option value="diario">Diario</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label id="labelTiempoPrestamo" class="block text-[10px] font-black uppercase mb-2 text-slate-400 tracking-widest">Tiempo (Meses)</label>
                         <input type="number" id="tiempoPrestamo" name="tiempoPrestamo" class="w-full p-3 bg-slate-50 rounded-xl border border-slate-200 font-bold" placeholder="Ej: 12">
                     </div>
                     <div>

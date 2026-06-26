@@ -1,4 +1,4 @@
-import { supabase } from './supabase.js';
+import { supabase, sendBrevoNotification } from './supabase.js';
 
 export function initClientApplication() {
     const form = document.getElementById('clientSolicitudForm');
@@ -19,6 +19,29 @@ export function initClientApplication() {
     setupAgeValidation('fechaNacimientoGar', 'edadGar');
     setupAgeValidation('fechaNacimientoConGar', 'edadConGar');
     setupReferenceRows(refTableBody);
+
+    const frecuenciaPagoSelect = document.getElementById('frecuenciaPago');
+    const labelTiempoPrestamo = document.getElementById('labelTiempoPrestamo');
+    if (frecuenciaPagoSelect && labelTiempoPrestamo) {
+        const isEnglish = window.location.pathname.includes('english');
+        const updateLabel = () => {
+            const val = frecuenciaPagoSelect.value;
+            if (isEnglish) {
+                if (val === 'diario') labelTiempoPrestamo.textContent = 'Term (Days)';
+                else if (val === 'semanal') labelTiempoPrestamo.textContent = 'Term (Weeks)';
+                else if (val === 'quincenal') labelTiempoPrestamo.textContent = 'Term (Biweeks)';
+                else labelTiempoPrestamo.textContent = 'Term (Months)';
+            } else {
+                if (val === 'diario') labelTiempoPrestamo.textContent = 'Tiempo (Días)';
+                else if (val === 'semanal') labelTiempoPrestamo.textContent = 'Tiempo (Semanas)';
+                else if (val === 'quincenal') labelTiempoPrestamo.textContent = 'Tiempo (Quincenas)';
+                else labelTiempoPrestamo.textContent = 'Tiempo (Meses)';
+            }
+        };
+        frecuenciaPagoSelect.addEventListener('change', updateLabel);
+        updateLabel();
+    }
+
     setupSubmit(form, saveBtn, tipoPrestamoSelect, fechaSolicitudInput);
 }
 
@@ -336,6 +359,7 @@ function setupSubmit(form, saveBtn, tipoPrestamoSelect, fechaSolicitudInput) {
             const fullData = {
                 tipoPrestamo: type,
                 fechaSolicitud: val('fechaSolicitud'),
+                frecuenciaPago: val('frecuenciaPago') || 'mensual',
                 evaluador: 'cliente_web',
                 source: 'landing_publica',
                 solicitante: {
@@ -478,7 +502,7 @@ function setupSubmit(form, saveBtn, tipoPrestamoSelect, fechaSolicitudInput) {
 
             const cleanNum = str => parseFloat(String(str).replace(/,/g, '')) || 0;
 
-            const { error: sErr } = await supabase.from('loan_applications').insert([{
+            const { data: insertedData, error: sErr } = await supabase.from('loan_applications').insert([{
                 client_id: clientId,
                 loan_type: type,
                 applicant_name: full_name,
@@ -488,9 +512,25 @@ function setupSubmit(form, saveBtn, tipoPrestamoSelect, fechaSolicitudInput) {
                 cuota: cleanNum(val('cuotaPrestamo')),
                 status: 'Pendiente',
                 data: fullData
-            }]);
+            }]).select();
 
             if (sErr) throw sErr;
+            const insertedId = insertedData && insertedData[0] ? insertedData[0].id : null;
+
+            // Enviar notificación por correo de forma asíncrona usando Brevo
+            try {
+                sendBrevoNotification(
+                    cleanNum(val('montoSolicitado')),
+                    parseInt(val('tiempoPrestamo')) || 0,
+                    cleanNum(val('cuotaPrestamo')),
+                    type,
+                    full_name,
+                    cedula,
+                    { ...fullData, id: insertedId }
+                );
+            } catch (emailErr) {
+                console.warn('Error al intentar enviar la notificación por correo:', emailErr);
+            }
 
             alert('¡Solicitud enviada con éxito! Nos comunicaremos contigo pronto.');
             form.reset();

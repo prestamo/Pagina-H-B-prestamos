@@ -52,7 +52,8 @@ export default defineConfig({
         'admin/cuotas.html': resolve(__dirname, 'admin/cuotas.html'),
         'admin/solicitudes.html': resolve(__dirname, 'admin/solicitudes.html'),
         'admin/solicitudes_list.html': resolve(__dirname, 'admin/solicitudes_list.html'),
-        'admin/footer.html': resolve(__dirname, 'admin/footer.html')
+        'admin/footer.html': resolve(__dirname, 'admin/footer.html'),
+        'admin/email.html': resolve(__dirname, 'admin/email.html')
       }
     }
   }
