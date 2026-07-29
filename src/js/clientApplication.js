@@ -81,10 +81,14 @@ function setupJceLookup(btnId, inputCedulaId, prefix) {
                 }
 
                 const fechaNacField = document.getElementById(`fechaNacimiento${prefix}`);
-                if (fechaNacField && result.fechaNacimiento) {
-                    const parsedDate = parseJCEDate(result.fechaNacimiento);
-                    fechaNacField.value = parsedDate;
-                    fechaNacField.dispatchEvent(new Event('change'));
+                const fechaRaw = result.fechaNacimiento || result.fecha_nacimiento || result.FechaNacimiento || result.fechanacimiento || result.fechaNac || result.fecha_nac || result.birthDate || result.birth_date || result.FechaNac || '';
+                if (fechaNacField && fechaRaw) {
+                    const parsedDate = parseJCEDate(fechaRaw);
+                    if (parsedDate) {
+                        fechaNacField.value = parsedDate;
+                        fechaNacField.dispatchEvent(new Event('change'));
+                        fechaNacField.dispatchEvent(new Event('input'));
+                    }
                 }
 
                 const sexoField = document.getElementById(`sexo${prefix}`);
@@ -405,6 +409,7 @@ function setupSubmit(form, saveBtn, tipoPrestamoSelect, fechaSolicitudInput) {
                     telefono: val('telefonoCon'),
                     ocupacion: val('ocupacionCon'),
                     trabajo: val('trabajoCon'),
+                    direccionTrabajo: val('direccionTrabajoCon') || val('trabajoCon'),
                     sector: val('sectorCon'),
                     direccion: val('direccionCon'),
                     superior: val('superiorCon'),
@@ -423,6 +428,10 @@ function setupSubmit(form, saveBtn, tipoPrestamoSelect, fechaSolicitudInput) {
                     fotoUrl: val('fotoUrlGar'),
                     apodo: val('apodoGar'),
                     estadoCivil: val('estadoCivilGar'),
+                    sexo: val('sexoGar'),
+                    dependientes: val('dependientesGar'),
+                    profesion: val('profesionGar'),
+                    vehiculo: val('vehiculoGar'),
                     fechaNacimiento: val('fechaNacimientoGar'),
                     edad: val('edadGar'),
                     telefono: val('telefonoGar'),
@@ -449,9 +458,12 @@ function setupSubmit(form, saveBtn, tipoPrestamoSelect, fechaSolicitudInput) {
                         apellidos: val('apellidosConGar'),
                         fechaNacimiento: val('fechaNacimientoConGar'),
                         edad: val('edadConGar'),
+                        apodo: val('apodoConGar'),
+                        estadoCivil: val('estadoCivilConGar'),
                         telefono: val('telefonoConGar'),
                         ocupacion: val('ocupacionConGar'),
                         trabajo: val('trabajoConGar'),
+                        direccionTrabajo: val('direccionTrabajoConGar') || val('trabajoConGar'),
                         sector: val('sectorConGar'),
                         direccion: val('direccionConGar'),
                         superior: val('superiorConGar'),
@@ -594,14 +606,29 @@ function validateRequiredFields() {
     return isValid;
 }
 
-async function parseJCEDate(jceDate) {
+function parseJCEDate(jceDate) {
     if (!jceDate) return '';
-    if (jceDate.includes('T') || /^\d{4}-\d{2}-\d{2}$/.test(jceDate)) return jceDate.split('T')[0];
-    const match = jceDate.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+    const str = String(jceDate).trim();
+    if (str.includes('T') || /^\d{4}-\d{2}-\d{2}$/.test(str)) {
+        return str.split('T')[0];
+    }
+    const match = str.match(/^(\d{1,2})[\/\.-](\d{1,2})[\/\.-](\d{4})/);
     if (match) {
-        const month = String(match[1]).padStart(2, '0');
-        const day = String(match[2]).padStart(2, '0');
-        return `${match[3]}-${month}-${day}`;
+        const n1 = parseInt(match[1], 10);
+        const n2 = parseInt(match[2], 10);
+        const year = match[3];
+        let day, month;
+        if (n1 > 12) {
+            day = n1;
+            month = n2;
+        } else if (n2 > 12) {
+            month = n1;
+            day = n2;
+        } else {
+            day = n1;
+            month = n2;
+        }
+        return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     }
     return '';
 }

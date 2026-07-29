@@ -84,17 +84,8 @@
                             </label>
                         </div>
 
-                        <!-- Brevo API Key -->
-                        <div>
-                            <label class="block text-xs font-black uppercase text-slate-500 tracking-wider mb-2">Clave API de Brevo (Sendinblue)</label>
-                            <div class="relative">
-                                <input type="password" id="brevoKey" class="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 pl-4 pr-12 text-sm font-semibold shadow-inner focus:ring-2 focus:ring-brand focus:bg-white outline-none transition-all placeholder:text-slate-400" placeholder="xkeysib-...">
-                                <button type="button" onclick="window.toggleKeyVisibility()" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
-                                    <i id="toggleKeyIcon" class="fas fa-eye"></i>
-                                </button>
-                            </div>
-                            <p class="text-[10px] text-slate-400 font-semibold mt-1">Generada en brevo.com. Permite el envío de notificaciones automáticas.</p>
-                        </div>
+                        <!-- Brevo API Key (Oculto para evitar borrados accidentales) -->
+                        <input type="hidden" id="brevoKey">
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Sender Email -->

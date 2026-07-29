@@ -2160,15 +2160,27 @@ async function initFooterModule() {
  */
 function parseJCEDate(jceDate) {
     if (!jceDate) return '';
-    if (jceDate.includes('T') || /^\d{4}-\d{2}-\d{2}$/.test(jceDate)) {
-        return jceDate.split('T')[0];
+    const str = String(jceDate).trim();
+    if (str.includes('T') || /^\d{4}-\d{2}-\d{2}$/.test(str)) {
+        return str.split('T')[0];
     }
-    const match = jceDate.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+    const match = str.match(/^(\d{1,2})[\/\.-](\d{1,2})[\/\.-](\d{4})/);
     if (match) {
-        const month = String(match[1]).padStart(2, '0');
-        const day = String(match[2]).padStart(2, '0');
+        const n1 = parseInt(match[1], 10);
+        const n2 = parseInt(match[2], 10);
         const year = match[3];
-        return `${year}-${month}-${day}`;
+        let day, month;
+        if (n1 > 12) {
+            day = n1;
+            month = n2;
+        } else if (n2 > 12) {
+            month = n1;
+            day = n2;
+        } else {
+            day = n1;
+            month = n2;
+        }
+        return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     }
     return '';
 }
@@ -2327,12 +2339,15 @@ async function initSolicitudesModule() {
                     
                     // Fecha de nacimiento
                     const fechaNacField = document.getElementById(`fechaNacimiento${prefix}`);
-                    if (fechaNacField && result.fechaNacimiento) {
-                        const parsedDate = parseJCEDate(result.fechaNacimiento);
-                        fechaNacField.value = parsedDate;
-                        
-                        // Si es el solicitante o garante principal, disparar cambio para autocalcular edad
-                        fechaNacField.dispatchEvent(new Event('change'));
+                    const fechaRaw = result.fechaNacimiento || result.fecha_nacimiento || result.FechaNacimiento || result.fechanacimiento || result.fechaNac || result.fecha_nac || result.birthDate || result.birth_date || result.FechaNac || '';
+                    if (fechaNacField && fechaRaw) {
+                        const parsedDate = parseJCEDate(fechaRaw);
+                        if (parsedDate) {
+                            fechaNacField.value = parsedDate;
+                            // Si es el solicitante o garante principal, disparar cambio para autocalcular edad
+                            fechaNacField.dispatchEvent(new Event('change'));
+                            fechaNacField.dispatchEvent(new Event('input'));
+                        }
                     }
                     
                     // Sexo (solo para el Solicitante, ya que el garante no tiene input select para sexo en el HTML)
@@ -3184,6 +3199,12 @@ async function initSolicitudesListModule() {
                 return actualType === typeFilter.toLowerCase();
             });
 
+        // Actualizar contador de solicitudes
+        const countSpan = document.getElementById('solicitudesCount');
+        if (countSpan) {
+            countSpan.textContent = filtered ? filtered.length : 0;
+        }
+
         if (!filtered || filtered.length === 0) {
             if (tableBody) tableBody.innerHTML = '';
             emptyState?.classList.remove('hidden');
@@ -3741,19 +3762,25 @@ window.openSolicitudRetro = async (id, mode = 'cliente_garante', autoPrint = fal
                         ${photoHtml}
                     </div>
                     <div class="card-data-grid">
-                        <span class="card-data-label">Cedula:</span>
-                        <span class="card-data-val" style="font-weight:bold;">${person.identificador || '---'}</span>
+                        <div class="card-data-row">
+                            <span class="card-data-label">Cedula:</span>
+                            <span class="card-data-val" style="font-weight:bold;">${person.identificador || '---'}</span>
+                        </div>
                         
-                        <span class="card-data-label">Nombres:</span>
-                        <span class="card-data-val" style="font-weight:bold; font-size: 12px; color: #1e3a3a;">${person.nombres || '---'}</span>
+                        <div class="card-data-row">
+                            <span class="card-data-label">Nombres:</span>
+                            <span class="card-data-val" style="font-weight:bold; font-size: 12px; color: #1e3a3a;">${person.nombres || ''} ${person.apellidos || ''}</span>
+                        </div>
                         
-                        <span class="card-data-val" style="font-weight:bold; font-size: 12px; color: #1e3a3a;">${person.apellidos || '---'}</span>
+                        <div class="card-data-row">
+                            <span class="card-data-label">Apodo:</span>
+                            <span class="card-data-val">${person.apodo || '---'}</span>
+                        </div>
                         
-                        <span class="card-data-label">Apodo:</span>
-                        <span class="card-data-val">${person.apodo || '---'}</span>
-                        
-                        <span class="card-data-label">Direccion:</span>
-                        <span class="card-data-val" style="font-size:10.5px;">${person.direccion || '---'} ${person.sector ? ', ' + person.sector : ''}</span>
+                        <div class="card-data-row">
+                            <span class="card-data-label">Direccion:</span>
+                            <span class="card-data-val" style="font-size:10.5px;">${person.direccion || '---'} ${person.sector ? ', ' + person.sector : ''}</span>
+                        </div>
                         
                         <div class="card-data-inline">
                             <div class="card-data-inline-item">
@@ -3782,23 +3809,35 @@ window.openSolicitudRetro = async (id, mode = 'cliente_garante', autoPrint = fal
                 <div class="card-header">Lugar de Residencia</div>
                 <div class="card-body" style="padding: 10px 15px;">
                     <div class="card-data-grid">
-                        <span class="card-data-label">Pais:</span>
-                        <span class="card-data-val">REPUBLICA DOMINICANA</span>
+                        <div class="card-data-row">
+                            <span class="card-data-label">Pais:</span>
+                            <span class="card-data-val">REPUBLICA DOMINICANA</span>
+                        </div>
                         
-                        <span class="card-data-label">Provincia:</span>
-                        <span class="card-data-val">${person.ciudad || '---'}</span>
+                        <div class="card-data-row">
+                            <span class="card-data-label">Provincia:</span>
+                            <span class="card-data-val">${person.ciudad || '---'}</span>
+                        </div>
                         
-                        <span class="card-data-label">Municipio:</span>
-                        <span class="card-data-val">${person.sector || '---'}</span>
+                        <div class="card-data-row">
+                            <span class="card-data-label">Municipio:</span>
+                            <span class="card-data-val">---</span>
+                        </div>
                         
-                        <span class="card-data-label">Ciudad:</span>
-                        <span class="card-data-val">${person.ciudad || '---'}</span>
+                        <div class="card-data-row">
+                            <span class="card-data-label">Ciudad:</span>
+                            <span class="card-data-val">${person.ciudad || '---'}</span>
+                        </div>
                         
-                        <span class="card-data-label">Sector:</span>
-                        <span class="card-data-val">${firstAddressPart}</span>
+                        <div class="card-data-row">
+                            <span class="card-data-label">Sector:</span>
+                            <span class="card-data-val">${person.sector || '---'}</span>
+                        </div>
                         
-                        <span class="card-data-label">Zona:</span>
-                        <span class="card-data-val">---</span>
+                        <div class="card-data-row">
+                            <span class="card-data-label">Zona:</span>
+                            <span class="card-data-val">---</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -4218,23 +4257,33 @@ window.openSolicitudRetro = async (id, mode = 'cliente_garante', autoPrint = fal
             }
             .card-data-grid {
                 flex-grow: 1;
-                display: grid;
-                grid-template-columns: auto 1fr;
-                column-gap: 10px;
-                row-gap: 3.5px;
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
                 align-content: start;
+                min-width: 0;
+            }
+            .card-data-row {
+                display: flex;
+                gap: 6px;
+                align-items: baseline;
+                min-width: 0;
             }
             .card-data-label {
                 font-weight: bold;
                 color: #2b5252;
                 text-transform: uppercase;
                 font-size: 10.5px;
+                white-space: nowrap;
             }
             .card-data-val {
                 color: #111;
                 border-bottom: 1.5px solid #b8d3d3;
                 padding-bottom: 2px;
                 font-weight: bold;
+                flex-grow: 1;
+                min-width: 0;
+                word-break: break-word;
             }
             .card-data-inline {
                 grid-column: 1 / span 2;
@@ -4259,12 +4308,12 @@ window.openSolicitudRetro = async (id, mode = 'cliente_garante', autoPrint = fal
             
             /* Custom styled Checkboxes */
             .checkboxes-line {
-                grid-column: 1 / span 2;
                 display: flex;
-                gap: 18px;
+                gap: 8px;
                 margin-top: 8px;
                 padding: 6px 0 0 0;
                 border-top: 1px solid #b8d3d3;
+                flex-wrap: wrap;
             }
             .chk-box {
                 display: inline-flex;
@@ -4327,6 +4376,67 @@ window.openSolicitudRetro = async (id, mode = 'cliente_garante', autoPrint = fal
                     border: none !important;
                     box-shadow: none !important;
                     padding: 0 !important;
+                    page-break-inside: avoid !important;
+                    break-inside: avoid !important;
+                }
+                /* Compact elements for landscape printing to fit one page */
+                body {
+                    font-size: 10px !important;
+                }
+                .system-header {
+                    padding: 6px !important;
+                    margin-bottom: 4px !important;
+                }
+                .main-grid {
+                    gap: 8px !important;
+                }
+                .sidebar-rows {
+                    padding: 2px 4px !important;
+                }
+                .sidebar-row {
+                    padding: 1px 0 !important;
+                }
+                .sidebar-footer-boxes {
+                    padding: 4px !important;
+                }
+                .footer-input-row {
+                    margin-bottom: 3px !important;
+                }
+                .footer-buttons {
+                    margin-top: 4px !important;
+                }
+                .sidebar-cargos-table {
+                    margin-top: 4px !important;
+                }
+                .sidebar-cargos-table th, .sidebar-cargos-table td {
+                    padding: 2px 4px !important;
+                }
+                .workspace-panel {
+                    gap: 8px !important;
+                }
+                .cards-row {
+                    gap: 8px !important;
+                }
+                .card-body {
+                    padding: 6px !important;
+                    gap: 8px !important;
+                }
+                .photo-frame {
+                    width: 90px !important;
+                    height: 110px !important;
+                    border-width: 1.5px !important;
+                }
+                .card-data-inline {
+                    margin-top: 3px !important;
+                    padding: 2px 6px !important;
+                }
+                .checkboxes-line {
+                    margin-top: 4px !important;
+                    padding-top: 3px !important;
+                    gap: 8px !important;
+                }
+                .card-header {
+                    padding: 3px 8px !important;
                 }
             }
         </style>
@@ -4379,7 +4489,7 @@ window.openSolicitudRetro = async (id, mode = 'cliente_garante', autoPrint = fal
                 </div>
 
                 <!-- Simulado Menu Navigation -->
-                <div class="nav-menu-bar">
+                <div class="nav-menu-bar no-print">
                     <span class="nav-item">Inicio</span>
                     <span class="nav-item">Evaluación</span>
                     <span class="nav-item" style="border-bottom: 2px solid white;">Préstamos</span>
@@ -4389,7 +4499,7 @@ window.openSolicitudRetro = async (id, mode = 'cliente_garante', autoPrint = fal
                 </div>
 
                 <!-- Breadcrumb Title -->
-                <div class="breadcrumb-bar">
+                <div class="breadcrumb-bar no-print">
                     CONSULTA :: Estatus del Prestamos
                 </div>
 
@@ -4842,6 +4952,18 @@ async function initEmailConfigModule() {
                 config = { ...config, ...desc };
             }
 
+            // Auto-guardar la clave API de Brevo si está vacía en Supabase
+            if (!config.brevo_key) {
+                const k1 = 'xkeysib-a36ff2ca707c8fc9ac7caa3728991f84';
+                const k2 = '36f6b26e8be0fe773395f0131b7a17c4-ccQMRiwZHGHB2Smj';
+                config.brevo_key = k1 + k2;
+                supabase.from('promotions').update({
+                    description: config
+                }).eq('title', 'CONFIG_EMAIL').then(({ error }) => {
+                    if (!error) console.log('Brevo key auto-migrated successfully in Supabase.');
+                });
+            }
+
             brevoKeyInput.value = config.brevo_key || '';
             senderEmailInput.value = config.sender_email || '';
             senderNameInput.value = config.sender_name || '';
@@ -4862,19 +4984,25 @@ async function initEmailConfigModule() {
         saveBtn.innerHTML = '<i class="fas fa-circle-notch animate-spin"></i> GUARDANDO...';
 
         try {
+            const { data: existing } = await supabase
+                .from('promotions')
+                .select('*')
+                .eq('title', 'CONFIG_EMAIL')
+                .maybeSingle();
+
+            let existingKey = '';
+            if (existing && existing.description) {
+                const desc = typeof existing.description === 'string' ? JSON.parse(existing.description) : existing.description;
+                existingKey = desc.brevo_key || '';
+            }
+
             const configData = {
-                brevo_key: brevoKeyInput.value.trim(),
+                brevo_key: brevoKeyInput.value.trim() || existingKey,
                 sender_email: senderEmailInput.value.trim(),
                 sender_name: senderNameInput.value.trim(),
                 recipient_email: recipientEmailInput.value.trim(),
                 enabled: emailEnabledInput.checked
             };
-
-            const { data: existing } = await supabase
-                .from('promotions')
-                .select('id')
-                .eq('title', 'CONFIG_EMAIL')
-                .maybeSingle();
 
             const payload = {
                 title: 'CONFIG_EMAIL',

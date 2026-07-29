@@ -10,6 +10,26 @@ window.supabase = supabase; // Fallback global logic
  * Genera el cuerpo de correo HTML altamente estructurado y profesional para la solicitud.
  */
 export const generateLoanApplicationHtml = (isTest, name, cedula, type, monto, tiempo, cuota, d = {}) => {
+    const cleanNum = (val) => {
+        if (val === null || val === undefined || val === '' || val === 'NaN' || val === 'NA' || val === 'N/A') return null;
+        if (typeof val === 'number') return isNaN(val) ? null : val;
+        const cleanStr = String(val).replace(/[^0-9.-]/g, '');
+        if (!cleanStr || cleanStr === '-' || cleanStr === '.') return null;
+        const num = Number(cleanStr);
+        return isNaN(num) ? null : num;
+    };
+
+    const formatCurrency = (val) => {
+        const num = cleanNum(val);
+        if (num !== null) {
+            return `RD$ ${num.toLocaleString('es-DO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
+        if (val !== null && val !== undefined && String(val).trim() !== '' && String(val).trim() !== 'NaN') {
+            return String(val);
+        }
+        return '---';
+    };
+
     const freq = d.frecuenciaPago || 'mensual';
     let freqLabel = 'Meses';
     let cuotaLabel = 'CUOTA MENSUAL:';
@@ -172,20 +192,25 @@ export const generateLoanApplicationHtml = (isTest, name, cedula, type, monto, t
         { label: 'Apellidos', value: sol.apellidos || '---' },
         { label: 'Apodo', value: sol.apodo || '---' },
         { label: 'Estado Civil', value: sol.estadoCivil || '---' },
+        { label: 'Sexo', value: sol.sexo === 'F' ? 'Femenino' : sol.sexo === 'M' ? 'Masculino' : (sol.sexo || '---') },
+        { label: 'Dependientes / Hijos', value: (sol.dependientes !== undefined && sol.dependientes !== null && sol.dependientes !== '') ? String(sol.dependientes) : (sol.hijos || '0') },
         { label: 'Fecha de Nacimiento', value: sol.fechaNacimiento || '---' },
         { label: 'Edad', value: sol.edad ? `${sol.edad} Años` : '---' },
         { label: 'Teléfono / Celular', value: sol.telefono || '---' },
-        { label: 'Profesión / Ocupación', value: sol.profesion || sol.ocupaciones || '---' },
+        { label: 'Profesión', value: sol.profesion || '---' },
+        { label: 'Ocupación', value: sol.ocupaciones || sol.ocupacion || '---' },
         { label: 'Lugar de Trabajo', value: sol.trabajo || '---' },
         { label: 'Cargo', value: sol.cargo || '---' },
-        { label: 'Ingresos Mensuales', value: sol.ingresos ? `RD$ ${Number(sol.ingresos).toLocaleString()}` : '---' },
-        { label: 'Otros Ingresos', value: sol.otrosIngresos ? `RD$ ${Number(sol.otrosIngresos).toLocaleString()}` : '---' },
-        { label: 'Tipo de Casa', value: sol.tipoCasa || '---' },
-        { label: 'Sector / Ciudad', value: `${sol.sector || ''}, ${sol.ciudad || ''}`.trim().replace(/^,|,$/, '') || '---' },
-        { label: 'Dirección completa', value: sol.direccion || '---' },
+        { label: 'Dirección Trabajo', value: sol.direccionTrabajo || '---' },
         { label: 'Superior Inmediato', value: sol.superior || '---' },
         { label: 'Teléfono Trabajo', value: sol.telTrabajo || '---' },
         { label: 'Tiempo Laborando', value: sol.tiempoTrabajo || '---' },
+        { label: 'Ingresos Mensuales', value: formatCurrency(sol.ingresos) },
+        { label: 'Otros Ingresos', value: formatCurrency(sol.otrosIngresos) },
+        { label: 'Vehículo Propio', value: sol.vehiculo || '---' },
+        { label: 'Tipo de Casa', value: sol.tipoCasa || '---' },
+        { label: 'Sector / Ciudad', value: `${sol.sector || ''}, ${sol.ciudad || ''}`.trim().replace(/^,|,$/, '') || '---' },
+        { label: 'Dirección completa', value: sol.direccion || '---' },
         { label: 'Destino del Crédito', value: sol.destino || '---' }
     ];
 
@@ -196,48 +221,80 @@ export const generateLoanApplicationHtml = (isTest, name, cedula, type, monto, t
         { label: 'Apellidos', value: gar.apellidos || '---' },
         { label: 'Apodo', value: gar.apodo || '---' },
         { label: 'Estado Civil', value: gar.estadoCivil || '---' },
+        { label: 'Sexo', value: gar.sexo === 'F' ? 'Femenino' : gar.sexo === 'M' ? 'Masculino' : (gar.sexo || '---') },
+        { label: 'Dependientes / Hijos', value: (gar.dependientes !== undefined && gar.dependientes !== null && gar.dependientes !== '') ? String(gar.dependientes) : (gar.hijos || '0') },
         { label: 'Fecha de Nacimiento', value: gar.fechaNacimiento || '---' },
         { label: 'Edad', value: gar.edad ? `${gar.edad} Años` : '---' },
         { label: 'Teléfono / Celular', value: gar.telefono || '---' },
-        { label: 'Profesión / Ocupación', value: gar.profesion || gar.ocupaciones || '---' },
+        { label: 'Profesión', value: gar.profesion || '---' },
+        { label: 'Ocupación', value: gar.ocupaciones || gar.ocupacion || '---' },
         { label: 'Lugar de Trabajo', value: gar.trabajo || '---' },
         { label: 'Cargo', value: gar.cargo || '---' },
-        { label: 'Ingresos Mensuales', value: gar.ingresos ? `RD$ ${Number(gar.ingresos).toLocaleString()}` : '---' },
-        { label: 'Otros Ingresos', value: gar.otrosIngresos ? `RD$ ${Number(gar.otrosIngresos).toLocaleString()}` : '---' },
+        { label: 'Dirección Trabajo', value: gar.direccionTrabajo || '---' },
+        { label: 'Superior Inmediato', value: gar.superior || '---' },
+        { label: 'Teléfono Trabajo', value: gar.telTrabajo || '---' },
+        { label: 'Tiempo Laborando', value: gar.tiempoTrabajo || '---' },
+        { label: 'Ingresos Mensuales', value: formatCurrency(gar.ingresos) },
+        { label: 'Otros Ingresos', value: formatCurrency(gar.otrosIngresos) },
+        { label: 'Vehículo Propio', value: gar.vehiculo || '---' },
         { label: 'Tipo de Casa', value: gar.tipoCasa || '---' },
         { label: 'Sector / Ciudad', value: `${gar.sector || ''}, ${gar.ciudad || ''}`.trim().replace(/^,|,$/, '') || '---' },
         { label: 'Dirección completa', value: gar.direccion || '---' },
-        { label: 'Superior Inmediato', value: gar.superior || '---' },
-        { label: 'Teléfono Trabajo', value: gar.telTrabajo || '---' },
-        { label: 'Tiempo Laborando', value: gar.tiempoTrabajo || '---' }
+        { label: 'Destino del Crédito', value: gar.destino || '---' }
     ];
 
-    // FUNCIÓN AUXILIAR PARA RENDERIZAR CÓNYUGE INTEGRADO (ULTRAPRACTICO - 1 SOLA FILA)
-    const renderSpouseInline = (spouseData) => {
-        if (!spouseData || !spouseData.nombres) return '';
+    // FUNCIÓN AUXILIAR PARA RENDERIZAR CÓNYUGE INTEGRADO
+    const renderSpouseInline = (spouseData, isGaranteSpouse = false) => {
+        if (!spouseData || (!spouseData.nombres && !spouseData.apellidos)) return '';
+        
+        const spouseTitle = isGaranteSpouse ? 'DATOS DEL CÓNYUGE DEL GARANTE:' : 'DATOS DEL CÓNYUGE:';
+
+        const fields = [
+            { label: 'Nombres Cónyuge', value: spouseData.nombres || '---' },
+            { label: 'Apellidos Cónyuge', value: spouseData.apellidos || '---' },
+            { label: 'Apodo', value: spouseData.apodo || '---' },
+            { label: 'Teléfono', value: spouseData.telefono || '---' },
+            { label: 'Fecha Nacimiento', value: spouseData.fechaNacimiento || '---' },
+            { label: 'Edad', value: spouseData.edad ? `${spouseData.edad} Años` : '---' },
+            { label: 'Estado Civil', value: spouseData.estadoCivil || '---' },
+            { label: 'Profesión / Ocupación', value: spouseData.ocupacion || spouseData.profesion || '---' },
+            { label: 'Lugar de Trabajo', value: spouseData.trabajo || '---' },
+            { label: 'Dirección Trabajo', value: spouseData.direccionTrabajo || spouseData.trabajo || '---' },
+            { label: 'Superior Inmediato', value: spouseData.superior || '---' },
+            { label: 'Teléfono Trabajo', value: spouseData.telTrabajo || '---' },
+            { label: 'Tiempo Laborando', value: spouseData.tiempoTrabajo || '---' },
+            { label: 'Ingresos Mensuales', value: formatCurrency(spouseData.ingresos) },
+            { label: 'Sector / Dirección', value: `${spouseData.sector || ''}, ${spouseData.direccion || ''}`.trim().replace(/^,|,$/, '') || '---' }
+        ];
+
+        const colsCount = 3;
+        const rowsCount = Math.ceil(fields.length / colsCount);
+        let rowsHtml = '';
+        for (let r = 0; r < rowsCount; r++) {
+            rowsHtml += '<tr style="border-bottom: 1px solid #f1f5f9;">';
+            for (let c = 0; c < colsCount; c++) {
+                const idx = r * colsCount + c;
+                const f = fields[idx] || { label: '', value: '' };
+                rowsHtml += `
+                    <td style="padding: 1.5px 1px; font-weight: bold; color: #475569; width: 14%; font-size: 9.5px; text-transform: uppercase;">${f.label ? f.label + ':' : ''}</td>
+                    <td style="padding: 1.5px 2px; color: #1e293b; width: 19%; font-size: 10.5px; font-weight: 600;">${f.value || ''}</td>
+                `;
+            }
+            rowsHtml += '</tr>';
+        }
+
         return `
-        <div style="border-top: 1.5px dashed #cbd5e1; margin-top: 4px; padding-top: 4px; font-size: 10.5px;">
-            <span style="font-weight: bold; color: #0f172a; text-transform: uppercase; font-size: 9.5px; display: block; margin-bottom: 2px; letter-spacing: 0.05em;">DATOS DEL CÓNYUGE:</span>
+        <div style="border-top: 1.5px dashed #cbd5e1; margin-top: 4px; padding-top: 4px;">
+            <span style="font-weight: bold; color: #0f172a; text-transform: uppercase; font-size: 9.5px; display: block; margin-bottom: 2px; letter-spacing: 0.05em;">${spouseTitle}</span>
             <table style="width: 100%; border-collapse: collapse;">
-                <tr>
-                    <td style="padding: 1px 1px; font-weight: bold; color: #475569; width: 14%; text-transform: uppercase; font-size: 9.5px;">Cónyuge:</td>
-                    <td style="padding: 1px 2px; color: #1e293b; width: 36%; font-weight: 600;">${spouseData.nombres} ${spouseData.apellidos || ''} ${spouseData.apodo ? '('+spouseData.apodo+')' : ''}</td>
-                    <td style="padding: 1px 1px; font-weight: bold; color: #475569; width: 14%; text-transform: uppercase; font-size: 9.5px;">Teléfono:</td>
-                    <td style="padding: 1px 2px; color: #1e293b; width: 36%; font-weight: 600;">${spouseData.telefono || '---'}</td>
-                </tr>
-                <tr>
-                    <td style="padding: 1px 1px; font-weight: bold; color: #475569; text-transform: uppercase; font-size: 9.5px;">Trabajo:</td>
-                    <td style="padding: 1px 2px; color: #1e293b; font-weight: 600;">${spouseData.trabajo || '---'} - ${spouseData.ocupacion || '---'}</td>
-                    <td style="padding: 1px 1px; font-weight: bold; color: #475569; text-transform: uppercase; font-size: 9.5px;">Ingresos:</td>
-                    <td style="padding: 1px 2px; color: #1e293b; font-weight: 600;">${spouseData.ingresos ? 'RD$ ' + Number(spouseData.ingresos).toLocaleString() : '---'}</td>
-                </tr>
+                ${rowsHtml}
             </table>
         </div>
         `;
     };
 
     // FUNCIÓN AUXILIAR PARA RENDERIZAR TARJETA DE DATOS (3 COLUMNAS, CON CÓNYUGE INTEGRADO Y OPCIONALMENTE FOTO)
-    const renderPersonCard = (title, fields, chk, spouseData, photoUrl) => {
+    const renderPersonCard = (title, fields, chk, spouseData, photoUrl, isGarante = false) => {
         const colsCount = 3;
         const rowsCount = Math.ceil(fields.length / colsCount);
 
@@ -245,7 +302,7 @@ export const generateLoanApplicationHtml = (isTest, name, cedula, type, monto, t
         for (let r = 0; r < rowsCount; r++) {
             rowsHtml += '<tr style="border-bottom: 1px solid #f1f5f9;">';
             for (let c = 0; c < colsCount; c++) {
-                const idx = r + c * rowsCount;
+                const idx = r * colsCount + c;
                 const f = fields[idx] || { label: '', value: '' };
                 rowsHtml += `
                     <td style="padding: 1.5px 1px; font-weight: bold; color: #475569; width: 14%; font-size: 9.5px; text-transform: uppercase;">${f.label ? f.label + ':' : ''}</td>
@@ -267,7 +324,7 @@ export const generateLoanApplicationHtml = (isTest, name, cedula, type, monto, t
             `;
         };
 
-        const spouseHtml = renderSpouseInline(spouseData);
+        const spouseHtml = renderSpouseInline(spouseData, isGarante);
 
         const photoHtml = photoUrl ? `
             <td style="width: 80px; padding-right: 10px; vertical-align: top; text-align: center;">
@@ -571,7 +628,7 @@ export const generateLoanApplicationHtml = (isTest, name, cedula, type, monto, t
             chkFuncionario: gar.chkFuncionario !== undefined ? gar.chkFuncionario : false,
             chkAccionista: gar.chkAccionista !== undefined ? gar.chkAccionista : false
         };
-        garanteSectionHtml = renderPersonCard('DATOS DEL FIADOR / CO-DEUDOR', garFields, chkGar, gar.conyuge, gar.fotoUrl);
+        garanteSectionHtml = renderPersonCard('DATOS DEL FIADOR / CO-DEUDOR', garFields, chkGar, gar.conyuge, gar.fotoUrl, true);
     }
 
     // REFERENCIAS PERSONALES SIDE-BY-SIDE
@@ -770,6 +827,15 @@ export const sendBrevoNotification = async (monto, tiempo, cuota, type, name, ce
         const subject = `Nueva Solicitud de Préstamo - ${name}`;
         const htmlContent = generateLoanApplicationHtml(false, name, cedula, type, monto, tiempo, cuota, data);
 
+        const formatRecipients = (emailStr) => {
+            if (!emailStr) return [];
+            return String(emailStr)
+                .split(/[,;]/)
+                .map(e => e.trim())
+                .filter(Boolean)
+                .map(email => ({ email }));
+        };
+
         const response = await fetch('https://api.brevo.com/v3/smtp/email', {
             method: 'POST',
             headers: {
@@ -779,14 +845,10 @@ export const sendBrevoNotification = async (monto, tiempo, cuota, type, name, ce
             },
             body: JSON.stringify({
                 sender: {
-                    name: config.sender_name,
-                    email: config.sender_email
+                    name: String(config.sender_name || 'B&H Préstamos').trim(),
+                    email: String(config.sender_email || '').trim()
                 },
-                to: [
-                    {
-                        email: config.recipient_email
-                    }
-                ],
+                to: formatRecipients(config.recipient_email),
                 subject: subject,
                 htmlContent: htmlContent
             })
@@ -822,6 +884,15 @@ export const sendBrevoTestEmail = async (config) => {
 
     const htmlContent = generateLoanApplicationHtml(true, null, null, null, null, null, null, { isEmail: true, portalLogo });
 
+    const formatRecipients = (emailStr) => {
+        if (!emailStr) return [];
+        return String(emailStr)
+            .split(/[,;]/)
+            .map(e => e.trim())
+            .filter(Boolean)
+            .map(email => ({ email }));
+    };
+
     const response = await fetch('https://api.brevo.com/v3/smtp/email', {
         method: 'POST',
         headers: {
@@ -831,14 +902,10 @@ export const sendBrevoTestEmail = async (config) => {
         },
         body: JSON.stringify({
             sender: {
-                name: config.sender_name,
-                email: config.sender_email
+                name: String(config.sender_name || 'B&H Préstamos').trim(),
+                email: String(config.sender_email || '').trim()
             },
-            to: [
-                {
-                    email: config.recipient_email
-                }
-            ],
+            to: formatRecipients(config.recipient_email),
             subject: subject,
             htmlContent: htmlContent
         })
