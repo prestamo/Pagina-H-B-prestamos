@@ -634,7 +634,7 @@ function parseJCEDate(jceDate) {
 }
 
 async function getJCEBaseUrl() {
-    let baseUrl = 'https://edging-rarity-routing.ngrok-free.dev';
+    let baseUrl = 'https://unrude-unpopular-gerri.ngrok-free.dev';
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         const checks = [
             { port: 3001, path: '/api/health' },

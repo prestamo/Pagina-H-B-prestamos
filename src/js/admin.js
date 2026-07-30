@@ -2189,7 +2189,7 @@ function parseJCEDate(jceDate) {
  * Obtiene el base URL del servidor local de la JCE probando puertos 3001, 8082 o ngrok.
  */
 async function getJCEBaseUrl() {
-    let baseUrl = 'https://edging-rarity-routing.ngrok-free.dev';
+    let baseUrl = 'https://unrude-unpopular-gerri.ngrok-free.dev';
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         const checks = [
             { port: 3001, path: '/api/health' },
