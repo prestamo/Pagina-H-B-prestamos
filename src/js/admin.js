@@ -32,9 +32,9 @@ if (loginForm) {
             const urlParams = new URLSearchParams(window.location.search);
             const printId = urlParams.get('print');
             if (printId) {
-                window.location.href = './solicitudes_list.html?print=' + printId;
+                window.location.href = '/admin/solicitudes_list.html?print=' + printId;
             } else {
-                window.location.href = './index.html';
+                window.location.href = '/admin/index.html';
             }
 
         } catch (err) {
@@ -54,7 +54,7 @@ if (loginForm) {
 export const checkSession = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
-        window.location.href = './login.html' + window.location.search;
+        window.location.href = '/admin/login.html' + window.location.search;
         return null;
     }
     return session;
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Protección de Ruta & Sesión
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) {
-            window.location.href = './login.html' + window.location.search;
+            window.location.href = '/admin/login.html' + window.location.search;
             return;
         }
 
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Logout Genérico
         document.getElementById('logoutBtn')?.addEventListener('click', async () => {
             await supabase.auth.signOut();
-            window.location.href = './login.html';
+            window.location.href = '/admin/login.html';
         });
 
         // --- INICIALIZACIÓN POR PÁGINA ---
@@ -2828,7 +2828,7 @@ async function initSolicitudesModule() {
             }
 
             alert(editId ? '¡Solicitud actualizada con éxito!' : '¡Solicitud guardada con éxito!');
-            window.location.href = editId ? 'solicitudes_list.html' : 'clientes.html';
+            window.location.href = editId ? '/admin/solicitudes_list.html' : '/admin/clientes.html';
         } catch (err) {
             console.error(err);
             alert('Error al guardar: ' + err.message);
@@ -3309,7 +3309,7 @@ async function initSolicitudesListModule() {
 }
 
 window.editSolicitud = (id) => {
-    window.location.href = `./solicitudes.html?edit=${id}`;
+    window.location.href = `/admin/solicitudes.html?edit=${id}`;
 };
 
 window.deleteSolicitud = async (id) => {
