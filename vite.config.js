@@ -28,6 +28,9 @@ export default defineConfig({
             purpose: 'any'
           }
         ]
+      },
+      workbox: {
+        ignoreURLParametersMatching: [/.*/]
       }
     })
   ],
