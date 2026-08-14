@@ -512,13 +512,24 @@ function setupSubmit(form, saveBtn, tipoPrestamoSelect, fechaSolicitudInput) {
                 };
             }
 
-            const cleanNum = str => parseFloat(String(str).replace(/,/g, '')) || 0;
+            let pubSolicitudNo = '';
+            try {
+                const { count } = await supabase.from('loan_applications').select('*', { count: 'exact', head: true });
+                pubSolicitudNo = String((count || 0) + 1).padStart(5, '0');
+            } catch (cntErr) {
+                console.warn('Error fetching count for public application:', cntErr);
+            }
+            if (pubSolicitudNo) {
+                fullData.solicitudNo = pubSolicitudNo;
+                fullData.numeroSolicitud = pubSolicitudNo;
+            }
 
             const { data: insertedData, error: sErr } = await supabase.from('loan_applications').insert([{
                 client_id: clientId,
                 loan_type: type,
                 applicant_name: full_name,
                 applicant_cedula: cedula,
+                solicitud_no: pubSolicitudNo || undefined,
                 monto: cleanNum(val('montoSolicitado')),
                 tiempo: parseInt(val('tiempoPrestamo')) || 0,
                 cuota: cleanNum(val('cuotaPrestamo')),

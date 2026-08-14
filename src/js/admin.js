@@ -2511,7 +2511,14 @@ async function initSolicitudesModule() {
 
     // Cargar número correlativo aproximado
     const { count } = await supabase.from('loan_applications').select('*', { count: 'exact', head: true });
-    solicitudNoEl.textContent = String((count || 0) + 1).padStart(5, '0');
+    if (solicitudNoEl && !new URLSearchParams(window.location.search).get('edit')) {
+        const nextNo = String((count || 0) + 1).padStart(5, '0');
+        if (solicitudNoEl.tagName === 'INPUT') {
+            solicitudNoEl.value = nextNo;
+        } else {
+            solicitudNoEl.textContent = nextNo;
+        }
+    }
 
     window.addReferenciaRow = (data = { nombre: '', telefono: '', direccion: '' }) => {
         const tr = document.createElement('tr');
@@ -2779,6 +2786,9 @@ async function initSolicitudesModule() {
             // 5. Guardar o Actualizar Solicitud
             const cleanNum = (str) => parseFloat(String(str).replace(/,/g, '')) || 0;
             const editId = new URLSearchParams(window.location.search).get('edit');
+            const customSolicitudNo = (solicitudNoEl?.value || solicitudNoEl?.textContent || '').trim() || String((count || 0) + 1).padStart(5, '0');
+            fullData.solicitudNo = customSolicitudNo;
+            fullData.numeroSolicitud = customSolicitudNo;
 
             let queryPromise;
             if (editId) {
@@ -2786,6 +2796,7 @@ async function initSolicitudesModule() {
                     loan_type: type,
                     applicant_name: full_name,
                     applicant_cedula: cedula,
+                    solicitud_no: customSolicitudNo,
                     monto: cleanNum(document.getElementById('montoSolicitado').value),
                     tiempo: parseInt(document.getElementById('tiempoPrestamo').value) || 0,
                     cuota: cleanNum(document.getElementById('cuotaPrestamo').value),
@@ -2797,6 +2808,7 @@ async function initSolicitudesModule() {
                     loan_type: type,
                     applicant_name: full_name,
                     applicant_cedula: cedula,
+                    solicitud_no: customSolicitudNo,
                     monto: cleanNum(document.getElementById('montoSolicitado').value),
                     tiempo: parseInt(document.getElementById('tiempoPrestamo').value) || 0,
                     cuota: cleanNum(document.getElementById('cuotaPrestamo').value),
@@ -2872,7 +2884,12 @@ async function initSolicitudesModule() {
             
             // Solicitud No
             if (solicitudNoEl) {
-                solicitudNoEl.textContent = String(s.id).split('-')[0].toUpperCase();
+                const savedNo = s.solicitud_no || d.solicitudNo || d.numeroSolicitud || String(s.id).split('-')[0].toUpperCase();
+                if (solicitudNoEl.tagName === 'INPUT') {
+                    solicitudNoEl.value = savedNo;
+                } else {
+                    solicitudNoEl.textContent = savedNo;
+                }
             }
 
             // Datos Generales
@@ -3235,7 +3252,10 @@ async function initSolicitudesListModule() {
                 return `
                     <tr class="hover:bg-slate-50 transition-colors group">
                         <td class="p-6">
-                            <span class="block text-sm font-black text-slate-800 tracking-tighter uppercase whitespace-nowrap">SOL-${String(s.id).split('-')[0]}</span>
+                            <span class="block text-sm font-black text-slate-800 tracking-tighter uppercase whitespace-nowrap">${(() => {
+                                const sNo = s.solicitud_no || s.data?.solicitudNo || s.data?.numeroSolicitud || String(s.id).split('-')[0].toUpperCase();
+                                return sNo.startsWith('SOL-') ? sNo : 'SOL-' + sNo;
+                            })()}</span>
                             <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">${new Date(s.created_at).toLocaleDateString()}</span>
                         </td>
                         <td class="p-6">
@@ -3503,6 +3523,8 @@ window.printEmailTemplate = async (id) => {
 
     const d = s.data || {};
     d.id = s.id || id;
+    d.solicitudNo = s.solicitud_no || d.solicitudNo || d.numeroSolicitud || String(s.id).split('-')[0].toUpperCase();
+    d.solicitud_no = d.solicitudNo;
 
     // Obtener logo de la empresa para la plantilla de impresión
     try {
@@ -3864,7 +3886,7 @@ window.openSolicitudRetro = async (id, mode = 'cliente_garante', autoPrint = fal
     <html lang="es">
     <head>
         <meta charset="UTF-8">
-        <title>Solicitud de Préstamo - ${s.id.split('-')[0].toUpperCase()}</title>
+        <title>Solicitud de Préstamo - ${s.solicitud_no || d.solicitudNo || d.numeroSolicitud || String(s.id).split('-')[0].toUpperCase()}</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
         <style>
             @page {
@@ -4518,11 +4540,11 @@ window.openSolicitudRetro = async (id, mode = 'cliente_garante', autoPrint = fal
                         <div class="sidebar-rows">
                             <div class="sidebar-row">
                                 <span class="sidebar-label">Prestamo No :</span>
-                                <span class="sidebar-val highlight-red">250-00000${s.id.split('-')[0].slice(0, 5).toUpperCase()}</span>
+                                <span class="sidebar-val highlight-red">${s.solicitud_no || d.solicitudNo || d.numeroSolicitud || String(s.id).split('-')[0].toUpperCase()}</span>
                             </div>
                             <div class="sidebar-row">
                                 <span class="sidebar-label">Solicitud No :</span>
-                                <span class="sidebar-val highlight-red">250-00000${s.id.split('-')[0].slice(0, 5).toUpperCase()}</span>
+                                <span class="sidebar-val highlight-red">${s.solicitud_no || d.solicitudNo || d.numeroSolicitud || String(s.id).split('-')[0].toUpperCase()}</span>
                             </div>
                             <div class="sidebar-row">
                                 <span class="sidebar-label">a Pagar :</span>
@@ -4864,7 +4886,7 @@ window.exportToWord = async (id) => {
                 <td width="10%"></td>
                 <td width="55%" align="left" valign="top" style="font-size: 11pt; padding-top: 15px;">
                     <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                        <tr><td width="160"><p style="margin:2px 0;">SOLICITUD NO:</p></td><td><p style="margin:2px 0;">${String(s.id).split('-')[0].toUpperCase()}</p></td></tr>
+                        <tr><td width="160"><p style="margin:2px 0;">SOLICITUD NO:</p></td><td><p style="margin:2px 0;">${s.solicitud_no || d.solicitudNo || d.numeroSolicitud || String(s.id).split('-')[0].toUpperCase()}</p></td></tr>
                         <tr><td><p style="margin:2px 0;">FECHA SOLICITUD:</p></td><td><p style="margin:2px 0;">${new Date(s.created_at).toLocaleDateString()}</p></td></tr>
                         <tr><td><p style="margin:2px 0;">MONTO RD$:</p></td><td><p style="margin:2px 0;">${Number(s.monto).toLocaleString()}</p></td></tr>
                         <tr><td><p style="margin:2px 0;">TIEMPO:</p></td><td><p style="margin:2px 0;">${s.tiempo} ${freqLabel}</p></td></tr>

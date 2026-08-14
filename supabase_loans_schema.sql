@@ -91,6 +91,7 @@ CREATE TABLE IF NOT EXISTS loan_applications (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     client_id UUID REFERENCES clients(id) ON DELETE CASCADE,
     guarantor_id UUID REFERENCES guarantors(id) ON DELETE SET NULL,
+    solicitud_no TEXT,
     status TEXT DEFAULT 'Pendiente',
     loan_type TEXT, -- personal, garante, hipotecario, vehiculo
     monto NUMERIC(15,2),
@@ -99,6 +100,7 @@ CREATE TABLE IF NOT EXISTS loan_applications (
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+ALTER TABLE loan_applications ADD COLUMN IF NOT EXISTS solicitud_no TEXT;
 
 -- 5. Tabla de Referencias Personales/Comerciales
 CREATE TABLE IF NOT EXISTS client_references (

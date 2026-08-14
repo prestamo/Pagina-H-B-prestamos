@@ -182,8 +182,8 @@ export const generateLoanApplicationHtml = (isTest, name, cedula, type, monto, t
         vehiculo: 'Crédito para Vehículo'
     };
     const prettyType = typeLabels[type] || type || 'No especificado';
-    const solicitudId = isTest ? 'BH-TEST-9999' : (Math.floor(Math.random() * 90000) + 10000);
-    const dateStr = isTest ? '26/6/2026' : new Date().toLocaleDateString('es-DO');
+    const solicitudId = isTest ? 'BH-TEST-9999' : (d.solicitudNo || d.solicitud_no || d.numeroSolicitud || (d.id ? String(d.id).split('-')[0].toUpperCase() : '---'));
+    const dateStr = isTest ? '26/6/2026' : (d.fechaSolicitud || new Date().toLocaleDateString('es-DO'));
 
     // SOLICITANTE FIELD LIST
     const solFields = [
