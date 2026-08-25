@@ -2790,34 +2790,46 @@ async function initSolicitudesModule() {
             fullData.solicitudNo = customSolicitudNo;
             fullData.numeroSolicitud = customSolicitudNo;
 
-            let queryPromise;
-            if (editId) {
-                queryPromise = supabase.from('loan_applications').update({
-                    loan_type: type,
-                    applicant_name: full_name,
-                    applicant_cedula: cedula,
-                    solicitud_no: customSolicitudNo,
-                    monto: cleanNum(document.getElementById('montoSolicitado').value),
-                    tiempo: parseInt(document.getElementById('tiempoPrestamo').value) || 0,
-                    cuota: cleanNum(document.getElementById('cuotaPrestamo').value),
-                    data: fullData
-                }).eq('id', editId).select();
-            } else {
-                queryPromise = supabase.from('loan_applications').insert([{
-                    client_id: clientId,
-                    loan_type: type,
-                    applicant_name: full_name,
-                    applicant_cedula: cedula,
-                    solicitud_no: customSolicitudNo,
-                    monto: cleanNum(document.getElementById('montoSolicitado').value),
-                    tiempo: parseInt(document.getElementById('tiempoPrestamo').value) || 0,
-                    cuota: cleanNum(document.getElementById('cuotaPrestamo').value),
-                    status: 'Pendiente',
-                    data: fullData
-                }]).select();
+            let appPayload = {
+                loan_type: type,
+                applicant_name: full_name,
+                applicant_cedula: cedula,
+                solicitud_no: customSolicitudNo,
+                monto: cleanNum(document.getElementById('montoSolicitado').value),
+                tiempo: parseInt(document.getElementById('tiempoPrestamo').value) || 0,
+                cuota: cleanNum(document.getElementById('cuotaPrestamo').value),
+                data: fullData
+            };
+            if (!editId) {
+                appPayload.client_id = clientId;
+                appPayload.status = 'Pendiente';
             }
 
-            const { data: resultData, error: sErr } = await queryPromise;
+            let resultData, sErr;
+            if (editId) {
+                const res = await supabase.from('loan_applications').update(appPayload).eq('id', editId).select();
+                resultData = res.data;
+                sErr = res.error;
+            } else {
+                const res = await supabase.from('loan_applications').insert([appPayload]).select();
+                resultData = res.data;
+                sErr = res.error;
+            }
+
+            // Si la columna 'solicitud_no' no existe en el esquema de Supabase DB, reintentar sin ese campo
+            if (sErr && (sErr.message?.includes('solicitud_no') || sErr.code === 'PGRST204')) {
+                console.warn('Columna solicitud_no no encontrada en loan_applications schema, guardando en campo data...');
+                delete appPayload.solicitud_no;
+                if (editId) {
+                    const res = await supabase.from('loan_applications').update(appPayload).eq('id', editId).select();
+                    resultData = res.data;
+                    sErr = res.error;
+                } else {
+                    const res = await supabase.from('loan_applications').insert([appPayload]).select();
+                    resultData = res.data;
+                    sErr = res.error;
+                }
+            }
 
             if (sErr) throw sErr;
             const insertedId = resultData && resultData[0] ? resultData[0].id : null;

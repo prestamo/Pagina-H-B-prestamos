@@ -9,15 +9,16 @@ window.supabase = supabase; // Fallback global logic
 /**
  * Genera el cuerpo de correo HTML altamente estructurado y profesional para la solicitud.
  */
+export const cleanNum = (val) => {
+    if (val === null || val === undefined || val === '' || val === 'NaN' || val === 'NA' || val === 'N/A') return null;
+    if (typeof val === 'number') return isNaN(val) ? null : val;
+    const cleanStr = String(val).replace(/[^0-9.-]/g, '');
+    if (!cleanStr || cleanStr === '-' || cleanStr === '.') return null;
+    const num = Number(cleanStr);
+    return isNaN(num) ? null : num;
+};
+
 export const generateLoanApplicationHtml = (isTest, name, cedula, type, monto, tiempo, cuota, d = {}) => {
-    const cleanNum = (val) => {
-        if (val === null || val === undefined || val === '' || val === 'NaN' || val === 'NA' || val === 'N/A') return null;
-        if (typeof val === 'number') return isNaN(val) ? null : val;
-        const cleanStr = String(val).replace(/[^0-9.-]/g, '');
-        if (!cleanStr || cleanStr === '-' || cleanStr === '.') return null;
-        const num = Number(cleanStr);
-        return isNaN(num) ? null : num;
-    };
 
     const formatCurrency = (val) => {
         const num = cleanNum(val);

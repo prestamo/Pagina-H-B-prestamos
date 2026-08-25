@@ -1,4 +1,4 @@
-import { supabase, sendBrevoNotification } from './supabase.js';
+import { supabase, sendBrevoNotification, cleanNum } from './supabase.js';
 
 export function initClientApplication() {
     const form = document.getElementById('clientSolicitudForm');
@@ -524,7 +524,7 @@ function setupSubmit(form, saveBtn, tipoPrestamoSelect, fechaSolicitudInput) {
                 fullData.numeroSolicitud = pubSolicitudNo;
             }
 
-            const { data: insertedData, error: sErr } = await supabase.from('loan_applications').insert([{
+            let appPayload = {
                 client_id: clientId,
                 loan_type: type,
                 applicant_name: full_name,
@@ -535,7 +535,18 @@ function setupSubmit(form, saveBtn, tipoPrestamoSelect, fechaSolicitudInput) {
                 cuota: cleanNum(val('cuotaPrestamo')),
                 status: 'Pendiente',
                 data: fullData
-            }]).select();
+            };
+
+            let { data: insertedData, error: sErr } = await supabase.from('loan_applications').insert([appPayload]).select();
+
+            // Si la columna 'solicitud_no' no existe en el esquema de Supabase DB, reintentar sin ese campo
+            if (sErr && (sErr.message?.includes('solicitud_no') || sErr.code === 'PGRST204')) {
+                console.warn('Columna solicitud_no no encontrada en loan_applications schema, guardando en campo data...');
+                delete appPayload.solicitud_no;
+                const res = await supabase.from('loan_applications').insert([appPayload]).select();
+                insertedData = res.data;
+                sErr = res.error;
+            }
 
             if (sErr) throw sErr;
             const insertedId = insertedData && insertedData[0] ? insertedData[0].id : null;
