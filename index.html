@@ -29,6 +29,7 @@
                 <li><a href="#home" class="hover:text-brand transition-colors">Inicio</a></li>
                 <li><a href="nosotros.html" class="hover:text-brand transition-colors">Nosotros</a></li>
                 <li><a href="tipos_prestamos.html" class="hover:text-brand transition-colors">Servicios</a></li>
+                <li><a href="#calculadora" class="hover:text-brand transition-colors flex items-center gap-1"><i class="fas fa-calculator text-xs"></i> Calcular</a></li>
                 <li><a href="solicitud_español.html" class="bg-accent text-prime px-5 py-2.5 rounded-full hover:bg-yellow-600 transition-all shadow-lg hover:scale-105 active:scale-95 font-black uppercase text-xs tracking-widest">Solicitar Ahora</a></li>
                 <li>
                     <select id="language-select" class="bg-transparent border border-white/20 rounded px-2 py-1 text-xs focus:ring-accent focus:border-accent">
@@ -141,6 +142,320 @@
 
         <!-- Banner Position: Center (Bajo Servicios) -->
         <div id="banner-center" class="hidden overflow-hidden relative"></div>
+
+        <!-- ================================================
+             CALCULADORA DE PRÉSTAMOS
+             ================================================ -->
+        <section id="calculadora" class="py-24 relative overflow-hidden" style="background: linear-gradient(135deg, #012139 0%, #01304f 60%, #012139 100%);">
+            <!-- Decoraciones de fondo -->
+            <div class="absolute top-0 right-0 w-[500px] h-[500px] rounded-full pointer-events-none" style="background:radial-gradient(circle, rgba(0,174,239,0.07) 0%, transparent 70%); transform: translate(30%,-30%);"></div>
+            <div class="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full pointer-events-none" style="background:radial-gradient(circle, rgba(193,162,42,0.06) 0%, transparent 70%); transform: translate(-30%,30%);"></div>
+
+            <div class="max-w-7xl mx-auto px-4 relative z-10">
+
+                <!-- Encabezado de sección -->
+                <div class="text-center mb-12">
+                    <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-5" style="background:rgba(0,174,239,0.15); color:#00aeef;">
+                        <i class="fas fa-calculator"></i> Herramienta Financiera
+                    </span>
+                    <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-4">
+                        Simulador de <span style="color:#00aeef;">Préstamo</span>
+                    </h2>
+                    <p class="text-white/60 text-lg max-w-xl mx-auto font-light">Calcula tu cuota estimada en segundos. Sin compromiso, sin registro.</p>
+                </div>
+
+                <!-- Pestañas de tipo de crédito -->
+                <div id="calc-tabs" class="flex justify-center gap-3 mb-8 flex-wrap">
+                    <button data-tab="consumo" class="calc-tab flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold text-sm border transition-all duration-300">
+                        <i class="fas fa-credit-card"></i> Crédito de Consumo
+                    </button>
+                    <button data-tab="vehiculo" class="calc-tab flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold text-sm border transition-all duration-300">
+                        <i class="fas fa-car"></i> Crédito de Vehículo
+                    </button>
+                    <button data-tab="hipotecario" class="calc-tab flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold text-sm border transition-all duration-300">
+                        <i class="fas fa-home"></i> Crédito Hipotecario
+                    </button>
+                </div>
+
+                <!-- Tarjeta principal de la calculadora -->
+                <div class="bg-white rounded-[2.5rem] shadow-[0_30px_80px_rgba(0,0,0,0.45)] overflow-hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-2">
+
+                        <!-- ============ PANEL IZQUIERDO: Inputs ============ -->
+                        <div class="p-8 md:p-12 border-b lg:border-b-0 lg:border-r border-slate-100">
+
+                            <!-- ── PANEL CONSUMO ── -->
+                            <div id="panel-consumo" class="calc-panel">
+                                <div class="flex items-center gap-3 mb-8">
+                                    <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(0,174,239,0.12);">
+                                        <i class="fas fa-credit-card" style="color:#00aeef;"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-prime text-lg leading-none">Datos del crédito</h3>
+                                        <p class="text-xs mt-1" style="color:#00aeef;">Ingresa el monto y plazo deseado por el cliente o potencial cliente</p>
+                                    </div>
+                                </div>
+                                <div class="space-y-6">
+                                    <div>
+                                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Monto a Solicitar</label>
+                                        <input id="con-monto" type="text" value="RD$300,000"
+                                            class="w-full border-2 border-slate-200 rounded-xl px-4 py-3.5 text-prime font-semibold text-base outline-none transition-all bg-slate-50"
+                                            style="transition: border-color 0.2s, box-shadow 0.2s;"
+                                            onfocus="this.style.borderColor='#00aeef';this.style.boxShadow='0 0 0 4px rgba(0,174,239,0.1)'"
+                                            onblur="this.style.borderColor='';this.style.boxShadow=''">
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between items-center mb-3">
+                                            <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Plazo</label>
+                                            <span id="con-plazo-label" class="text-sm font-bold px-3 py-1 rounded-full" style="background:rgba(0,174,239,0.1); color:#00aeef;">36 meses (3 años)</span>
+                                        </div>
+                                        <input id="con-plazo" type="range" min="6" max="60" value="36" step="6" class="calc-slider w-full">
+                                        <div class="flex justify-between text-[10px] text-slate-400 mt-1.5">
+                                            <span>6 meses</span><span>5 años</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Interés Anual (%)</label>
+                                        <input id="con-interes" type="number" value="10.00" step="0.01" min="1" max="50"
+                                            class="w-full border-2 rounded-xl px-4 py-3.5 text-prime font-semibold text-base outline-none transition-all"
+                                            style="border-color:#00aeef;"
+                                            onfocus="this.style.boxShadow='0 0 0 4px rgba(0,174,239,0.1)'"
+                                            onblur="this.style.boxShadow=''">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Ingresos Mensuales</label>
+                                        <input id="con-ingresos" type="text" value="RD$300,000"
+                                            class="w-full border-2 border-slate-200 rounded-xl px-4 py-3.5 text-prime font-semibold text-base outline-none transition-all bg-slate-50"
+                                            onfocus="this.style.borderColor='#00aeef';this.style.boxShadow='0 0 0 4px rgba(0,174,239,0.1)'"
+                                            onblur="this.style.borderColor='';this.style.boxShadow=''">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Edad</label>
+                                        <input id="con-edad" type="number" value="35" min="18" max="70"
+                                            class="w-full border-2 border-slate-200 rounded-xl px-4 py-3.5 text-prime font-semibold text-base outline-none transition-all bg-slate-50"
+                                            onfocus="this.style.borderColor='#00aeef';this.style.boxShadow='0 0 0 4px rgba(0,174,239,0.1)'"
+                                            onblur="this.style.borderColor='';this.style.boxShadow=''">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ── PANEL VEHÍCULO ── -->
+                            <div id="panel-vehiculo" class="calc-panel hidden">
+                                <div class="flex items-center gap-3 mb-8">
+                                    <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(0,174,239,0.12);">
+                                        <i class="fas fa-car" style="color:#00aeef;"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-prime text-lg leading-none">Datos del crédito</h3>
+                                        <p class="text-xs mt-1" style="color:#00aeef;">Ingresa los datos del vehículo a financiar</p>
+                                    </div>
+                                </div>
+                                <div class="space-y-5">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Tipo de Vehículo</label>
+                                            <select id="veh-tipo" class="w-full border-2 border-slate-200 rounded-xl px-4 py-3.5 text-prime font-semibold text-sm outline-none bg-slate-50 cursor-pointer">
+                                                <option value="nuevo">Nuevo</option>
+                                                <option value="usado">Usado</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Categoría</label>
+                                            <select id="veh-categoria" class="w-full border-2 border-slate-200 rounded-xl px-4 py-3.5 text-prime font-semibold text-sm outline-none bg-slate-50 cursor-pointer">
+                                                <option>Auto</option>
+                                                <option>Camioneta</option>
+                                                <option>Motocicleta</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Valor del Vehículo</label>
+                                        <input id="veh-valor" type="text" value="RD$1,500,000"
+                                            class="w-full border-2 border-slate-200 rounded-xl px-4 py-3.5 text-prime font-semibold outline-none bg-slate-50"
+                                            onfocus="this.style.borderColor='#00aeef';this.style.boxShadow='0 0 0 4px rgba(0,174,239,0.1)'"
+                                            onblur="this.style.borderColor='';this.style.boxShadow=''">
+                                    </div>
+                                    <p id="veh-financiar-label" class="text-xs font-semibold" style="color:#00aeef;">Monto a financiar: RD$1,200,000 (80% del valor del vehículo)</p>
+                                    <div>
+                                        <div class="flex justify-between items-center mb-3">
+                                            <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Plazo</label>
+                                            <span id="veh-plazo-label" class="text-sm font-bold px-3 py-1 rounded-full" style="background:rgba(0,174,239,0.1); color:#00aeef;">60 meses (5 años)</span>
+                                        </div>
+                                        <input id="veh-plazo" type="range" min="12" max="84" value="60" step="12" class="calc-slider w-full">
+                                        <div class="flex justify-between text-[10px] text-slate-400 mt-1.5">
+                                            <span>12 meses</span><span>7 años</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Interés Anual (%)</label>
+                                        <input id="veh-interes" type="number" value="10.00" step="0.01" min="1" max="50"
+                                            class="w-full border-2 rounded-xl px-4 py-3.5 text-prime font-semibold outline-none"
+                                            style="border-color:#00aeef;"
+                                            onfocus="this.style.boxShadow='0 0 0 4px rgba(0,174,239,0.1)'"
+                                            onblur="this.style.boxShadow=''">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Ingresos Mensuales</label>
+                                        <input id="veh-ingresos" type="text" value="RD$90,000"
+                                            class="w-full border-2 border-slate-200 rounded-xl px-4 py-3.5 text-prime font-semibold outline-none bg-slate-50"
+                                            onfocus="this.style.borderColor='#00aeef';this.style.boxShadow='0 0 0 4px rgba(0,174,239,0.1)'"
+                                            onblur="this.style.borderColor='';this.style.boxShadow=''">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Edad</label>
+                                        <input id="veh-edad" type="number" value="35" min="18" max="70"
+                                            class="w-full border-2 border-slate-200 rounded-xl px-4 py-3.5 text-prime font-semibold outline-none bg-slate-50"
+                                            onfocus="this.style.borderColor='#00aeef';this.style.boxShadow='0 0 0 4px rgba(0,174,239,0.1)'"
+                                            onblur="this.style.borderColor='';this.style.boxShadow=''">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ── PANEL HIPOTECARIO ── -->
+                            <div id="panel-hipotecario" class="calc-panel hidden">
+                                <div class="flex items-center gap-3 mb-8">
+                                    <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(0,174,239,0.12);">
+                                        <i class="fas fa-home" style="color:#00aeef;"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-prime text-lg leading-none">Datos del crédito</h3>
+                                        <p class="text-xs mt-1" style="color:#00aeef;">Ingresa los datos del inmueble a financiar</p>
+                                    </div>
+                                </div>
+                                <div class="space-y-5">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Tipo de Crédito</label>
+                                            <select id="hip-tipo" class="w-full border-2 border-slate-200 rounded-xl px-4 py-3.5 text-prime font-semibold text-sm outline-none bg-slate-50">
+                                                <option>Primera Vivienda</option>
+                                                <option>Segunda Vivienda</option>
+                                                <option>Terreno</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Moneda</label>
+                                            <select id="hip-moneda" class="w-full border-2 border-slate-200 rounded-xl px-4 py-3.5 text-prime font-semibold text-sm outline-none bg-slate-50">
+                                                <option>Pesos (DOP)</option>
+                                                <option>Dólares (USD)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Valor del Inmueble</label>
+                                        <input id="hip-valor" type="text" value="RD$4,000,000"
+                                            class="w-full border-2 border-slate-200 rounded-xl px-4 py-3.5 text-prime font-semibold outline-none bg-slate-50"
+                                            onfocus="this.style.borderColor='#00aeef';this.style.boxShadow='0 0 0 4px rgba(0,174,239,0.1)'"
+                                            onblur="this.style.borderColor='';this.style.boxShadow=''">
+                                    </div>
+                                    <p id="hip-financiar-label" class="text-xs font-semibold" style="color:#00aeef;">Monto a financiar: RD$3,200,000 (80% del valor del inmueble)</p>
+                                    <div>
+                                        <div class="flex justify-between items-center mb-3">
+                                            <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Plazo</label>
+                                            <span id="hip-plazo-label" class="text-sm font-bold px-3 py-1 rounded-full" style="background:rgba(0,174,239,0.1); color:#00aeef;">240 meses (20 años)</span>
+                                        </div>
+                                        <input id="hip-plazo" type="range" min="12" max="360" value="240" step="12" class="calc-slider w-full">
+                                        <div class="flex justify-between text-[10px] text-slate-400 mt-1.5">
+                                            <span>12 meses</span><span>30 años</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Interés Anual (%)</label>
+                                        <input id="hip-interes" type="number" value="10.00" step="0.01" min="1" max="50"
+                                            class="w-full border-2 rounded-xl px-4 py-3.5 text-prime font-semibold outline-none"
+                                            style="border-color:#00aeef;"
+                                            onfocus="this.style.boxShadow='0 0 0 4px rgba(0,174,239,0.1)'"
+                                            onblur="this.style.boxShadow=''">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Ingresos Mensuales</label>
+                                        <input id="hip-ingresos" type="text" value="RD$90,000"
+                                            class="w-full border-2 border-slate-200 rounded-xl px-4 py-3.5 text-prime font-semibold outline-none bg-slate-50"
+                                            onfocus="this.style.borderColor='#00aeef';this.style.boxShadow='0 0 0 4px rgba(0,174,239,0.1)'"
+                                            onblur="this.style.borderColor='';this.style.boxShadow=''">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Edad</label>
+                                        <input id="hip-edad" type="number" value="35" min="18" max="70"
+                                            class="w-full border-2 border-slate-200 rounded-xl px-4 py-3.5 text-prime font-semibold outline-none bg-slate-50"
+                                            onfocus="this.style.borderColor='#00aeef';this.style.boxShadow='0 0 0 4px rgba(0,174,239,0.1)'"
+                                            onblur="this.style.borderColor='';this.style.boxShadow=''">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div><!-- /Panel Izquierdo -->
+
+                        <!-- ============ PANEL DERECHO: Resultados ============ -->
+                        <div class="p-8 md:p-12 bg-slate-50 flex flex-col">
+
+                            <!-- Header resultados -->
+                            <div class="mb-5">
+                                <h3 class="text-2xl font-extrabold text-prime">Resultado de la Simulación</h3>
+                                <p id="calc-result-type" class="text-slate-400 text-sm mt-1">Detalles del crédito de consumo</p>
+                            </div>
+
+                            <!-- Status badge -->
+                            <div id="calc-status-msg" class="calc-status-badge calc-status-ok">
+                                <i class="fas fa-check-circle"></i>
+                                Su solicitud cumple con las políticas de B&H Préstamos
+                            </div>
+
+                            <!-- Tabla de resultados -->
+                            <div class="flex-1 divide-y divide-slate-200">
+
+                                <div class="flex justify-between items-center py-4">
+                                    <span class="text-slate-600 font-medium">Valor a financiar:</span>
+                                    <span id="calc-valor-financiar" class="font-bold text-prime">RD$300,000.00</span>
+                                </div>
+
+                                <!-- Póliza – sólo aparece para consumo -->
+                                <div id="calc-poliza-row" class="flex justify-between items-center py-4">
+                                    <span class="text-slate-600 font-medium">Póliza de seguro estimada:</span>
+                                    <span id="calc-poliza" class="font-bold text-prime">RD$4,008.96</span>
+                                </div>
+
+                                <div class="flex justify-between items-center py-4">
+                                    <span class="font-semibold" style="color:#00aeef;">Cuota mensual estimada:</span>
+                                    <span id="calc-cuota" class="font-black text-xl" style="color:#00aeef;">RD$9,680.40</span>
+                                </div>
+
+                                <div class="flex justify-between items-center py-4">
+                                    <span class="text-slate-600 font-medium">Estado:</span>
+                                    <span class="text-xs font-bold text-white px-4 py-1.5 rounded-full" style="background:#012139;">Simulación</span>
+                                </div>
+
+                                <div class="py-4">
+                                    <div class="flex justify-between items-center mb-3">
+                                        <span class="text-slate-600 font-medium">Capacidad de pago:</span>
+                                        <span id="calc-capacidad" class="calc-cap-value" style="color:#16a34a;">3%</span>
+                                    </div>
+                                    <div class="w-full bg-slate-200 rounded-full" style="height:8px;">
+                                        <div id="calc-capacidad-bar" class="calc-cap-bar" style="width:3%; background:#22c55e;"></div>
+                                    </div>
+                                    <p id="calc-cap-note" class="text-xs mt-2" style="color:#94a3b8; font-style:italic;">
+                                        Se recomienda que la cuota no supere el 30% de los ingresos disponibles.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- CTA -->
+                            <div class="mt-8 pt-6 border-t border-slate-200">
+                                <a href="solicitud_español.html" class="flex items-center justify-center gap-2 text-white font-black uppercase tracking-widest py-4 rounded-2xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0"
+                                    style="background:#00aeef; text-decoration:none;"
+                                    onmouseover="this.style.background='#0095cc'; this.style.boxShadow='0 12px 30px rgba(0,174,239,0.4)'"
+                                    onmouseout="this.style.background='#00aeef'; this.style.boxShadow='none'">
+                                    <i class="fas fa-paper-plane"></i> Solicitar este Crédito
+                                </a>
+                                <p class="text-center text-xs text-slate-400 mt-3">* Simulación estimada. Las condiciones finales pueden variar.</p>
+                            </div>
+
+                        </div><!-- /Panel Derecho -->
+                    </div>
+                </div><!-- /Tarjeta calculadora -->
+
+            </div>
+        </section>
+        <!-- /FIN CALCULADORA -->
 
         <!-- Sección de Tabla / Presentación -->
         <section class="bg-prime py-24 text-white">
@@ -283,5 +598,9 @@
                 .openPopup();
         });
     </script>
+
+    <!-- Calculadora de Préstamos -->
+    <script type="module" src="src/js/calculator.js"></script>
+
 </body>
 </html>
