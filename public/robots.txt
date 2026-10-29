@@ -1,0 +1,9 @@
+# robots.txt for B&H Préstamos (https://byh-prestamo.netlify.app/)
+User-agent: *
+Allow: /
+# Proteger panel de administración y páginas privadas
+Disallow: /admin/
+Disallow: /admin/*
+
+# Ubicación del mapa del sitio
+Sitemap: https://byh-prestamo.netlify.app/sitemap.xml

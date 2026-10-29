@@ -4,7 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>B&H PRÉSTAMOS | Soluciones Financieras Premium</title>
-    <link rel="icon" href="assets/img/logob&H.jpeg">
+    
+    <!-- SEO & Indexación Google -->
+    <meta name="description" content="B&H Préstamos - Soluciones financieras rápidas, confiables y transparentes. Préstamos personales, vehiculares y comerciales con aprobación ágil y las mejores tasas del mercado.">
+    <meta name="keywords" content="préstamos, préstamos personales, soluciones financieras, financiamiento vehicular, préstamos comerciales, B&H Préstamos, crédito rápido">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://byh-prestamo.netlify.app/">
+
+    <!-- Open Graph / Redes Sociales -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://byh-prestamo.netlify.app/">
+    <meta property="og:title" content="B&H PRÉSTAMOS | Soluciones Financieras Premium">
+    <meta property="og:description" content="Soluciones financieras rápidas, confiables y transparentes. Calcula tu cuota y solicita tu préstamo 100% online.">
+    <meta property="og:image" content="https://byh-prestamo.netlify.app/assets/img/logob&H.jpeg">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://byh-prestamo.netlify.app/">
+    <meta name="twitter:title" content="B&H PRÉSTAMOS | Soluciones Financieras Premium">
+    <meta name="twitter:description" content="Soluciones financieras rápidas, confiables y transparentes. Solicita tu préstamo hoy.">
+    <meta name="twitter:image" content="https://byh-prestamo.netlify.app/assets/img/logob&H.jpeg">
+
+    <!-- Datos Estructurados Schema.org (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FinancialService",
+      "name": "B&H Préstamos",
+      "url": "https://byh-prestamo.netlify.app/",
+      "logo": "https://byh-prestamo.netlify.app/assets/img/logob&H.jpeg",
+      "image": "https://byh-prestamo.netlify.app/assets/img/logob&H.jpeg",
+      "description": "Soluciones financieras rápidas, transparentes y confiables. Especialistas en préstamos personales, hipotecarios y comerciales.",
+      "priceRange": "$$",
+      "currenciesAccepted": "DOP, USD"
+    }
+    </script>
+
+    <link rel="icon" href="/favicon.ico">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="src/css/input.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
@@ -601,6 +638,48 @@
 
     <!-- Calculadora de Préstamos -->
     <script type="module" src="src/js/calculator.js"></script>
+
+<!-- TechSystem Soft Info Floating Button & Modal -->
+<div id="techsystem-info-root">
+  <button id="techsystem-info-btn" aria-label="Información del Sistema" title="Acerca de TechSystem Soft" style="position:fixed;top:14px;right:14px;z-index:999999;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(226,232,240,0.9);box-shadow:0 4px 12px rgba(0,0,0,0.08);cursor:pointer;display:flex;align-items:center;justify-content:center;color:#475569;transition:all 0.2s cubic-bezier(0.16,1,0.3,1);padding:0;outline:none;" onmouseover="this.style.transform='scale(1.08)';this.style.color='#2563eb';this.style.boxShadow='0 6px 16px rgba(37,99,235,0.2)'" onmouseout="this.style.transform='scale(1)';this.style.color='#475569';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08)'" onclick="document.getElementById('techsystem-info-modal').style.display='flex'">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+  </button>
+  <div id="techsystem-info-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,23,42,0.65);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:1000000;align-items:center;justify-content:center;padding:16px;box-sizing:border-box;" onclick="if(event.target===this)this.style.display='none'">
+    <div style="background:#ffffff;border-radius:24px;max-width:440px;width:100%;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);overflow:hidden;position:relative;border:1px solid rgba(226,232,240,0.8);font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#0f172a;box-sizing:border-box;" onclick="event.stopPropagation()">
+      <div style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 50%,#1d4ed8 100%);padding:28px 24px 22px;color:white;position:relative;">
+        <button style="position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.12);border:none;color:white;cursor:pointer;display:flex;align-items:center;justify-content:center;" onclick="document.getElementById('techsystem-info-modal').style.display='none'">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+          <div style="width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.25);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          </div>
+          <div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="font-weight:800;font-size:1.15rem;letter-spacing:-0.02em;">TechSystem Soft</span>
+              <span style="font-size:0.65rem;background:#22c55e;color:#052e16;font-weight:700;padding:2px 6px;border-radius:999px;text-transform:uppercase;">Oficial</span>
+            </div>
+            <p style="margin:2px 0 0;font-size:0.75rem;color:rgba(226,232,240,0.8);">Soluciones de Software &amp; POS Inteligente</p>
+          </div>
+        </div>
+      </div>
+      <div style="padding:22px 24px;display:flex;flex-direction:column;gap:16px;">
+        <p style="margin:0;font-size:0.875rem;line-height:1.55;color:#475569;">
+          Este sistema forma parte del ecosistema oficial de soluciones empresariales desarrolladas por <strong>TechSystem Soft</strong>. Visita nuestro portal web oficial para conocer nuestras actualizaciones, servicios en la nube, soporte técnico y nuevas soluciones POS y ERP a la medida.
+        </p>
+        <a href="https://techsystemsoft.netlify.app/" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;border-radius:12px;background:linear-gradient(135deg,#2563eb 0%,#1d4ed8 100%);color:white;font-weight:600;font-size:0.875rem;text-decoration:none;box-shadow:0 8px 16px -4px rgba(37,99,235,0.35);">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          Visitar techsystemsoft.netlify.app
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
+        <div style="border-top:1px solid #f1f5f9;padding-top:12px;display:flex;align-items:center;justify-content:space-between;font-size:0.75rem;color:#64748b;">
+          <span>© TechSystem Soft · República Dominicana</span>
+          <span style="font-weight:600;color:#2563eb;">v2026.1</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>

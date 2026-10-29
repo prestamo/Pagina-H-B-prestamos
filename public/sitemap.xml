@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <!-- Página Principal (Español) -->
+    <url>
+        <loc>https://byh-prestamo.netlify.app/</loc>
+        <lastmod>2026-10-28</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+        <xhtml:link rel="alternate" hreflang="es" href="https://byh-prestamo.netlify.app/" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://byh-prestamo.netlify.app/index_english.html" />
+    </url>
+
+    <!-- Tipos de Préstamos (Español) -->
+    <url>
+        <loc>https://byh-prestamo.netlify.app/tipos_prestamos.html</loc>
+        <lastmod>2026-10-28</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+        <xhtml:link rel="alternate" hreflang="es" href="https://byh-prestamo.netlify.app/tipos_prestamos.html" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://byh-prestamo.netlify.app/tipos_prestamos_english.html" />
+    </url>
+
+    <!-- Formulario de Solicitud (Español) -->
+    <url>
+        <loc>https://byh-prestamo.netlify.app/solicitud_espa%C3%B1ol.html</loc>
+        <lastmod>2026-10-28</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+        <xhtml:link rel="alternate" hreflang="es" href="https://byh-prestamo.netlify.app/solicitud_espa%C3%B1ol.html" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://byh-prestamo.netlify.app/solicitud_english.html" />
+    </url>
+
+    <!-- Sobre Nosotros (Español) -->
+    <url>
+        <loc>https://byh-prestamo.netlify.app/nosotros.html</loc>
+        <lastmod>2026-10-28</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+        <xhtml:link rel="alternate" hreflang="es" href="https://byh-prestamo.netlify.app/nosotros.html" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://byh-prestamo.netlify.app/nosotros_english.html" />
+    </url>
+
+    <!-- Descubre Más (Español) -->
+    <url>
+        <loc>https://byh-prestamo.netlify.app/descubre_mas.html</loc>
+        <lastmod>2026-10-28</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <!-- Página Principal (English) -->
+    <url>
+        <loc>https://byh-prestamo.netlify.app/index_english.html</loc>
+        <lastmod>2026-10-28</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+        <xhtml:link rel="alternate" hreflang="es" href="https://byh-prestamo.netlify.app/" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://byh-prestamo.netlify.app/index_english.html" />
+    </url>
+
+    <!-- Loan Types (English) -->
+    <url>
+        <loc>https://byh-prestamo.netlify.app/tipos_prestamos_english.html</loc>
+        <lastmod>2026-10-28</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+        <xhtml:link rel="alternate" hreflang="es" href="https://byh-prestamo.netlify.app/tipos_prestamos.html" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://byh-prestamo.netlify.app/tipos_prestamos_english.html" />
+    </url>
+
+    <!-- Application Form (English) -->
+    <url>
+        <loc>https://byh-prestamo.netlify.app/solicitud_english.html</loc>
+        <lastmod>2026-10-28</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+        <xhtml:link rel="alternate" hreflang="es" href="https://byh-prestamo.netlify.app/solicitud_espa%C3%B1ol.html" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://byh-prestamo.netlify.app/solicitud_english.html" />
+    </url>
+
+    <!-- About Us (English) -->
+    <url>
+        <loc>https://byh-prestamo.netlify.app/nosotros_english.html</loc>
+        <lastmod>2026-10-28</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+        <xhtml:link rel="alternate" hreflang="es" href="https://byh-prestamo.netlify.app/nosotros.html" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://byh-prestamo.netlify.app/nosotros_english.html" />
+    </url>
+</urlset>
