@@ -3207,26 +3207,37 @@ async function initSolicitudesListModule() {
     if (!tableBody) return;
     const emptyState = document.getElementById('solicitudesEmptyState');
     const filterBtns = document.querySelectorAll('.filter-btn');
+    const searchInput = document.getElementById('solicitudSearch');
 
-    const loadSolicitudes = async (typeFilter = 'all') => {
-        let rpc = supabase.from('loan_applications')
-            .select('*, clients(full_name, cedula)')
-            .order('created_at', { ascending: false });
-        
-        const { data: sols, error } = await rpc;
+    let allSolicitudes = [];
+    let currentTypeFilter = 'all';
+    let currentSearchTerm = '';
 
-        if (error) {
-            console.error(error);
-            return;
-        }
+    const renderSolicitudes = () => {
+        const term = currentSearchTerm.trim().toLowerCase();
 
-        // Filtrar localmente por tipo si no es 'all'
-        const filtered = typeFilter === 'all' 
-            ? sols 
-            : sols.filter(s => {
-                const actualType = (s.loan_type || s.data?.tipoPrestamo || 'personal').toLowerCase();
-                return actualType === typeFilter.toLowerCase();
-            });
+        const filtered = allSolicitudes.filter(s => {
+            // Filtro por tipo de préstamo
+            const actualType = (s.loan_type || s.data?.tipoPrestamo || 'personal').toLowerCase();
+            if (currentTypeFilter !== 'all' && actualType !== currentTypeFilter.toLowerCase()) {
+                return false;
+            }
+
+            // Filtro por término de búsqueda (nombre, apellido, cédula, número de solicitud)
+            if (term) {
+                const d = s.data || {};
+                const sol = d.solicitante || {};
+                const clientName = (s.clients?.full_name || `${sol.nombres || ''} ${sol.apellidos || ''}`).toLowerCase();
+                const clientCedula = String(s.clients?.cedula || sol.identificador || '').toLowerCase();
+                const sNo = String(s.solicitud_no || d.solicitudNo || d.numeroSolicitud || s.id || '').toLowerCase();
+                const phone = String(s.clients?.phone || sol.telefono || sol.celular || '').toLowerCase();
+
+                const match = clientName.includes(term) || clientCedula.includes(term) || sNo.includes(term) || phone.includes(term);
+                if (!match) return false;
+            }
+
+            return true;
+        });
 
         // Actualizar contador de solicitudes
         const countSpan = document.getElementById('solicitudesCount');
@@ -3304,9 +3315,9 @@ async function initSolicitudesListModule() {
                                 <button onclick="window.exportToWord('${s.id}')" class="p-2.5 bg-slate-100 text-slate-500 hover:bg-emerald-600 hover:text-white rounded-xl transition-all shadow-sm" title="Descargar Word">
                                     <i class="fas fa-file-word"></i>
                                 </button>
-                                <button onclick="window.openSolicitudRetro('${s.id}', 'cliente_garante', false)" class="px-2 py-1.5 bg-sky-50 text-sky-600 rounded-lg text-[9px] font-black border border-sky-100 hover:bg-sky-600 hover:text-white transition-all uppercase tracking-tighter" title="Cliente y Garantía">Cli + Gar</button>
-                                <button onclick="window.openSolicitudRetro('${s.id}', 'cliente_conyuge', false)" class="px-2 py-1.5 bg-emerald-50 text-emerald-600 rounded-lg text-[9px] font-black border border-emerald-100 hover:bg-emerald-600 hover:text-white transition-all uppercase tracking-tighter" title="Datos Cliente y Cónyuge">Dat Cli</button>
-                                <button onclick="window.openSolicitudRetro('${s.id}', 'garante_conyuge', false)" class="px-2 py-1.5 bg-indigo-50 text-indigo-600 rounded-lg text-[9px] font-black border border-indigo-100 hover:bg-indigo-600 hover:text-white transition-all uppercase tracking-tighter" title="Datos Garante y Cónyuge">Dat Gar</button>
+                                <button onclick="window.openSolicitudRetro('${s.id}', 'cliente_garante', false)" class="px-2.5 py-1.5 bg-sky-50 text-sky-600 rounded-lg text-[9px] font-black border border-sky-100 hover:bg-sky-600 hover:text-white transition-all uppercase tracking-tighter" title="Cliente y Garantía">Cli + Gar</button>
+                                <button onclick="window.openSolicitudRetro('${s.id}', 'cliente_conyuge', false)" class="px-2.5 py-1.5 bg-emerald-50 text-emerald-600 rounded-lg text-[9px] font-black border border-emerald-100 hover:bg-emerald-600 hover:text-white transition-all uppercase tracking-tighter" title="Datos Cliente y Cónyuge">Dat Cli</button>
+                                <button onclick="window.openSolicitudRetro('${s.id}', 'garante_conyuge', false)" class="px-2.5 py-1.5 bg-indigo-50 text-indigo-600 rounded-lg text-[9px] font-black border border-indigo-100 hover:bg-indigo-600 hover:text-white transition-all uppercase tracking-tighter" title="Datos Garante y Cónyuge">Dat Gar</button>
                             </div>
                         </td>
                     </tr>
@@ -3315,7 +3326,29 @@ async function initSolicitudesListModule() {
         }
     };
 
-    // Listeners para filtros
+    const loadSolicitudes = async () => {
+        let rpc = supabase.from('loan_applications')
+            .select('*, clients(full_name, cedula, phone)')
+            .order('created_at', { ascending: false });
+        
+        const { data: sols, error } = await rpc;
+
+        if (error) {
+            console.error(error);
+            return;
+        }
+
+        allSolicitudes = sols || [];
+        renderSolicitudes();
+    };
+
+    // Listener para buscador en tiempo real
+    searchInput?.addEventListener('input', (e) => {
+        currentSearchTerm = e.target.value;
+        renderSolicitudes();
+    });
+
+    // Listeners para filtros por categoría
     filterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             // UI Toggle
@@ -3326,7 +3359,8 @@ async function initSolicitudesListModule() {
             btn.classList.remove('bg-white', 'text-slate-500');
             btn.classList.add('bg-slate-800', 'text-white');
 
-            loadSolicitudes(btn.dataset.filter);
+            currentTypeFilter = btn.dataset.filter || 'all';
+            renderSolicitudes();
         });
     });
 
